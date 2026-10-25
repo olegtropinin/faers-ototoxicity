@@ -1,0 +1,204 @@
+{
+ "reference": {
+  "n_pos": 106,
+  "n_neg": 911,
+  "min_reports": 1000,
+  "auc": {
+   "crude_IC025": 0.7145061408777417,
+   "crude_logROR025": 0.7119586603980698,
+   "adjusted_logMH025": 0.7171934221154443
+  },
+  "auc_diff_adj_minus_crude": 0.0029049043889757577,
+  "auc_diff_ci": [
+   -0.023326605860496043,
+   0.028070709918775798
+  ],
+  "crude_sens": 0.39622641509433965,
+  "crude_spec": 0.862788144895719,
+  "adj_sens": 0.3490566037735849,
+  "adj_spec": 0.8715697036223929
+ },
+ "flow": {
+  "crude_signals": 310,
+  "adjusted_signals": 322,
+  "crude_not_adjusted": 66,
+  "adjusted_not_crude": 78
+ },
+ "replication_canada": {
+  "adjusted_signals": {
+   "k": 69,
+   "n": 129,
+   "rate": 0.5348837209302325,
+   "lo": 0.4490486948298713,
+   "hi": 0.6187011666593007
+  },
+  "adjusted_unlabelled": {
+   "k": 36,
+   "n": 84,
+   "rate": 0.42857142857142855,
+   "lo": 0.32815806317877516,
+   "hi": 0.5352324032972452
+  },
+  "adjusted_labelled": {
+   "k": 33,
+   "n": 45,
+   "rate": 0.7333333333333333,
+   "lo": 0.5896088330282471,
+   "hi": 0.8403525113994538
+  },
+  "crude_only_signals": {
+   "k": 9,
+   "n": 21,
+   "rate": 0.42857142857142855,
+   "lo": 0.24469699486521043,
+   "hi": 0.6345378370296754
+  },
+  "label_negative_non_signals": {
+   "k": 48,
+   "n": 226,
+   "rate": 0.21238938053097345,
+   "lo": 0.16410182249668354,
+   "hi": 0.2702912551707186
+  },
+  "label_negative_all": {
+   "k": 60,
+   "n": 240,
+   "rate": 0.25,
+   "lo": 0.1994456909423887,
+   "hi": 0.30843155395757904
+  }
+ },
+ "replication_canada_direct_only": {
+  "adjusted_signals": {
+   "k": 39,
+   "n": 72,
+   "rate": 0.5416666666666666,
+   "lo": 0.42739664196707616,
+   "hi": 0.6517156130486407
+  },
+  "crude_only_signals": {
+   "k": 3,
+   "n": 8,
+   "rate": 0.375,
+   "lo": 0.13684175946152105,
+   "hi": 0.6942621454161981
+  },
+  "label_negative_non_signals": {
+   "k": 13,
+   "n": 66,
+   "rate": 0.19696969696969696,
+   "lo": 0.11888527965041439,
+   "hi": 0.30839015504753065
+  }
+ },
+ "posthoc": {
+  "adjusted_signals_extended": 312,
+  "primary_signals_lost_by_extension": [
+   "AGALSIDASE ALFA",
+   "AGALSIDASE BETA",
+   "BRIGATINIB",
+   "CANAKINUMAB",
+   "DIMYRISTOYLPHOSPHATIDYLCHOLINE",
+   "DIMYRISTOYLPHOSPHATIDYLGLYCEROL",
+   "ELOSULFASE ALFA",
+   "GALSULFASE",
+   "HUMAN CYTOMEGALOVIRUS IMMUNE GLOBULIN",
+   "IRON",
+   "PEGUNIGALSIDASE ALFA",
+   "PYRAZINAMIDE",
+   "VALACYCLOVIR HYDROCHLORIDE"
+  ],
+  "repl_nostudy_adjusted_x": {
+   "k": 45,
+   "n": 104,
+   "rate": 0.4326923076923077,
+   "lo": 0.3415484367913815,
+   "hi": 0.5286315308648847
+  },
+  "repl_nostudy_adjusted_x_unlabelled": {
+   "k": 17,
+   "n": 60,
+   "rate": 0.2833333333333333,
+   "lo": 0.1850667860430859,
+   "hi": 0.40767525049735165
+  },
+  "repl_nostudy_adjusted_x_labelled": {
+   "k": 28,
+   "n": 44,
+   "rate": 0.6363636363636364,
+   "lo": 0.48866107278891047,
+   "hi": 0.7621666587250857
+  },
+  "repl_nostudy_crude_only": {
+   "k": 7,
+   "n": 16,
+   "rate": 0.4375,
+   "lo": 0.2309836333518552,
+   "hi": 0.6682180439322347
+  },
+  "repl_nostudy_label_negative_non_signals": {
+   "k": 27,
+   "n": 165,
+   "rate": 0.16363636363636364,
+   "lo": 0.11496465647221278,
+   "hi": 0.22761442356493444
+  },
+  "adjrepl_adjusted_x_labelled": {
+   "k": 27,
+   "n": 41,
+   "rate": 0.6585365853658537,
+   "lo": 0.5054955435372689,
+   "hi": 0.7844138263335655
+  },
+  "adjrepl_adjusted_x_unlabelled": {
+   "k": 12,
+   "n": 52,
+   "rate": 0.23076923076923078,
+   "lo": 0.13724127341871611,
+   "hi": 0.3613404291112973
+  },
+  "adjrepl_crude_only": {
+   "k": 3,
+   "n": 12,
+   "rate": 0.25,
+   "lo": 0.08894003962896138,
+   "hi": 0.53231033912066
+  },
+  "adjrepl_label_negative_non_signals": {
+   "k": 24,
+   "n": 150,
+   "rate": 0.16,
+   "lo": 0.10993931727556672,
+   "hi": 0.22704105734352203
+  },
+  "robust_strict": 45,
+  "robust_strict_unlabelled": 17
+ },
+ "replication_temporal": {
+  "early_adjusted": {
+   "k": 81,
+   "n": 155,
+   "rate": 0.5225806451612903,
+   "lo": 0.4443541486885083,
+   "hi": 0.5997149113058509
+  },
+  "early_crude_only": {
+   "k": 18,
+   "n": 28,
+   "rate": 0.6428571428571429,
+   "lo": 0.4582997758222723,
+   "hi": 0.7929438802754113
+  },
+  "label_negative_non_signals": {
+   "k": 144,
+   "n": 941,
+   "rate": 0.153028692879915,
+   "lo": 0.13144006509863665,
+   "hi": 0.17743879882945462
+  }
+ },
+ "robust": {
+  "all": 69,
+  "unlabelled": 36
+ }
+}

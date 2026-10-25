@@ -1,0 +1,99 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1.8cm,landscape]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+\title{Supplementary material\\ \large Which drug--hearing-loss signals in FAERS survive adjustment and independent replication?}
+\author{Oleg Tropynin}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Table S1. READUS-PV checklist}
+{\footnotesize
+\begin{longtable}{p{1cm}p{12cm}p{8cm}}
+\toprule
+Item & READUS-PV recommendation (abridged) & Where addressed \\
+\midrule
+1a & Identify the study as a disproportionality analysis; name data type and database(s) & Title \\
+1b & Name the adverse event(s) and/or drug(s) & Title (hearing loss); abstract \\
+2a & Drugs, event, frequency, existing knowledge & Introduction, paragraph 1 \\
+2b & Rationale (routine PV, safety profile or pre-specified hypothesis) & Introduction, paragraphs 2--3 \\
+2c & Why ICSR databases and disproportionality suit the gap & Introduction, paragraphs 1--3 \\
+3 & Objectives: event(s), drug(s), reference group, pre-specified hypotheses & Introduction, last paragraph; Methods 2.4 \\
+4a & Identify design and data type & Methods 2.1 \\
+4b & Outline primary and sensitivity analyses, case-by-case analysis & Methods 2.4--2.7; PROTOCOL.md (repository) \\
+5a & Database names, custodians, coverage, thesaurus & Methods 2.1 (FDA, Health Canada; MedDRA PTs) \\
+5b & Extraction dates; pre-processing and exclusions & Methods 2.1--2.2; Results 3.1 \\
+6a & Study population and restrictions & Methods 2.4 (restricted population) \\
+6b & Key variables & Methods 2.3 \\
+6c & Grouping of drugs/events; ingredients vs trade names; drug role & Methods 2.2--2.3 \\
+6d & Additional data sources and how they interact with ICSRs & Methods 2.5 (US labels), 2.7 (PubMed) \\
+7a & Descriptive analyses & Table S4 \\
+7b & Disproportionality measures and thresholds & Methods 2.4 \\
+7c & Sensitivity analyses and confounding control & Methods 2.4, 2.6; Results 3.3 (post hoc, labelled) \\
+7d & Variables and criteria for case-by-case analysis & Methods 2.7; Table S3 (rule-based categories) \\
+7e & Statistical methods for other data sources & Methods 2.5 (AUC, bootstrap), 2.6 \\
+8a & Number of ICSRs at each stage with reasons & Results 3.1 \\
+8b & Demographic and clinical characteristics of cases & Table S4 \\
+9 & All results with confidence intervals; sensitivity analyses & Tables 1--3, S2, S5; Figures 1--2 \\
+10 & Case-by-case analysis & Results 3.5; Table S3 \\
+11 & Key results in context; expected vs emerging signals & Discussion, paragraphs 1--2 \\
+12a & External validity & Discussion; Limitations \\
+12b & Relevance to clinical practice & Discussion, paragraph 4 \\
+12c & Further study designs & Discussion, paragraph 4; Conclusions \\
+13 & Limitations; disproportionality cannot prove causation or measure incidence & Limitations \\
+14a & Funding & Declarations \\
+14b & Conflicts of interest & Declarations \\
+14c & Institutional approval & Declarations (not applicable) \\
+14d & Data, code (software versions) and protocol availability & Declarations \\
+\bottomrule
+\end{longtable}}
+
+\section*{Table S2. Established ototoxic drugs: crude and adjusted estimates (hearing loss)}
+FAERS crude: all reports; FAERS adjusted: Mantel--Haenszel OR in the restricted population (Methods); Canada: crude ROR, all reports.
+\begin{longtable}{lrcrcrc}
+\toprule
+Ingredient & FAERS cases & FAERS ROR (95\% CI) & Adj.\ cases & FAERS adj.\ OR (95\% CI) & Canada cases & Canada ROR (95\% CI) \\
+\midrule
+%%S2%%
+\bottomrule
+\end{longtable}
+
+\section*{Table S3. Case-level review of the 36 robust signals without a US label mention (post-hoc strict definition)}
+Category: A report cluster ($\geq$50\% of cases in reports listing $\geq$15 drugs); B $\geq$50\% of cases co-report an established
+ototoxic drug; C stimulated or mass-exposure reporting; D indication or comorbidity linked to the event; K drug on the a-priori
+ototoxic list; E none of these. Rules applied in that order (K first). Profiles describe all FAERS cases (drug as suspect, event
+reported). Top country and year: share of cases from the most frequent country and receipt year.
+{\footnotesize
+\begin{longtable}{p{2.6cm}lcrllrrrrp{5.6cm}}
+\toprule
+Drug & Event & Cat. & Cases & Top country & Top year & Consumer & Median drugs & $\geq$15 drugs & Ototoxic co-drug & Note \\
+\midrule
+%%S3%%
+\bottomrule
+\end{longtable}}
+
+\section*{Table S4. Characteristics of FAERS hearing-loss and tinnitus reports and all other reports (READUS-PV item 8b)}
+\begin{longtable}{lrrr}
+\toprule
+ & Hearing loss & Tinnitus & All other reports \\
+\midrule
+%%S4%%
+\bottomrule
+\end{longtable}
+
+\section*{Table S5. All robust signals (primary definition: adjusted FAERS signal replicated in Canada Vigilance)}
+FAERS: adjusted MH OR; Canada: crude ROR, all reports; Label: any US label mentions the event.
+{\footnotesize
+\begin{longtable}{lcrcrcc}
+\toprule
+Ingredient & Event & FAERS cases & FAERS adj.\ OR (95\% CI) & Canada cases & Canada ROR (95\% CI) & Label \\
+\midrule
+%%S5%%
+\bottomrule
+\end{longtable}}
+\end{document}

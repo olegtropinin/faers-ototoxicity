@@ -1,0 +1,74 @@
+{
+ "faers_hl": {
+  "reports": 19886036,
+  "events": 83914,
+  "adj_reports": 17580497,
+  "adj_events": 70459,
+  "ear_indication": 19305,
+  "with_known_ototoxic": 1843306,
+  "lawyer": 486393
+ },
+ "faers_tin": {
+  "reports": 19886036,
+  "events": 42917,
+  "adj_reports": 17580497,
+  "adj_events": 35411,
+  "ear_indication": 19305,
+  "with_known_ototoxic": 1843306,
+  "lawyer": 486393
+ },
+ "faersnoca_hl": {
+  "reports": 19144806,
+  "events": 79891,
+  "adj_reports": 16970911,
+  "adj_events": 67933,
+  "ear_indication": 18763,
+  "with_known_ototoxic": 1713440,
+  "lawyer": 484991
+ },
+ "faersnoca_tin": {
+  "reports": 19144806,
+  "events": 40782,
+  "adj_reports": 16970911,
+  "adj_events": 33851,
+  "ear_indication": 18763,
+  "with_known_ototoxic": 1713440,
+  "lawyer": 484991
+ },
+ "early_hl": {
+  "reports": 4565257,
+  "events": 17517,
+  "adj_reports": 3970369,
+  "adj_events": 13876,
+  "ear_indication": 5988,
+  "with_known_ototoxic": 487597,
+  "lawyer": 108586
+ },
+ "early_tin": {
+  "reports": 4565257,
+  "events": 12211,
+  "adj_reports": 3970369,
+  "adj_events": 10174,
+  "ear_indication": 5988,
+  "with_known_ototoxic": 487597,
+  "lawyer": 108586
+ },
+ "late_hl": {
+  "reports": 15320779,
+  "events": 66397,
+  "adj_reports": 13610128,
+  "adj_events": 56583,
+  "ear_indication": 13317,
+  "with_known_ototoxic": 1355709,
+  "lawyer": 377807
+ },
+ "late_tin": {
+  "reports": 15320779,
+  "events": 30706,
+  "adj_reports": 13610128,
+  "adj_events": 25237,
+  "ear_indication": 13317,
+  "with_known_ototoxic": 1355709,
+  "lawyer": 377807
+ }
+}

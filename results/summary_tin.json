@@ -1,0 +1,193 @@
+{
+ "reference": {
+  "n_pos": 176,
+  "n_neg": 911,
+  "min_reports": 1000,
+  "auc": {
+   "crude_IC025": 0.7720505688055085,
+   "crude_logROR025": 0.7732885939526993,
+   "adjusted_logMH025": 0.7756648538070053
+  },
+  "auc_diff_adj_minus_crude": 0.003755576922588212,
+  "auc_diff_ci": [
+   -0.01524260698554596,
+   0.019950071129547633
+  ],
+  "crude_sens": 0.5113636363636364,
+  "crude_spec": 0.8474204171240395,
+  "adj_sens": 0.5056818181818182,
+  "adj_spec": 0.8660812294182217
+ },
+ "flow": {
+  "crude_signals": 403,
+  "adjusted_signals": 357,
+  "crude_not_adjusted": 113,
+  "adjusted_not_crude": 67
+ },
+ "replication_canada": {
+  "adjusted_signals": {
+   "k": 89,
+   "n": 146,
+   "rate": 0.6095890410958904,
+   "lo": 0.5286166090315858,
+   "hi": 0.6849422424489109
+  },
+  "adjusted_unlabelled": {
+   "k": 27,
+   "n": 64,
+   "rate": 0.421875,
+   "lo": 0.3086959366145158,
+   "hi": 0.5439018794747275
+  },
+  "adjusted_labelled": {
+   "k": 62,
+   "n": 82,
+   "rate": 0.7560975609756098,
+   "lo": 0.6530708869115632,
+   "hi": 0.8362023791971765
+  },
+  "crude_only_signals": {
+   "k": 13,
+   "n": 31,
+   "rate": 0.41935483870967744,
+   "lo": 0.26415303073549257,
+   "hi": 0.5923403564797902
+  },
+  "label_negative_non_signals": {
+   "k": 36,
+   "n": 202,
+   "rate": 0.1782178217821782,
+   "lo": 0.13159848249936945,
+   "hi": 0.23684793455141134
+  },
+  "label_negative_all": {
+   "k": 42,
+   "n": 214,
+   "rate": 0.19626168224299065,
+   "lo": 0.1486042597241705,
+   "hi": 0.2546318531211263
+  }
+ },
+ "replication_canada_direct_only": {
+  "adjusted_signals": {
+   "k": 55,
+   "n": 111,
+   "rate": 0.4954954954954955,
+   "lo": 0.40420129093119117,
+   "hi": 0.5870910630590006
+  },
+  "crude_only_signals": {
+   "k": 6,
+   "n": 19,
+   "rate": 0.3157894736842105,
+   "lo": 0.15364171004428598,
+   "hi": 0.5398998982493537
+  },
+  "label_negative_non_signals": {
+   "k": 9,
+   "n": 97,
+   "rate": 0.09278350515463918,
+   "lo": 0.04958265664341581,
+   "hi": 0.1670104953890787
+  }
+ },
+ "posthoc": {
+  "adjusted_signals_extended": 357,
+  "primary_signals_lost_by_extension": [
+   "AGALSIDASE BETA",
+   "PEGUNIGALSIDASE ALFA-IWXJ"
+  ],
+  "repl_nostudy_adjusted_x": {
+   "k": 73,
+   "n": 139,
+   "rate": 0.5251798561151079,
+   "lo": 0.4426067651721205,
+   "hi": 0.6063985666079771
+  },
+  "repl_nostudy_adjusted_x_unlabelled": {
+   "k": 19,
+   "n": 57,
+   "rate": 0.3333333333333333,
+   "lo": 0.2249363598222627,
+   "hi": 0.4627773097722252
+  },
+  "repl_nostudy_adjusted_x_labelled": {
+   "k": 54,
+   "n": 82,
+   "rate": 0.6585365853658537,
+   "lo": 0.5508753748631217,
+   "hi": 0.7520080755851459
+  },
+  "repl_nostudy_crude_only": {
+   "k": 6,
+   "n": 29,
+   "rate": 0.20689655172413793,
+   "lo": 0.09845936515585207,
+   "hi": 0.3839044660825772
+  },
+  "repl_nostudy_label_negative_non_signals": {
+   "k": 18,
+   "n": 160,
+   "rate": 0.1125,
+   "lo": 0.07235575112573997,
+   "hi": 0.17081570227803536
+  },
+  "adjrepl_adjusted_x_labelled": {
+   "k": 50,
+   "n": 80,
+   "rate": 0.625,
+   "lo": 0.515485228513904,
+   "hi": 0.7230598374199522
+  },
+  "adjrepl_adjusted_x_unlabelled": {
+   "k": 16,
+   "n": 50,
+   "rate": 0.32,
+   "lo": 0.20758044093999403,
+   "hi": 0.45810557136276076
+  },
+  "adjrepl_crude_only": {
+   "k": 3,
+   "n": 23,
+   "rate": 0.13043478260869565,
+   "lo": 0.04537576514344702,
+   "hi": 0.32127897973018194
+  },
+  "adjrepl_label_negative_non_signals": {
+   "k": 10,
+   "n": 146,
+   "rate": 0.0684931506849315,
+   "lo": 0.037626047530495595,
+   "hi": 0.1214859747650485
+  },
+  "robust_strict": 73,
+  "robust_strict_unlabelled": 19
+ },
+ "replication_temporal": {
+  "early_adjusted": {
+   "k": 100,
+   "n": 121,
+   "rate": 0.8264462809917356,
+   "lo": 0.7492102134433601,
+   "hi": 0.8835916731072767
+  },
+  "early_crude_only": {
+   "k": 9,
+   "n": 15,
+   "rate": 0.6,
+   "lo": 0.357464427565077,
+   "hi": 0.8017577191740534
+  },
+  "label_negative_non_signals": {
+   "k": 173,
+   "n": 794,
+   "rate": 0.21788413098236775,
+   "lo": 0.19056550696115235,
+   "hi": 0.24791952565685102
+  }
+ },
+ "robust": {
+  "all": 89,
+  "unlabelled": 27
+ }
+}

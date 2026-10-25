@@ -1,0 +1,67 @@
+group,variable,level,n,pct
+hearing loss,N,,83914.0,100.0
+hearing loss,age_band,unknown,37354.0,44.5
+hearing loss,age_band,>=65,25667.0,30.6
+hearing loss,age_band,45-64,13082.0,15.6
+hearing loss,age_band,18-44,5793.0,6.9
+hearing loss,age_band,<18,2018.0,2.4
+hearing loss,sex_,female,44423.0,52.9
+hearing loss,sex_,male,32985.0,39.3
+hearing loss,sex_,unknown,6506.0,7.8
+hearing loss,reporter,consumer,50325.0,60.0
+hearing loss,reporter,physician,13616.0,16.2
+hearing loss,reporter,other health professional,10573.0,12.6
+hearing loss,reporter,unknown,6026.0,7.2
+hearing loss,reporter,pharmacist,2694.0,3.2
+hearing loss,reporter,lawyer,680.0,0.8
+hearing loss,region,United States,58649.0,69.9
+hearing loss,region,other,23987.0,28.6
+hearing loss,region,unknown,1278.0,1.5
+hearing loss,period,2019-2026,46699.0,55.7
+hearing loss,period,2013-2018,25767.0,30.7
+hearing loss,period,2004-2012,11448.0,13.6
+hearing loss,age_median,,67.0,
+tinnitus,N,,42917.0,100.0
+tinnitus,age_band,unknown,15058.0,35.1
+tinnitus,age_band,45-64,12855.0,30.0
+tinnitus,age_band,>=65,7459.0,17.4
+tinnitus,age_band,18-44,7014.0,16.3
+tinnitus,age_band,<18,531.0,1.2
+tinnitus,sex_,female,25027.0,58.3
+tinnitus,sex_,male,13816.0,32.2
+tinnitus,sex_,unknown,4074.0,9.5
+tinnitus,reporter,consumer,23059.0,53.7
+tinnitus,reporter,physician,7245.0,16.9
+tinnitus,reporter,other health professional,6079.0,14.2
+tinnitus,reporter,unknown,3735.0,8.7
+tinnitus,reporter,pharmacist,2036.0,4.7
+tinnitus,reporter,lawyer,763.0,1.8
+tinnitus,region,United States,27478.0,64.0
+tinnitus,region,other,14058.0,32.8
+tinnitus,region,unknown,1381.0,3.2
+tinnitus,period,2019-2026,19236.0,44.8
+tinnitus,period,2013-2018,14593.0,34.0
+tinnitus,period,2004-2012,9088.0,21.2
+tinnitus,age_median,,55.0,
+all other reports,N,,19765932.0,100.0
+all other reports,age_band,unknown,8514990.0,43.1
+all other reports,age_band,>=65,4095910.0,20.7
+all other reports,age_band,45-64,4000977.0,20.2
+all other reports,age_band,18-44,2463021.0,12.5
+all other reports,age_band,<18,691034.0,3.5
+all other reports,sex_,female,10419028.0,52.7
+all other reports,sex_,male,6784015.0,34.3
+all other reports,sex_,unknown,2562889.0,13.0
+all other reports,reporter,consumer,8747221.0,44.3
+all other reports,reporter,physician,4278055.0,21.6
+all other reports,reporter,other health professional,3682836.0,18.6
+all other reports,reporter,unknown,1357397.0,6.9
+all other reports,reporter,pharmacist,1215254.0,6.1
+all other reports,reporter,lawyer,485169.0,2.5
+all other reports,region,United States,14095785.0,71.3
+all other reports,region,other,5331080.0,27.0
+all other reports,region,unknown,339067.0,1.7
+all other reports,period,2019-2026,10399635.0,52.6
+all other reports,period,2013-2018,6279770.0,31.8
+all other reports,period,2004-2012,3086527.0,15.6
+all other reports,age_median,,58.0,

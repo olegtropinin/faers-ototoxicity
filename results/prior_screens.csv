@@ -1,0 +1,6 @@
+study,scope,reported,matched,crude_here,adjusted_here,adjusted_and_testable,adjusted_and_replicated,lost_on_adjustment,unmatched
+li2024,hearing_loss,41,41,33,30,15,12,TAFENOQUINE;TIMOLOL;VINBLASTINE,
+liu2025,hearing_loss,57,57,35,28,24,20,ASPIRIN;CARBOPLATIN;CEFIXIME;ETOPOSIDE;FINASTERIDE;ISONIAZID;SULFAMETHOXAZOLE;TRIMETHOPRIM;VINBLASTINE;VINCRISTINE,
+narasimhaswamy2026,tinnitus,7,7,2,1,1,1,DIPHENHYDRAMINE,
+wang2024,tinnitus,3,3,2,2,2,2,,
+wu2025,hearing_loss,5,4,3,2,0,0,TAFENOQUINE,POTASSIUM IODIDE

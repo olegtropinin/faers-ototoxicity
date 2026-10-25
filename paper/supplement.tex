@@ -1,0 +1,332 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1.8cm,landscape]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+\title{Supplementary material\\ \large Which drug--hearing-loss signals in FAERS survive adjustment and independent replication?}
+\author{Oleg Tropynin}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Table S1. READUS-PV checklist}
+{\footnotesize
+\begin{longtable}{p{1cm}p{12cm}p{8cm}}
+\toprule
+Item & READUS-PV recommendation (abridged) & Where addressed \\
+\midrule
+1a & Identify the study as a disproportionality analysis; name data type and database(s) & Title \\
+1b & Name the adverse event(s) and/or drug(s) & Title (hearing loss); abstract \\
+2a & Drugs, event, frequency, existing knowledge & Introduction, paragraph 1 \\
+2b & Rationale (routine PV, safety profile or pre-specified hypothesis) & Introduction, paragraphs 2--3 \\
+2c & Why ICSR databases and disproportionality suit the gap & Introduction, paragraphs 1--3 \\
+3 & Objectives: event(s), drug(s), reference group, pre-specified hypotheses & Introduction, last paragraph; Methods 2.4 \\
+4a & Identify design and data type & Methods 2.1 \\
+4b & Outline primary and sensitivity analyses, case-by-case analysis & Methods 2.4--2.7; PROTOCOL.md (repository) \\
+5a & Database names, custodians, coverage, thesaurus & Methods 2.1 (FDA, Health Canada; MedDRA PTs) \\
+5b & Extraction dates; pre-processing and exclusions & Methods 2.1--2.2; Results 3.1 \\
+6a & Study population and restrictions & Methods 2.4 (restricted population) \\
+6b & Key variables & Methods 2.3 \\
+6c & Grouping of drugs/events; ingredients vs trade names; drug role & Methods 2.2--2.3 \\
+6d & Additional data sources and how they interact with ICSRs & Methods 2.5 (US labels), 2.7 (PubMed) \\
+7a & Descriptive analyses & Table S4 \\
+7b & Disproportionality measures and thresholds & Methods 2.4 \\
+7c & Sensitivity analyses and confounding control & Methods 2.4, 2.6; Results 3.3 (post hoc, labelled) \\
+7d & Variables and criteria for case-by-case analysis & Methods 2.7; Table S3 (rule-based categories) \\
+7e & Statistical methods for other data sources & Methods 2.5 (AUC, bootstrap), 2.6 \\
+8a & Number of ICSRs at each stage with reasons & Results 3.1 \\
+8b & Demographic and clinical characteristics of cases & Table S4 \\
+9 & All results with confidence intervals; sensitivity analyses & Tables 1--3, S2, S5; Figures 1--2 \\
+10 & Case-by-case analysis & Results 3.5; Table S3 \\
+11 & Key results in context; expected vs emerging signals & Discussion, paragraphs 1--2 \\
+12a & External validity & Discussion; Limitations \\
+12b & Relevance to clinical practice & Discussion, paragraph 4 \\
+12c & Further study designs & Discussion, paragraph 4; Conclusions \\
+13 & Limitations; disproportionality cannot prove causation or measure incidence & Limitations \\
+14a & Funding & Declarations \\
+14b & Conflicts of interest & Declarations \\
+14c & Institutional approval & Declarations (not applicable) \\
+14d & Data, code (software versions) and protocol availability & Declarations \\
+\bottomrule
+\end{longtable}}
+
+\section*{Table S2. Established ototoxic drugs: crude and adjusted estimates (hearing loss)}
+FAERS crude: all reports; FAERS adjusted: Mantel--Haenszel OR in the restricted population (Methods); Canada: crude ROR, all reports.
+\begin{longtable}{lrcrcrc}
+\toprule
+Ingredient & FAERS cases & FAERS ROR (95\% CI) & Adj.\ cases & FAERS adj.\ OR (95\% CI) & Canada cases & Canada ROR (95\% CI) \\
+\midrule
+Gentamicin & 315 & 9.66 (8.63--10.81) & 181 & 11.37 (9.80--13.21) & 131 & 33.59 (27.98--40.34) \\
+Tobramycin & 367 & 5.36 (4.83--5.94) & 248 & 4.83 (4.25--5.47) & 31 & 17.10 (11.89--24.58) \\
+Amikacin & 833 & 16.83 (15.69--18.07) & 472 & 12.70 (11.57--13.94) & 35 & 145.90 (97.39--218.57) \\
+Streptomycin & 18 & 5.76 (3.61--9.20) & 12 & 7.92 (4.47--14.05) & 9 & 6.28 (3.24--12.16) \\
+Cisplatin & 1206 & 4.61 (4.35--4.88) & 730 & 4.26 (3.96--4.59) & 138 & 31.21 (26.12--37.28) \\
+Carboplatin & 761 & 1.96 (1.83--2.11) & 251 & 0.82 (0.72--0.92) & 112 & 19.09 (15.73--23.16) \\
+Oxaliplatin & 121 & 0.44 (0.37--0.53) & 106 & 0.46 (0.38--0.56) & 1 & 0.14 (0.02--1.02) \\
+Vancomycin & 365 & 2.25 (2.03--2.49) & 215 & 2.06 (1.80--2.36) & 60 & 9.25 (7.14--11.98) \\
+Furosemide & 412 & 1.73 (1.57--1.91) & 255 & 1.31 (1.16--1.48) & 61 & 10.18 (7.87--13.16) \\
+Hydroxychloroquine & 556 & 2.10 (1.93--2.28) & 327 & 1.73 (1.55--1.93) & 88 & 2.21 (1.78--2.73) \\
+Quinine & 68 & 5.83 (4.59--7.42) & 41 & 6.10 (4.47--8.31) & 4 & 6.10 (2.27--16.42) \\
+Sildenafil & 894 & 3.99 (3.73--4.26) & 725 & 3.93 (3.65--4.24) & 32 & 4.18 (2.95--5.94) \\
+Tadalafil & 720 & 4.52 (4.20--4.87) & 594 & 4.22 (3.89--4.58) & 35 & 4.19 (2.99--5.85) \\
+Vardenafil & 6 & 1.31 (0.59--2.93) & 4 & 0.93 (0.35--2.49) & 4 & 17.01 (6.21--46.60) \\
+Deferoxamine & 51 & 8.97 (6.78--11.86) & 50 & 11.78 (8.87--15.66) & 34 & 36.29 (25.39--51.86) \\
+Teprotumumab & 61 & 124.18 (91.08--169.32) & 61 & 145.26 (106.02--199.02) & 1 & -- \\
+\bottomrule
+\end{longtable}
+
+\section*{Table S3. Case-level review of the 36 robust signals without a US label mention (post-hoc strict definition)}
+Category: A report cluster ($\geq$50\% of cases in reports listing $\geq$15 drugs); B $\geq$50\% of cases co-report an established
+ototoxic drug; C stimulated or mass-exposure reporting; D indication or comorbidity linked to the event; K drug on the a-priori
+ototoxic list; E none of these. Rules applied in that order (K first). Profiles describe all FAERS cases (drug as suspect, event
+reported). Top country and year: share of cases from the most frequent country and receipt year.
+{\footnotesize
+\begin{longtable}{p{2.6cm}lcrllrrrrp{5.6cm}}
+\toprule
+Drug & Event & Cat. & Cases & Top country & Top year & Consumer & Median drugs & $\geq$15 drugs & Ototoxic co-drug & Note \\
+\midrule
+Linezolid & HL & B & 350 & US 18\% & 2025 11\% & 6\% & 9 & 21\% & 75\% & nan \\
+Clofazimine & HL & B & 194 & US 32\% & 2019 19\% & 8\% & 10 & 26\% & 78\% & nan \\
+Polymyxin B & HL & B & 139 & US 69\% & 2018 9\% & 78\% & 4 & 4\% & 78\% & otic use: top indications ear infection / otitis externa \\
+Mesna & HL & B & 69 & CA 35\% & 2016 26\% & 10\% & 7 & 4\% & 83\% & nan \\
+Rifabutin & HL & B & 66 & CA 30\% & 2024 30\% & 9\% & 10 & 18\% & 88\% & nan \\
+Rofecoxib & HL & C & 245 & US 63\% & 2006 42\% & 7\% & 6 & 16\% & 33\% & nan \\
+Tozinameran & HL & C & 72 & US 32\% & 2022 26\% & 74\% & 7.5 & 38\% & 8\% & nan \\
+Elasomeran & HL & C & 20 & US 85\% & 2023 35\% & 75\% & 8 & 35\% & 20\% & nan \\
+Minerals & HL & D & 33 & CA 27\% & 2018 18\% & 76\% & 9 & 15\% & 48\% & non-specific supplement category; elderly multi-morbid patients \\
+Etanercept & HL & E & 2577 & US 65\% & 2016 17\% & 45\% & 1 & 13\% & 18\% & weak (adjusted OR 1.14) despite 2,001 cases \\
+Pregabalin & HL & E & 1795 & US 81\% & 2021 22\% & 61\% & 3 & 15\% & 12\% & 1,795 cases, 61 \% consumer, few co-reported ototoxics; alpha-2-delta ligand; partial label wording (ambiguous) \\
+Amlodipine & HL & E & 841 & US 27\% & 2021 15\% & 69\% & 4 & 13\% & 15\% & tinnitus labelled; hearing loss not; elderly hypertensive patients \\
+Tocilizumab & HL & E & 615 & CA 45\% & 2020 23\% & 41\% & 8 & 37\% & 33\% & weak; 45 \% Canadian, 37 \% drug-dense reports \\
+Ondansetron & HL & E & 157 & US 87\% & 2020 22\% & 40\% & 3 & 18\% & 18\% & supportive-care drug; median 28 reactions per report \\
+Travoprost & HL & E & 143 & US 59\% & 2019 22\% & 76\% & 1 & 0\% & 3\% & topical prostaglandin analogue; elderly glaucoma patients, 76 \% consumer \\
+Glycopyrronium & HL & E & 120 & US 72\% & 2025 32\% & 36\% & 3 & 3\% & 5\% & inhaled LAMA in COPD; 32 \% of cases in 2025 \\
+Interferon Alfa-2B & HL & E & 27 & US 41\% & 2013 22\% & 22\% & 2 & 4\% & 7\% & hearing loss with interferon reported in the literature \\
+Candesartan & Tin & A & 540 & GB 63\% & 2023 42\% & 32\% & 43 & 82\% & 42\% & nan \\
+Cholecalciferol & Tin & A & 436 & CA 33\% & 2025 23\% & 21\% & 75 & 82\% & 80\% & nan \\
+Tozinameran & Tin & A & 183 & CA 40\% & 2025 30\% & 35\% & 80 & 69\% & 62\% & nan \\
+Perindopril & Tin & A & 162 & CA 56\% & 2023 17\% & 23\% & 25.5 & 80\% & 74\% & nan \\
+Aminosalicylic Acid & Tin & A & 97 & CA 68\% & 2025 53\% & 5\% & 219 & 97\% & 95\% & nan \\
+Indapamide & Tin & A & 45 & PL 49\% & 2018 22\% & 20\% & 16 & 56\% & 60\% & nan \\
+Choline & Tin & A & 4 & US 100\% & 2013 100\% & 75\% & 23 & 100\% & 0\% & 4 cases, all in one 2013 HIV-treatment series \\
+Finasteride & Tin & C & 305 & GB 37\% & 2024 18\% & 61\% & 1 & 1\% & 1\% & nan \\
+Rofecoxib & Tin & C & 262 & US 42\% & 2006 34\% & 19\% & 10 & 43\% & 47\% & nan \\
+Elasomeran & Tin & C & 14 & US 50\% & 2023 43\% & 64\% & 8 & 36\% & 29\% & nan \\
+Levothyroxine & Tin & D & 992 & GB 34\% & 2023 27\% & 53\% & 8 & 47\% & 23\% & thyroid disease; 47 \% of cases in drug-dense reports \\
+Valsartan & Tin & D & 476 & US 41\% & 2022 10\% & 69\% & 5 & 17\% & 26\% & hypertension / heart failure; also US patient-programme reporting \\
+Olmesartan & Tin & D & 85 & US 34\% & 2020 20\% & 54\% & 5 & 21\% & 24\% & hypertension, associated with tinnitus \\
+Liothyronine & Tin & D & 46 & US 50\% & 2023 37\% & 76\% & 6 & 33\% & 2\% & thyroid disease / over-replacement \\
+Chlorthalidone & Tin & D & 18 & CA 44\% & 2026 39\% & 56\% & 10 & 39\% & 0\% & hypertension; 18 cases \\
+Galcanezumab & Tin & D & 3 & US 33\% & 2018 33\% & 33\% & 1 & 0\% & 0\% & migraine, itself associated with tinnitus; 3 cases \\
+Clonazepam & Tin & E & 393 & US 55\% & 2017 13\% & 69\% & 5 & 27\% & 6\% & tinnitus on benzodiazepine withdrawal is described in the literature \\
+Penicillin G Procaine & Tin & E & 5 & US 60\% & 2022 40\% & 40\% & 3 & 0\% & 0\% & procaine (Hoigne) reactions include auditory symptoms; 5 cases \\
+Paromomycin & Tin & K & 4 & US 50\% & 2017 25\% & 75\% & 2.5 & 0\% & 0\% & aminoglycoside (oral); class effect plausible; 4 cases \\
+\bottomrule
+\end{longtable}}
+
+\section*{Table S4. Characteristics of FAERS hearing-loss and tinnitus reports and all other reports (READUS-PV item 8b)}
+\begin{longtable}{lrrr}
+\toprule
+ & Hearing loss & Tinnitus & All other reports \\
+\midrule
+Reports, n & 83,914 & 42,917 & 19,765,932 \\
+Age, median (years) & 67 & 55 & 58 \\
+\textit{Age} & & & \\
+\quad <18 (\%) & 2.4 & 1.2 & 3.5 \\
+\quad 18-44 (\%) & 6.9 & 16.3 & 12.5 \\
+\quad 45-64 (\%) & 15.6 & 30.0 & 20.2 \\
+\quad $\geq$65 (\%) & 30.6 & 17.4 & 20.7 \\
+\quad unknown (\%) & 44.5 & 35.1 & 43.1 \\
+\textit{Sex} & & & \\
+\quad female (\%) & 52.9 & 58.3 & 52.7 \\
+\quad male (\%) & 39.3 & 32.2 & 34.3 \\
+\quad unknown (\%) & 7.8 & 9.5 & 13.0 \\
+\textit{Reporter} & & & \\
+\quad consumer (\%) & 60.0 & 53.7 & 44.3 \\
+\quad physician (\%) & 16.2 & 16.9 & 21.6 \\
+\quad pharmacist (\%) & 3.2 & 4.7 & 6.1 \\
+\quad other health professional (\%) & 12.6 & 14.2 & 18.6 \\
+\quad lawyer (\%) & 0.8 & 1.8 & 2.5 \\
+\quad unknown (\%) & 7.2 & 8.7 & 6.9 \\
+\textit{Country} & & & \\
+\quad United States (\%) & 69.9 & 64.0 & 71.3 \\
+\quad other (\%) & 28.6 & 32.8 & 27.0 \\
+\quad unknown (\%) & 1.5 & 3.2 & 1.7 \\
+\textit{FDA receipt} & & & \\
+\quad 2004-2012 (\%) & 13.6 & 21.2 & 15.6 \\
+\quad 2013-2018 (\%) & 30.7 & 34.0 & 31.8 \\
+\quad 2019-2026 (\%) & 55.7 & 44.8 & 52.6 \\
+\bottomrule
+\end{longtable}
+
+\section*{Table S5. All robust signals (primary definition: adjusted FAERS signal replicated in Canada Vigilance)}
+FAERS: adjusted MH OR; Canada: crude ROR, all reports; Label: any US label mentions the event.
+{\footnotesize
+\begin{longtable}{lcrcrcc}
+\toprule
+Ingredient & Event & FAERS cases & FAERS adj.\ OR (95\% CI) & Canada cases & Canada ROR (95\% CI) & Label \\
+\midrule
+Amikacin & HL & 833 & 12.70 (11.57--13.94) & 35 & 145.90 (97.39--218.57) & yes \\
+Gentamicin & HL & 315 & 11.37 (9.80--13.21) & 131 & 33.59 (27.98--40.34) & yes \\
+Deferoxamine & HL & 51 & 11.78 (8.87--15.66) & 34 & 36.29 (25.39--51.86) & yes \\
+Agalsidase Alfa & HL & 14 & 17.79 (7.75--40.82) & 10 & 10.65 (5.66--20.02) & no \\
+Ethacrynic Acid & HL & 11 & 12.64 (4.61--34.64) & 28 & 274.38 (164.45--457.82) & yes \\
+Quinine & HL & 68 & 6.10 (4.47--8.31) & 4 & 6.10 (2.27--16.42) & yes \\
+Streptomycin & HL & 18 & 7.92 (4.47--14.05) & 9 & 6.28 (3.24--12.16) & yes \\
+Tobramycin & HL & 367 & 4.83 (4.25--5.47) & 31 & 17.10 (11.89--24.58) & yes \\
+Elosulfase Alfa & HL & 80 & 5.22 (4.17--6.53) & 3 & 9.15 (2.90--28.86) & no \\
+Azithromycin & HL & 711 & 4.52 (4.10--4.98) & 45 & 7.03 (5.22--9.46) & yes \\
+Cisplatin & HL & 1206 & 4.26 (3.96--4.59) & 138 & 31.21 (26.12--37.28) & yes \\
+Tadalafil & HL & 720 & 4.22 (3.89--4.58) & 35 & 4.19 (2.99--5.85) & yes \\
+Laronidase & HL & 49 & 5.08 (3.80--6.78) & 3 & 37.74 (11.36--125.37) & no \\
+Neomycin & HL & 139 & 4.94 (3.78--6.45) & 13 & 7.65 (4.41--13.28) & yes \\
+Clofazimine & HL & 194 & 5.03 (3.70--6.86) & 5 & 13.85 (5.65--33.97) & no \\
+Galsulfase & HL & 51 & 4.86 (3.67--6.43) & 5 & 68.64 (25.98--181.36) & yes \\
+Sildenafil & HL & 894 & 3.93 (3.65--4.24) & 32 & 4.18 (2.95--5.94) & yes \\
+Alendronate Sodium & HL & 673 & 3.94 (3.60--4.31) & 6 & 2.80 (1.25--6.27) & no \\
+Deferasirox & HL & 344 & 3.83 (3.41--4.29) & 20 & 5.12 (3.29--7.97) & yes \\
+Agalsidase Beta & HL & 115 & 3.92 (3.22--4.78) & 4 & 6.94 (2.57--18.71) & yes \\
+Travoprost & HL & 143 & 3.67 (3.10--4.34) & 3 & 4.27 (1.37--13.36) & no \\
+Pregabalin & HL & 1795 & 3.22 (3.06--3.39) & 34 & 2.68 (1.91--3.76) & no \\
+Tofacitinib & HL & 1885 & 3.09 (2.94--3.25) & 78 & 1.32 (1.05--1.65) & no \\
+Clarithromycin & HL & 377 & 3.16 (2.75--3.63) & 32 & 4.00 (2.82--5.68) & yes \\
+Formoterol & HL & 1018 & 2.84 (2.65--3.04) & 24 & 1.62 (1.08--2.42) & no \\
+Glycopyrrolate & HL & 207 & 3.00 (2.61--3.45) & 3 & 3.51 (1.12--10.96) & no \\
+Ciprofloxacin & HL & 638 & 2.75 (2.50--3.03) & 50 & 3.51 (2.65--4.65) & yes \\
+Covid-19 Vaccine & HL & 28 & 3.97 (2.38--6.62) & 7 & 2.33 (1.11--4.91) & no \\
+Tozinameran & HL & 72 & 2.97 (2.32--3.80) & 116 & 5.17 (4.29--6.23) & no \\
+Glycopyrronium & HL & 120 & 2.69 (2.24--3.24) & 9 & 3.07 (1.59--5.92) & no \\
+Amlodipine & HL & 841 & 2.30 (2.14--2.48) & 22 & 2.23 (1.46--3.39) & no \\
+Moxifloxacin & HL & 355 & 2.46 (2.12--2.86) & 35 & 6.21 (4.44--8.69) & yes \\
+Latanoprost & HL & 278 & 2.35 (2.07--2.66) & 5 & 2.56 (1.06--6.17) & no \\
+Ergocalciferol & HL & 36 & 2.93 (2.04--4.20) & 4 & 3.25 (1.21--8.70) & no \\
+Rofecoxib & HL & 245 & 2.32 (1.96--2.74) & 15 & 3.19 (1.91--5.30) & no \\
+Octreotide & HL & 268 & 2.23 (1.95--2.54) & 86 & 4.11 (3.32--5.10) & yes \\
+Anifrolumab & HL & 9 & 3.65 (1.89--7.06) & 4 & 4.05 (1.51--10.87) & no \\
+Vancomycin & HL & 365 & 2.06 (1.80--2.36) & 60 & 9.25 (7.14--11.98) & yes \\
+Canakinumab & HL & 83 & 2.23 (1.78--2.79) & 18 & 19.27 (11.95--31.06) & no \\
+Celecoxib & HL & 501 & 1.98 (1.78--2.21) & 30 & 1.71 (1.20--2.46) & yes \\
+Erythromycin & HL & 76 & 2.07 (1.60--2.68) & 30 & 4.20 (2.93--6.04) & yes \\
+Metoprolol & HL & 385 & 1.79 (1.59--2.02) & 14 & 2.28 (1.35--3.87) & no \\
+Aflibercept & HL & 167 & 1.84 (1.58--2.16) & 28 & 2.02 (1.39--2.94) & no \\
+Hydroxychloroquine & HL & 556 & 1.73 (1.55--1.93) & 88 & 2.21 (1.78--2.73) & yes \\
+Polymyxin B & HL & 139 & 2.98 (1.54--5.74) & 9 & 6.36 (3.28--12.31) & no \\
+Imatinib & HL & 430 & 1.66 (1.51--1.83) & 13 & 1.84 (1.07--3.18) & yes \\
+Tiotropium & HL & 659 & 1.59 (1.46--1.73) & 18 & 1.70 (1.07--2.70) & no \\
+Vitamin D & HL & 21 & 2.72 (1.41--5.24) & 7 & 2.20 (1.05--4.63) & no \\
+Influenza Virus Vaccine & HL & 48 & 2.05 (1.39--3.01) & 9 & 2.72 (1.41--5.26) & no \\
+Imipenem & HL & 158 & 1.87 (1.37--2.57) & 3 & 4.44 (1.42--13.88) & yes \\
+Ondansetron & HL & 157 & 1.64 (1.36--1.99) & 13 & 4.53 (2.62--7.84) & no \\
+Bisoprolol & HL & 172 & 1.58 (1.30--1.91) & 8 & 2.53 (1.26--5.08) & yes \\
+Elasomeran & HL & 20 & 2.11 (1.29--3.46) & 19 & 2.89 (1.84--4.55) & no \\
+Tocilizumab & HL & 615 & 1.41 (1.28--1.55) & 87 & 1.43 (1.16--1.77) & no \\
+Piroxicam & HL & 19 & 2.08 (1.25--3.45) & 4 & 3.16 (1.18--8.47) & yes \\
+Linezolid & HL & 350 & 1.53 (1.24--1.89) & 10 & 9.30 (4.95--17.47) & no \\
+Tramadol & HL & 482 & 1.36 (1.23--1.51) & 17 & 2.79 (1.73--4.50) & yes \\
+Interferon Alfa-2B & HL & 27 & 1.81 (1.22--2.68) & 6 & 2.72 (1.22--6.07) & no \\
+Amphotericin B & HL & 73 & 1.56 (1.19--2.06) & 5 & 3.90 (1.61--9.43) & yes \\
+Peginterferon Alfa-2B & HL & 68 & 1.50 (1.18--1.92) & 8 & 3.10 (1.54--6.22) & yes \\
+Furosemide & HL & 412 & 1.31 (1.16--1.48) & 61 & 10.18 (7.87--13.16) & yes \\
+Ravulizumab & HL & 17 & 1.81 (1.12--2.91) & 5 & 3.76 (1.56--9.10) & no \\
+Alemtuzumab & HL & 71 & 1.43 (1.12--1.82) & 14 & 2.63 (1.55--4.45) & no \\
+Etanercept & HL & 2577 & 1.15 (1.10--1.20) & 144 & 1.85 (1.57--2.19) & no \\
+Minerals & HL & 33 & 1.77 (1.10--2.85) & 3 & 6.00 (1.91--18.81) & no \\
+Rifabutin & HL & 66 & 2.14 (1.07--4.30) & 3 & 17.76 (5.54--56.92) & no \\
+Mesna & HL & 69 & 1.78 (1.01--3.14) & 17 & 32.80 (19.87--54.15) & no \\
+Gabapentin & HL & 543 & 1.09 (0.97--1.21) & 33 & 4.16 (2.94--5.87) & yes \\
+Caffeine & HL & 93 & 1.30 (0.96--1.75) & 20 & 1.68 (1.08--2.60) & yes \\
+Felodipine & Tin & 417 & 69.99 (60.67--80.75) & 6 & 10.23 (4.54--23.04) & yes \\
+Mefloquine & Tin & 99 & 27.21 (21.81--33.96) & 9 & 21.97 (11.20--43.08) & yes \\
+Amikacin & Tin & 355 & 17.24 (15.12--19.65) & 8 & 29.48 (14.34--60.62) & yes \\
+Paromomycin & Tin & 4 & 32.77 (11.83--90.75) & 3 & 220.78 (52.74--924.20) & no \\
+Ciprofloxacin & Tin & 1242 & 12.10 (11.36--12.89) & 61 & 5.27 (4.08--6.80) & yes \\
+Duloxetine & Tin & 1971 & 11.81 (11.25--12.41) & 41 & 5.67 (4.16--7.73) & yes \\
+Bisoprolol & Tin & 571 & 12.50 (11.20--13.96) & 8 & 3.09 (1.54--6.20) & yes \\
+Candesartan & Tin & 540 & 10.63 (9.49--11.89) & 25 & 2.77 (1.87--4.11) & no \\
+Finasteride & Tin & 305 & 9.72 (8.65--10.92) & 5 & 3.23 (1.34--7.80) & no \\
+Choline & Tin & 4 & 20.36 (7.46--55.54) & 5 & 5.92 (2.44--14.33) & no \\
+Bupropion & Tin & 1224 & 7.50 (7.06--7.97) & 85 & 5.99 (4.82--7.44) & yes \\
+Tozinameran & Tin & 183 & 7.18 (5.67--9.10) & 186 & 10.51 (9.05--12.21) & no \\
+Tobramycin & Tin & 206 & 6.09 (5.18--7.15) & 12 & 7.76 (4.38--13.77) & yes \\
+Paroxetine & Tin & 608 & 5.31 (4.88--5.79) & 38 & 5.59 (4.05--7.72) & yes \\
+Quinine & Tin & 41 & 6.65 (4.76--9.28) & 10 & 19.20 (10.16--36.30) & yes \\
+Levothyroxine & Tin & 992 & 5.09 (4.72--5.49) & 12 & 2.92 (1.65--5.16) & no \\
+Azithromycin & Tin & 382 & 5.00 (4.42--5.66) & 29 & 5.46 (3.78--7.89) & yes \\
+Covid-19 Vaccine & Tin & 32 & 7.78 (4.40--13.77) & 10 & 4.08 (2.18--7.61) & no \\
+Venlafaxine Hydrochloride & Tin & 796 & 4.65 (4.30--5.04) & 6 & 2.40 (1.07--5.35) & yes \\
+Desvenlafaxine & Tin & 244 & 4.69 (4.11--5.35) & 11 & 6.48 (3.57--11.77) & yes \\
+Gentamicin & Tin & 63 & 5.40 (4.05--7.20) & 33 & 9.32 (6.59--13.19) & yes \\
+Hydrochlorothiazide & Tin & 777 & 4.29 (3.93--4.69) & 23 & 1.72 (1.14--2.59) & yes \\
+Liothyronine & Tin & 46 & 5.24 (3.89--7.06) & 3 & 15.55 (4.89--49.38) & no \\
+Doxycycline & Tin & 229 & 4.46 (3.83--5.20) & 9 & 2.52 (1.31--4.85) & no \\
+Tadalafil & Tin & 320 & 4.13 (3.67--4.65) & 13 & 1.87 (1.08--3.23) & yes \\
+Escitalopram Oxalate & Tin & 616 & 3.98 (3.55--4.46) & 4 & 15.02 (5.52--40.85) & yes \\
+Clarithromycin & Tin & 258 & 4.15 (3.55--4.84) & 17 & 2.57 (1.59--4.14) & yes \\
+Cholecalciferol & Tin & 436 & 4.36 (3.52--5.39) & 10 & 3.68 (1.97--6.86) & no \\
+Dimenhydrinate & Tin & 89 & 5.66 (3.40--9.42) & 5 & 2.46 (1.02--5.93) & no \\
+Moxifloxacin & Tin & 320 & 3.92 (3.39--4.54) & 26 & 5.59 (3.79--8.25) & yes \\
+Clonazepam & Tin & 393 & 3.56 (3.20--3.96) & 18 & 4.23 (2.66--6.74) & no \\
+Esomeprazole & Tin & 966 & 3.43 (3.16--3.72) & 13 & 2.48 (1.44--4.29) & yes \\
+Telmisartan & Tin & 240 & 3.93 (3.14--4.91) & 14 & 3.17 (1.87--5.37) & yes \\
+Losartan & Tin & 193 & 3.46 (2.96--4.04) & 7 & 2.68 (1.28--5.65) & yes \\
+Penicillin G Procaine & Tin & 5 & 7.07 (2.92--17.12) & 5 & 10.34 (4.25--25.17) & no \\
+Minocycline & Tin & 57 & 3.79 (2.88--4.99) & 8 & 3.38 (1.68--6.79) & yes \\
+Amlodipine & Tin & 580 & 3.00 (2.74--3.29) & 21 & 2.59 (1.69--3.99) & yes \\
+Naproxen & Tin & 658 & 2.99 (2.72--3.28) & 34 & 3.00 (2.14--4.21) & yes \\
+Perindopril & Tin & 162 & 3.62 (2.67--4.91) & 5 & 6.53 (2.69--15.81) & no \\
+Buspirone Hydrochloride & Tin & 46 & 3.57 (2.65--4.81) & 4 & 10.22 (3.78--27.63) & yes \\
+Aspirin & Tin & 812 & 2.83 (2.62--3.06) & 126 & 7.18 (6.00--8.59) & yes \\
+Irbesartan & Tin & 90 & 3.26 (2.62--4.06) & 7 & 2.41 (1.15--5.08) & yes \\
+Mirtazapine & Tin & 310 & 2.99 (2.60--3.45) & 9 & 2.74 (1.42--5.29) & yes \\
+Metoprolol & Tin & 297 & 2.79 (2.43--3.19) & 12 & 2.38 (1.35--4.21) & yes \\
+Influenza Virus Vaccine & Tin & 29 & 3.67 (2.41--5.59) & 10 & 3.70 (1.98--6.90) & no \\
+Amitriptyline & Tin & 232 & 2.79 (2.35--3.31) & 22 & 3.06 (2.01--4.67) & yes \\
+Naltrexone & Tin & 218 & 2.70 (2.35--3.10) & 18 & 4.13 (2.59--6.58) & yes \\
+Atenolol & Tin & 113 & 2.77 (2.24--3.43) & 9 & 3.62 (1.88--6.98) & yes \\
+Vortioxetine & Tin & 224 & 2.73 (2.21--3.37) & 5 & 3.68 (1.52--8.89) & yes \\
+Cisplatin & Tin & 373 & 2.48 (2.19--2.80) & 26 & 6.45 (4.37--9.52) & yes \\
+Terbinafine & Tin & 68 & 2.83 (2.19--3.67) & 7 & 3.27 (1.55--6.90) & yes \\
+Cortisone & Tin & 87 & 3.17 (2.15--4.66) & 11 & 2.55 (1.41--4.62) & no \\
+Rofecoxib & Tin & 262 & 2.51 (2.11--2.99) & 14 & 3.62 (2.14--6.14) & no \\
+Isotretinoin & Tin & 223 & 2.40 (2.10--2.75) & 11 & 3.64 (2.01--6.59) & yes \\
+Nortriptyline & Tin & 40 & 2.87 (2.09--3.95) & 8 & 4.20 (2.09--8.43) & yes \\
+Dexchlorpheniramine & Tin & 8 & 4.14 (2.06--8.31) & 5 & 2.73 (1.13--6.58) & yes \\
+Gabapentin & Tin & 631 & 2.22 (2.01--2.45) & 38 & 5.87 (4.25--8.10) & yes \\
+Sildenafil & Tin & 258 & 2.30 (2.01--2.63) & 13 & 2.05 (1.19--3.53) & yes \\
+Norfloxacin & Tin & 138 & 4.21 (2.00--8.87) & 4 & 4.72 (1.76--12.66) & yes \\
+Fremanezumab-Vfrm & Tin & 52 & 2.61 (1.97--3.46) & 4 & 5.91 (2.20--15.88) & no \\
+Citalopram & Tin & 218 & 2.23 (1.93--2.57) & 14 & 2.25 (1.33--3.81) & yes \\
+Chlorthalidone & Tin & 18 & 2.92 (1.84--4.64) & 4 & 4.27 (1.59--11.44) & no \\
+Omeprazole & Tin & 450 & 2.05 (1.81--2.31) & 15 & 1.84 (1.11--3.07) & yes \\
+Doxepin & Tin & 49 & 2.50 (1.73--3.63) & 5 & 4.92 (2.03--11.90) & yes \\
+Codeine & Tin & 344 & 2.02 (1.70--2.40) & 42 & 2.93 (2.16--3.98) & yes \\
+Elasomeran & Tin & 14 & 3.13 (1.68--5.82) & 21 & 3.91 (2.54--6.02) & no \\
+Tramadol & Tin & 439 & 1.83 (1.62--2.07) & 15 & 2.99 (1.80--4.98) & yes \\
+Diltiazem & Tin & 227 & 2.01 (1.56--2.58) & 17 & 4.41 (2.73--7.13) & yes \\
+Celecoxib & Tin & 400 & 1.76 (1.51--2.04) & 30 & 2.09 (1.46--3.00) & yes \\
+Pregabalin & Tin & 685 & 1.64 (1.50--1.79) & 29 & 2.78 (1.93--4.02) & yes \\
+Acetazolamide & Tin & 15 & 2.63 (1.49--4.63) & 5 & 7.90 (3.26--19.17) & yes \\
+Pantoprazole & Tin & 200 & 1.73 (1.47--2.04) & 20 & 1.72 (1.11--2.68) & yes \\
+Lidocaine & Tin & 105 & 1.75 (1.44--2.12) & 15 & 3.60 (2.16--5.99) & yes \\
+Riociguat & Tin & 73 & 1.84 (1.43--2.38) & 8 & 2.08 (1.04--4.17) & no \\
+Nitrofurantoin & Tin & 102 & 1.98 (1.37--2.85) & 11 & 2.10 (1.16--3.81) & no \\
+Hydroxychloroquine & Tin & 181 & 1.56 (1.33--1.82) & 45 & 1.36 (1.01--1.82) & yes \\
+Ibuprofen & Tin & 388 & 1.48 (1.32--1.65) & 46 & 3.26 (2.43--4.36) & yes \\
+Olmesartan & Tin & 85 & 1.67 (1.30--2.13) & 9 & 4.27 (2.21--8.25) & no \\
+Vancomycin & Tin & 107 & 1.57 (1.28--1.93) & 13 & 2.36 (1.37--4.07) & yes \\
+Perindopril Erbumine & Tin & 25 & 2.52 (1.26--5.05) & 17 & 4.39 (2.72--7.09) & yes \\
+Pravastatin & Tin & 179 & 1.70 (1.23--2.37) & 6 & 4.54 (2.03--10.15) & yes \\
+Galcanezumab & Tin & 3 & 3.81 (1.22--11.86) & 6 & 6.95 (3.10--15.59) & no \\
+Indomethacin & Tin & 223 & 1.97 (1.20--3.22) & 14 & 3.24 (1.91--5.49) & yes \\
+Indapamide & Tin & 45 & 1.90 (1.19--3.02) & 7 & 3.83 (1.82--8.07) & no \\
+Desloratadine & Tin & 13 & 1.99 (1.15--3.43) & 4 & 4.17 (1.56--11.18) & no \\
+Quetiapine & Tin & 340 & 1.20 (1.07--1.34) & 19 & 2.08 (1.32--3.27) & yes \\
+Cyclobenzaprine & Tin & 39 & 1.40 (1.00--1.98) & 5 & 3.79 (1.57--9.16) & yes \\
+Trazodone Hydrochloride & Tin & 70 & 1.24 (0.96--1.60) & 12 & 5.14 (2.90--9.09) & yes \\
+Aminosalicylic Acid & Tin & 97 & 2.26 (0.85--6.04) & 6 & 4.91 (2.19--10.99) & no \\
+\bottomrule
+\end{longtable}}
+\end{document}

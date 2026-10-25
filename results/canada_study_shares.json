@@ -1,0 +1,50 @@
+{
+ "all_HL_cases": [
+  4000,
+  0.36
+ ],
+ "background_replicated": [
+  819,
+  0.612
+ ],
+ "background_not_replicated": [
+  823,
+  0.464
+ ],
+ "labelled_replicated": [
+  1007,
+  0.141
+ ],
+ "OCRELIZUMAB": [
+  72,
+  0.931
+ ],
+ "MEPOLIZUMAB": [
+  82,
+  0.927
+ ],
+ "OMALIZUMAB": [
+  102,
+  0.863
+ ],
+ "RITUXIMAB": [
+  133,
+  0.579
+ ],
+ "DENOSUMAB": [
+  56,
+  0.536
+ ],
+ "ETANERCEPT": [
+  144,
+  0.229
+ ],
+ "GENTAMICIN": [
+  131,
+  0.008
+ ],
+ "CISPLATIN": [
+  138,
+  0.014
+ ]
+}

@@ -64,6 +64,14 @@ KNOWN_OTOTOXIC = {
 }
 
 
+def matches(col: pd.Series, pattern) -> np.ndarray:
+    """Boolean mask of rows whose text matches; for categoricals the regex runs once per category."""
+    if isinstance(col.dtype, pd.CategoricalDtype):
+        hit = col.cat.categories.astype(str).str.contains(pattern)
+        return np.isin(col.cat.codes.values, np.flatnonzero(hit))
+    return col.astype(str).str.contains(pattern).fillna(False).values
+
+
 def strata(rep: pd.DataFrame) -> np.ndarray:
     age = rep["age_y"]
     ab = np.select([age < 18, age < 45, age < 65, age >= 65], [0, 1, 2, 3], 4)
@@ -136,14 +144,12 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended
 
     # adjusted population
     ear_ind = np.zeros(R, bool)
-    ind_txt = indi_pts["indi_pt"].astype(str)
-    hit = ind_txt.str.contains(EAR_INDICATION).fillna(False)
+    hit = matches(indi_pts["indi_pt"], EAR_INDICATION)
     if extended_indication:
-        hit |= ind_txt.str.contains(DISEASE_WITH_HEARING_LOSS).fillna(False)
-        hit |= ind_txt.str.contains(FOETAL).fillna(False)
-    ear_ind[indi_pts.loc[hit.values, "rid"].values] = True
+        hit |= matches(indi_pts["indi_pt"], DISEASE_WITH_HEARING_LOSS) | matches(indi_pts["indi_pt"], FOETAL)
+    ear_ind[indi_pts["rid"].values[hit]] = True
     if extended_indication:
-        ear_ind[reac_pts.loc[reac_pts["pt"].astype(str).str.contains(FOETAL).fillna(False).values, "rid"].values] = True
+        ear_ind[reac_pts["rid"].values[matches(reac_pts["pt"], FOETAL)]] = True
     base = ~ear_ind
     if lawyer is not None:
         base &= ~lawyer

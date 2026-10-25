@@ -46,12 +46,18 @@ INDICATION = {  # D
     "TIOTROPIUM": "COPD associated with hearing loss (PMID 38828668)",
     "FORMOTEROL": "COPD associated with hearing loss (PMID 38828668)",
     "POLYMYXIN B": "otic use for ear infection / otitis externa",
-    "GALCANEZUMAB": "migraine, associated with tinnitus",
-    "LEVOTHYROXINE": "thyroid disease",
-    "LIOTHYRONINE": "thyroid disease / over-replacement",
     "CLONAZEPAM": "used to treat tinnitus (PMID 14763236)",
+    "TOFACITINIB": "rheumatoid arthritis associated with SNHL (PMID 32488430)",
+    "INSULIN ASPART": "diabetes associated with hearing impairment (meta-analysis, PMID 23150692)",
+    "INSULIN": "diabetes associated with hearing impairment (meta-analysis, PMID 23150692)",
+    "GALCANEZUMAB": "migraine associated with tinnitus and hearing loss (systematic review, PMID 36459425)",
+    "LIOTHYRONINE": "hypothyroidism associated with tinnitus (PMID 35233053)",
+    "LEVOTHYROXINE": "hypothyroidism associated with tinnitus (PMID 35233053)",
 }
 NOTES = {  # context for category E, with evidence for and against
+    "DOXYCYCLINE": "pulsatile tinnitus can be a symptom of doxycycline-induced intracranial hypertension, which is "
+                   "labelled (PMID 38516546); infections treated (e.g. Lyme disease) can affect the ear",
+    "CHLORTHALIDONE": "10 cases; hypertension and age confound",
     "PREGABALIN": "alpha-2-delta ligand; one case report of reversible loss (PMID 32297964); diabetes/neuropathy "
                   "and age (median 71) confound; labels list tinnitus and hyperacusis, not hearing loss",
     "AMLODIPINE": "labels list tinnitus; hypertension and age confound; VA cohort found lower SNHL risk with "
@@ -80,6 +86,11 @@ if __name__ == "__main__":
     prof = pd.read_csv("results/case_profiles.csv")
     prof["category"] = prof.apply(category, axis=1)
     prof["note"] = prof["drug"].map({**DESCRIBED, **STIMULATED, **INDICATION, **NOTES}).fillna("")
+    auto = {"A": lambda r: f"{r['mega_ge15_drugs']} of cases in reports listing >= 15 drugs",
+            "K": lambda r: "on the a-priori ototoxic list" + (" (aminoglycoside)" if r["drug"] == "PAROMOMYCIN" else "")}
+    for i, r in prof.iterrows():
+        if r["category"] in auto:
+            prof.loc[i, "note"] = auto[r["category"]](r) + ("; " + r["note"] if r["note"] else "")
     prof.sort_values(["event", "category", "cases"], ascending=[True, True, False]).to_csv(
         "results/case_review.csv", index=False)
     print(prof.groupby(["event", "category"]).size().unstack(fill_value=0))

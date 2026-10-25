@@ -18,10 +18,10 @@ a disproportionality analysis of FAERS and Canada Vigilance}
 \begin{document}
 \maketitle
 
-%%ABSTRACT%%
+\input{generated/abstract.tex}
 
 \section*{Key points}
-%%KEYPOINTS%%
+\input{generated/keypoints.tex}
 
 \section{Introduction}
 Drug-induced hearing loss ranges from reversible (salicylates, loop diuretics, quinine, macrolides) to permanent
@@ -154,9 +154,92 @@ code, analyses and the first draft of this manuscript were produced with an AI a
 the author's direction; three AI reviewers (methods, clinical, editorial) critiqued the draft, and their findings were
 addressed as described in the protocol file. The author reviewed the code, results and text and is responsible for them.
 
-%%RESULTS%%
+\input{generated/results.tex}
 
-%%DISCUSSION%%
+\begin{table}[t]
+\centering\small
+\caption{Crude versus adjusted detection (pre-specified analyses). Replication counts are replicated/testable ingredients.}
+\label{tab:methods}
+\begin{tabular}{p{8.6cm}cc}
+\toprule
+ & Crude & Adjusted \\
+\midrule
+\input{generated/table_methods.tex}
+\bottomrule
+\end{tabular}
+
+\smallskip
+\raggedright\footnotesize $^a$ Pre-specified rule: FAERS without Canadian reports; Canada crude ROR, all reports.
+$^b$ Power-calibrated (post hoc): observed replications vs those expected if each FAERS adjusted estimate were true.
+\end{table}
+
+\begin{table}[t]
+\centering\small
+\caption{Post-hoc analyses: extended indication filter, Canada Vigilance without solicited reports, both estimates adjusted,
+with four ways of handling ototoxic co-medication. O/E: observed/expected replications. Robust: adjusted signals replicated
+adjusted-to-adjusted (unlabelled in brackets).}
+\label{tab:posthoc}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+Co-medication handling & Signals & AUC & Labelled repl. & Unlabelled repl. & Background repl. & O/E lab./unlab. & Robust \\
+\midrule
+\input{generated/table_posthoc.tex}
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering\small
+\caption{Previously reported FAERS hearing-loss signals re-tested here (FAERS without Canadian reports). Columns: reported,
+crude signal, adjusted signal, adjusted and testable in Canada, adjusted and replicated, robust (post hoc).}
+\label{tab:prior}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccccc}
+\toprule
+Study & Authors' label status & Reported & Crude & Adjusted & Testable & Replicated & Robust \\
+\midrule
+\input{generated/table_prior.tex}
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering\small
+\caption{Robust signals absent from all US labels, with case-level review category: A report cluster; C stimulated or
+solicited reporting; D indication associated with the event; K established ototoxic class; E none of these (bold). FAERS
+cases: reports without Canadian origin naming the drug as suspect with the event. Consumer and $\geq$15 drugs: share of those
+cases. Hypotheses only, not evidence of causation.}
+\label{tab:cand}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrccccc}
+\toprule
+Drug & Event & FAERS cases & FAERS adj.\ OR (95\% CI) & Canada adj.\ OR (95\% CI) & Consumer & $\geq$15 drugs & Cat. \\
+\midrule
+\input{generated/table_candidates.tex}
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/replication.png}
+\caption{Power-calibrated replication in Canada Vigilance: observed replications divided by those expected if each FAERS
+adjusted estimate were true (labels give observed/expected counts). Primary: pre-specified signals, Canada crude estimates,
+all reports. Post hoc: both databases adjusted, Canada without solicited reports, four ways of handling co-medication.
+A ratio near 1 means signals replicate as their FAERS strength predicts.}
+\label{fig:repl}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/candidates.png}
+\caption{Robust signals absent from all US labels: FAERS and Canada Vigilance adjusted estimates, with case-review category
+(A report cluster; C stimulated reporting; D indication; K established class; E none, bold).}
+\label{fig:cand}
+\end{figure}
+
+\input{generated/discussion.tex}
 
 \section*{Statements and declarations}
 \textbf{Funding:} no funding was received for this study.

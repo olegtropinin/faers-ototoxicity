@@ -25,7 +25,7 @@ faers = [
     (f"After id collisions (-{n(fb['report_ids_under_two_cases'])}) and content duplicates "
      f"(-{n(fb['content_duplicates_removed'])})", fb["final_reports"]),
     (f"Without Canadian reports (replication analyses)", pop["faersnoca_hl"]["reports"]),
-    (f"Adjusted population (primary): no ear indication, no listed ototoxic drug, no lawyer report",
+    ("Primary adjusted population (from all 19.9M): no ear indication, no listed ototoxic drug, no lawyer report",
      pop["faers_hl"]["adj_reports"]),
 ]
 canada = [

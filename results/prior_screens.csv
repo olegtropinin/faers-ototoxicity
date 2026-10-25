@@ -1,6 +1,9 @@
-study,scope,reported,matched,crude_here,adjusted_here,adjusted_and_testable,adjusted_and_replicated,lost_on_adjustment,unmatched
-li2024,hearing_loss,41,41,33,30,15,12,TAFENOQUINE;TIMOLOL;VINBLASTINE,
-liu2025,hearing_loss,57,57,35,28,24,20,ASPIRIN;CARBOPLATIN;CEFIXIME;ETOPOSIDE;FINASTERIDE;ISONIAZID;SULFAMETHOXAZOLE;TRIMETHOPRIM;VINBLASTINE;VINCRISTINE,
-narasimhaswamy2026,tinnitus,7,7,2,1,1,1,DIPHENHYDRAMINE,
-wang2024,tinnitus,3,3,2,2,2,2,,
-wu2025,hearing_loss,5,4,3,2,0,0,TAFENOQUINE,POTASSIUM IODIDE
+study,scope,labelled_per_authors,reported,matched,crude_here,adjusted_here,adjusted_testable,adjusted_replicated,posthoc_robust,posthoc_robust_drugs,lost_on_adjustment
+li2024,hearing_loss,yes,18,18,18,15,10,10,8,AMIKACIN;DEFEROXAMINE;ETHACRYNIC ACID;GENTAMICIN;NEOMYCIN;STREPTOMYCIN;TADALAFIL;TRAVOPROST,TAFENOQUINE;TIMOLOL;VINBLASTINE
+li2024,hearing_loss,no,23,22,16,16,6,2,1,GLYCOPYRROLATE,
+liu2025,hearing_loss,yes,29,27,16,15,13,11,11,AMIKACIN;CIPROFLOXACIN;CISPLATIN;CLARITHROMYCIN;DEFERASIROX;FUROSEMIDE;GENTAMICIN;MOXIFLOXACIN;RAMIPRIL;TOBRAMYCIN;VANCOMYCIN,CARBOPLATIN;RAMIPRIL;VINBLASTINE
+liu2025,hearing_loss,no,28,26,14,11,9,7,1,AZITHROMYCIN,CEFIXIME;CEFTRIAXONE;ETOPOSIDE;ISONIAZID
+narasimhaswamy2026,tinnitus,no,4,4,0,0,0,0,0,,
+narasimhaswamy2026,tinnitus,unknown,3,3,2,1,1,1,1,IBUPROFEN,DIPHENHYDRAMINE
+wang2024,tinnitus,unknown,3,3,2,2,2,2,2,CIPROFLOXACIN;DULOXETINE,
+wu2025,hearing_loss,unknown,5,4,3,2,0,0,0,,TAFENOQUINE

@@ -1,20 +1,74 @@
 {
  "faersnocax_hl": {
-  "reports": 19144806,
-  "events": 79891,
-  "adj_reports": 16929255,
-  "adj_events": 67433,
-  "ear_indication": 66136,
-  "with_known_ototoxic": 1713440,
-  "lawyer": 484991
+  "reports": 19135329,
+  "events": 79862,
+  "adj_reports": 16663045,
+  "adj_events": 65334,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 1712914,
+  "lawyer": 484957
  },
  "faersnocax_tin": {
-  "reports": 19144806,
-  "events": 40782,
-  "adj_reports": 16929255,
-  "adj_events": 33756,
-  "ear_indication": 66136,
-  "with_known_ototoxic": 1713440,
-  "lawyer": 484991
+  "reports": 19135329,
+  "events": 40765,
+  "adj_reports": 16663045,
+  "adj_events": 33296,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 1712914,
+  "lawyer": 484957
+ },
+ "faersnocaxstrat_hl": {
+  "reports": 19135329,
+  "events": 79862,
+  "adj_reports": 18305434,
+  "adj_events": 75702,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 1712914,
+  "lawyer": 484957
+ },
+ "faersnocaxstrat_tin": {
+  "reports": 19135329,
+  "events": 40765,
+  "adj_reports": 18305434,
+  "adj_events": 38889,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 1712914,
+  "lawyer": 484957
+ },
+ "faersnocaxstrong_hl": {
+  "reports": 19135329,
+  "events": 79862,
+  "adj_reports": 17609178,
+  "adj_events": 70230,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 715012,
+  "lawyer": 484957
+ },
+ "faersnocaxstrong_tin": {
+  "reports": 19135329,
+  "events": 40765,
+  "adj_reports": 17609178,
+  "adj_events": 36623,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 715012,
+  "lawyer": 484957
+ },
+ "faersnocaxnomega_hl": {
+  "reports": 19135329,
+  "events": 79862,
+  "adj_reports": 16500894,
+  "adj_events": 64561,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 1712914,
+  "lawyer": 484957
+ },
+ "faersnocaxnomega_tin": {
+  "reports": 19135329,
+  "events": 40765,
+  "adj_reports": 16500894,
+  "adj_events": 32547,
+  "ear_indication": 356175,
+  "with_known_ototoxic": 1712914,
+  "lawyer": 484957
  }
 }

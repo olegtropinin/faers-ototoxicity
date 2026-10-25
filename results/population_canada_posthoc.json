@@ -1,38 +1,110 @@
 {
  "canadanostudy_hl": {
-  "reports": 705862,
-  "events": 2563,
-  "adj_reports": 604632,
-  "adj_events": 1552,
+  "reports": 705762,
+  "events": 2562,
+  "adj_reports": 604532,
+  "adj_events": 1551,
   "ear_indication": 786,
   "with_known_ototoxic": 100582,
   "lawyer": 0
  },
  "canadanostudy_tin": {
-  "reports": 705862,
-  "events": 2564,
-  "adj_reports": 604632,
-  "adj_events": 1979,
+  "reports": 705762,
+  "events": 2563,
+  "adj_reports": 604532,
+  "adj_events": 1978,
   "ear_indication": 786,
   "with_known_ototoxic": 100582,
   "lawyer": 0
  },
  "canadax_hl": {
-  "reports": 705862,
-  "events": 2563,
-  "adj_reports": 604139,
-  "adj_events": 1543,
-  "ear_indication": 1404,
+  "reports": 705762,
+  "events": 2562,
+  "adj_reports": 596781,
+  "adj_events": 1508,
+  "ear_indication": 10081,
   "with_known_ototoxic": 100582,
   "lawyer": 0
  },
  "canadax_tin": {
-  "reports": 705862,
-  "events": 2564,
-  "adj_reports": 604139,
-  "adj_events": 1978,
-  "ear_indication": 1404,
+  "reports": 705762,
+  "events": 2563,
+  "adj_reports": 596781,
+  "adj_events": 1968,
+  "ear_indication": 10081,
   "with_known_ototoxic": 100582,
+  "lawyer": 0
+ },
+ "canadaxstrat_hl": {
+  "reports": 705762,
+  "events": 2562,
+  "adj_reports": 695681,
+  "adj_events": 2474,
+  "ear_indication": 10081,
+  "with_known_ototoxic": 100582,
+  "lawyer": 0
+ },
+ "canadaxstrat_tin": {
+  "reports": 705762,
+  "events": 2563,
+  "adj_reports": 695681,
+  "adj_events": 2529,
+  "ear_indication": 10081,
+  "with_known_ototoxic": 100582,
+  "lawyer": 0
+ },
+ "canadaxstrong_hl": {
+  "reports": 705762,
+  "events": 2562,
+  "adj_reports": 663925,
+  "adj_events": 1920,
+  "ear_indication": 10081,
+  "with_known_ototoxic": 32063,
+  "lawyer": 0
+ },
+ "canadaxstrong_tin": {
+  "reports": 705762,
+  "events": 2563,
+  "adj_reports": 663925,
+  "adj_events": 2343,
+  "ear_indication": 10081,
+  "with_known_ototoxic": 32063,
+  "lawyer": 0
+ },
+ "canadaxnomega_hl": {
+  "reports": 705762,
+  "events": 2562,
+  "adj_reports": 452471,
+  "adj_events": 1111,
+  "ear_indication": 10081,
+  "with_known_ototoxic": 100582,
+  "lawyer": 0
+ },
+ "canadaxnomega_tin": {
+  "reports": 705762,
+  "events": 2563,
+  "adj_reports": 452471,
+  "adj_events": 1489,
+  "ear_indication": 10081,
+  "with_known_ototoxic": 100582,
+  "lawyer": 0
+ },
+ "canada2004x_hl": {
+  "reports": 539564,
+  "events": 2058,
+  "adj_reports": 459779,
+  "adj_events": 1289,
+  "ear_indication": 9915,
+  "with_known_ototoxic": 71551,
+  "lawyer": 0
+ },
+ "canada2004x_tin": {
+  "reports": 539564,
+  "events": 1926,
+  "adj_reports": 459779,
+  "adj_events": 1541,
+  "ear_indication": 9915,
+  "with_known_ototoxic": 71551,
   "lawyer": 0
  }
 }

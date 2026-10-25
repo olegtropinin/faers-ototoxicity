@@ -1,35 +1,35 @@
 {
  "canada_hl": {
-  "reports": 1210957,
-  "events": 4001,
-  "adj_reports": 1069919,
-  "adj_events": 2781,
+  "reports": 1210857,
+  "events": 4000,
+  "adj_reports": 1069819,
+  "adj_events": 2780,
   "ear_indication": 966,
   "with_known_ototoxic": 140252,
   "lawyer": 0
  },
  "canada_tin": {
-  "reports": 1210957,
-  "events": 3285,
-  "adj_reports": 1069919,
-  "adj_events": 2594,
+  "reports": 1210857,
+  "events": 3284,
+  "adj_reports": 1069819,
+  "adj_events": 2593,
   "ear_indication": 966,
   "with_known_ototoxic": 140252,
   "lawyer": 0
  },
  "canadadirect_hl": {
-  "reports": 404603,
+  "reports": 404584,
   "events": 1128,
-  "adj_reports": 346927,
+  "adj_reports": 346908,
   "adj_events": 635,
   "ear_indication": 615,
   "with_known_ototoxic": 57171,
   "lawyer": 0
  },
  "canadadirect_tin": {
-  "reports": 404603,
+  "reports": 404584,
   "events": 1609,
-  "adj_reports": 346927,
+  "adj_reports": 346908,
   "adj_events": 1208,
   "ear_indication": 615,
   "with_known_ototoxic": 57171,

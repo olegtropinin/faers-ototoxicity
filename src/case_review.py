@@ -1,15 +1,20 @@
-"""Case-level review of robust unlabelled signals (post-hoc, strict definition).
+"""Case-level review of robust unlabelled signals (post hoc).
 
-Rule-based flags are computed from the FAERS case profiles (results/case_profiles.csv,
-produced by scratch script caseprofile.py on the deduplicated tables); the reviewer note is a
-short clinical reading of each profile. Category precedence: first matching rule wins.
+Robust = adjusted FAERS signal (Canadian reports excluded, extended indication filter) replicated with an
+adjusted estimate in Canada Vigilance without solicited reports; unlabelled = the event is on no US label of
+any product containing the drug. Profiles: results/case_profiles.csv (FAERS without Canadian reports).
 
-  A  report-cluster artefact      >= 50 % of cases are reports listing >= 15 drugs
-  B  treatment-context confounding >= 50 % of cases co-report an established ototoxic drug
-  C  stimulated / mass-exposure    vaccines and drugs with litigation-era reporting
-  D  indication or comorbidity     the indication itself is linked to the event
-  K  established ototoxic class   drug is on the a-priori ototoxic list (not novel)
-  E  candidate                     none of the above
+Rubric, applied in this order; the first rule that applies sets the category:
+  K  established or previously described: on the a-priori ototoxic list, or a prospective / cohort
+     clinical series documents the association (PMID given)
+  A  report cluster: >= 50 % of FAERS cases are reports listing >= 15 drugs
+  B  ototoxic co-medication: >= 50 % of FAERS cases co-report an established ototoxic drug
+  C  stimulated or solicited reporting: mass vaccination, litigation-associated reporting, or
+     patient-support-programme reporting documented for the drug
+  D  indication or comorbidity: the drug's main recorded indication is itself associated with the
+     event (PMID given)
+  E  none of the above
+The knowledge-based rules (K, C, D) cite their source; A and B are computed.
 """
 import sys
 from pathlib import Path
@@ -19,58 +24,63 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).parent))
 from signals import KNOWN_OTOTOXIC  # noqa: E402
 
-VACCINE_OR_STIMULATED = {"TOZINAMERAN", "ELASOMERAN", "ROFECOXIB", "FINASTERIDE"}
-INDICATION_LINKED = {
-    "POLYMYXIN B": "otic use: top indications ear infection / otitis externa",
-    "GALCANEZUMAB": "migraine, itself associated with tinnitus; 3 cases",
-    "OLMESARTAN": "hypertension, associated with tinnitus",
-    "VALSARTAN": "hypertension / heart failure; also US patient-programme reporting",
-    "CHLORTHALIDONE": "hypertension; 18 cases",
-    "LIOTHYRONINE": "thyroid disease / over-replacement",
-    "LEVOTHYROXINE": "thyroid disease; 47 % of cases in drug-dense reports",
-    "MINERALS": "non-specific supplement category; elderly multi-morbid patients",
-    "CHOLINE": "4 cases, all in one 2013 HIV-treatment series",
+DESCRIBED = {  # K: prior clinical series
+    "INTERFERON ALFA-2B": "prospective series: tinnitus/hearing loss in 43 % (PMID 8561688)",
+    "PEGINTERFERON ALFA-2B": "interferon-associated sensorineural loss (PMID 8561688)",
+    "INTERFERON ALFA-2A": "interferon-associated sensorineural loss (PMID 8561688)",
 }
-NOTES = {
-    "PREGABALIN": "1,795 cases, 61 % consumer, few co-reported ototoxics; alpha-2-delta ligand; partial label wording (ambiguous)",
-    "GLYCOPYRRONIUM": "inhaled LAMA in COPD; 32 % of cases in 2025",
-    "TRAVOPROST": "topical prostaglandin analogue; elderly glaucoma patients, 76 % consumer",
-    "AMLODIPINE": "tinnitus labelled; hearing loss not; elderly hypertensive patients",
-    "INTERFERON ALFA-2B": "hearing loss with interferon reported in the literature",
-    "ETANERCEPT": "weak (adjusted OR 1.14) despite 2,001 cases",
-    "TOCILIZUMAB": "weak; 45 % Canadian, 37 % drug-dense reports",
-    "ONDANSETRON": "supportive-care drug; median 28 reactions per report",
-    "CLONAZEPAM": "tinnitus on benzodiazepine withdrawal is described in the literature",
-    "PENICILLIN G PROCAINE": "procaine (Hoigne) reactions include auditory symptoms; 5 cases",
-    "PAROMOMYCIN": "aminoglycoside (oral); class effect plausible; 4 cases",
+STIMULATED = {  # C
+    "TOZINAMERAN": "mass vaccination; media attention to hearing effects",
+    "ELASOMERAN": "mass vaccination; media attention to hearing effects",
+    "ROFECOXIB": "litigation-era reporting (2004-2006)",
+    "FINASTERIDE": "post-finasteride syndrome advocacy reporting",
+    "ONDANSETRON": "pregnancy-exposure litigation pattern (foetal exposure indication, drug-dense reports)",
+}
+INDICATION = {  # D
+    "TOCILIZUMAB": "giant cell arteritis / RA, both associated with hearing loss (PMIDs 12544707, 32488430)",
+    "ETANERCEPT": "rheumatoid arthritis associated with SNHL (PMID 32488430); used for autoimmune inner ear disease",
+    "ADALIMUMAB": "rheumatoid arthritis associated with SNHL (PMID 32488430)",
+    "TRAVOPROST": "glaucoma associated with SNHL (PMID 31935130)",
+    "LATANOPROST": "glaucoma associated with SNHL (PMID 31935130)",
+    "GLYCOPYRROLATE": "COPD associated with hearing loss (PMID 38828668)",
+    "TIOTROPIUM": "COPD associated with hearing loss (PMID 38828668)",
+    "FORMOTEROL": "COPD associated with hearing loss (PMID 38828668)",
+    "POLYMYXIN B": "otic use for ear infection / otitis externa",
+    "GALCANEZUMAB": "migraine, associated with tinnitus",
+    "LEVOTHYROXINE": "thyroid disease",
+    "LIOTHYRONINE": "thyroid disease / over-replacement",
+    "CLONAZEPAM": "used to treat tinnitus (PMID 14763236)",
+}
+NOTES = {  # context for category E, with evidence for and against
+    "PREGABALIN": "alpha-2-delta ligand; one case report of reversible loss (PMID 32297964); diabetes/neuropathy "
+                  "and age (median 71) confound; labels list tinnitus and hyperacusis, not hearing loss",
+    "AMLODIPINE": "labels list tinnitus; hypertension and age confound; VA cohort found lower SNHL risk with "
+                  "calcium-channel blockers (PMID 34855682)",
 }
 
 
 def category(r):
     mega = float(r["mega_ge15_drugs"].rstrip("%")) / 100
     oto = float(r["with_known_ototoxic"].rstrip("%")) / 100
-    if r["drug"] in KNOWN_OTOTOXIC:
+    d = r["drug"]
+    if d in KNOWN_OTOTOXIC or d in DESCRIBED:
         return "K"
     if mega >= 0.5:
         return "A"
     if oto >= 0.5:
         return "B"
-    if r["drug"] in VACCINE_OR_STIMULATED:
+    if d in STIMULATED:
         return "C"
-    if r["drug"] in INDICATION_LINKED:
+    if d in INDICATION:
         return "D"
     return "E"
 
 
 if __name__ == "__main__":
     prof = pd.read_csv("results/case_profiles.csv")
-    pub = pd.concat([pd.read_csv("results/hl_pubmed.csv").assign(event="hl"),
-                     pd.read_csv("results/tin_pubmed.csv").assign(event="tin")])
-    prof = prof.merge(pub[["ingredient", "event", "pubmed_n"]], left_on=["drug", "event"],
-                      right_on=["ingredient", "event"], how="left").drop(columns="ingredient")
     prof["category"] = prof.apply(category, axis=1)
-    prof["note"] = prof["drug"].map({**INDICATION_LINKED, **NOTES}).fillna("")
+    prof["note"] = prof["drug"].map({**DESCRIBED, **STIMULATED, **INDICATION, **NOTES}).fillna("")
     prof.sort_values(["event", "category", "cases"], ascending=[True, True, False]).to_csv(
         "results/case_review.csv", index=False)
     print(prof.groupby(["event", "category"]).size().unstack(fill_value=0))
-    print(prof[prof["category"] == "E"][["drug", "event", "cases", "consumer", "pubmed_n", "note"]].to_string())
+    print(prof[["drug", "event", "category", "cases", "mega_ge15_drugs", "with_known_ototoxic", "note"]].to_string())

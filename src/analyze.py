@@ -78,6 +78,11 @@ def label_table():
                            np.where(~g["hl_any"] & ~g["tin_any"], "neg", "ambiguous"))
     g["ref_tin"] = np.where(g["tin_frac_rx"] >= 0.5, "pos",
                             np.where(~g["tin_any"] & ~g["hl_any"], "neg", "ambiguous"))
+    # labels of combination products, used only for the novelty check ("is the event on any US label?")
+    cb = pd.read_parquet("data/work/labels_combo.parquet")
+    cb["ing"] = cb["substance"].map(lambda s: canonical(s if s in vocab else strip_salt(s, vocab)))
+    cb = cb[cb["ing"] != ""].groupby("ing").agg(hl_combo=("hl_any", "any"), tin_combo=("tin_any", "any"))
+    g = g.join(cb, how="outer")
     return g
 
 

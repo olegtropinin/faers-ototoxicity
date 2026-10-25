@@ -154,7 +154,10 @@ def evaluate(ev):
     m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient", low_memory=False)
     ref = m[f"ref_{ev}"]
     lab_col = "hl_any" if ev == "hl" else "tin_any"
-    labelled = m[lab_col] == True  # noqa: E712  (NaN = no single-ingredient US label found)
+    combo_col = "hl_combo" if ev == "hl" else "tin_combo"
+    # "labelled" = the event is mentioned in any US label containing the drug (single-ingredient or combination);
+    # "unlabelled" therefore includes drugs with no US label in the openFDA export
+    labelled = (m[lab_col] == True) | (m.get(combo_col, pd.Series(False, index=m.index)) == True)  # noqa: E712
     neg = ref == "neg"
     out = {}
 

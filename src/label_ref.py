@@ -44,7 +44,10 @@ def generic_from_elements(el: str):
 TIN = re.compile(r"\b(tinnitus|ringing in (the|your) ears)", re.I)
 STRONG = ["boxed_warning", "warnings_and_cautions", "warnings", "precautions"]
 OTHER = ["adverse_reactions", "adverse_reactions_table", "postmarketing_experience",
-         "contraindications", "overdosage", "user_safety_warnings", "do_not_use", "stop_use", "ask_doctor"]
+         "contraindications", "overdosage", "user_safety_warnings", "do_not_use", "stop_use", "ask_doctor",
+         # added after review: withdrawal effects are described here (e.g. tinnitus with benzodiazepines)
+         "drug_abuse_and_dependence", "dependence", "abuse"]
+COMBO_OUT = Path("data/work/labels_combo.parquet")
 
 
 # Phrases that contain a hearing word without describing an adverse effect of the drug.
@@ -78,12 +81,19 @@ def scan(path):
             g = generic_from_elements(el[:200])
             if g and not re.search(r"\band\b|,", g, re.I):
                 subs = [re.sub(r"-[a-z]{4}$", "", g, flags=re.I)]
-        if len(subs) != 1:
-            continue
         strong = text(rec, STRONG)
         other = text(rec, OTHER)
+        if len(subs) > 1:
+            hl, tin = bool(HL.search(strong) or HL.search(other)), bool(TIN.search(strong) or TIN.search(other))
+            for sub in subs:
+                rows.append({"substance": clean(sub), "combo": True, "rx": "HUMAN PRESCRIPTION DRUG" in
+                             (of.get("product_type") or []), "hl_strong": False, "hl_any": hl, "tin_any": tin,
+                             "effective_time": rec.get("effective_time", ""), "set_id": rec.get("set_id", "") + sub})
+            continue
+        if len(subs) != 1:
+            continue
         rows.append({
-            "substance": clean(subs[0]),
+            "substance": clean(subs[0]), "combo": False,
             "rx": "HUMAN PRESCRIPTION DRUG" in (of.get("product_type") or []),
             "hl_strong": bool(HL.search(strong)),
             "hl_any": bool(HL.search(strong) or HL.search(other)),
@@ -99,6 +109,8 @@ if __name__ == "__main__":
     with Pool(min(7, len(files))) as pool:
         rows = [r for part in pool.imap_unordered(scan, files) for r in part]
     df = pd.DataFrame(rows).drop_duplicates("set_id")
+    df[df["combo"]].to_parquet(COMBO_OUT)
+    df = df[~df["combo"]]
     df.to_parquet(OUT)
     print(len(df), "single-ingredient labels;", df["substance"].nunique(), "substances")
     print(df[["hl_strong", "hl_any", "tin_any"]].mean())

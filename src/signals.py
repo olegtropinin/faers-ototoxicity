@@ -108,7 +108,7 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None):
 
     # adjusted population
     ear_ind = np.zeros(R, bool)
-    ear_ind[indi_pts.loc[indi_pts["indi_pt"].fillna("").str.contains(EAR_INDICATION), "rid"].values] = True
+    ear_ind[indi_pts.loc[indi_pts["indi_pt"].astype(str).str.contains(EAR_INDICATION).fillna(False).values, "rid"].values] = True
     base = ~ear_ind
     if lawyer is not None:
         base &= ~lawyer

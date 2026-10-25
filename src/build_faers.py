@@ -9,6 +9,7 @@ Output (data/work/faers/):
   build_log.json   counts at every step (participant flow for the paper)
 """
 import json
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -17,8 +18,8 @@ import pandas as pd
 
 from drugnorm import build_base_map, clean, split_prod_ai
 
-Q = Path("data/work/faers/q")
-OUT = Path("data/work/faers")
+Q = Path(os.environ.get("FAERS_Q", "data/work/faers/q"))
+OUT = Path(os.environ.get("FAERS_OUT", "data/work/faers"))
 log = {}
 
 quarters = sorted({p.name.split(".")[0] for p in Q.glob("*.demo.parquet")})
@@ -50,11 +51,14 @@ keep_keys = set(latest["key"].tolist())
 print("cases", len(latest), flush=True)
 
 
+keep_index = pd.Index(np.sort(np.fromiter(keep_keys, dtype=np.int64)))  # hash table built once
+
+
 def keyed(df, src):
     k = pd.to_numeric(df["id"], errors="coerce")
     df = df[k.notna()].copy()
     df["key"] = k[k.notna()].astype("int64") + (10**12 if src == "faers" else 0)
-    return df[df["key"].isin(keep_keys)]
+    return df[keep_index.get_indexer(df["key"].values) != -1]
 
 
 # ---------- 2. ingredient vocabulary ----------
@@ -119,30 +123,35 @@ unmapped_names = Counter()
 for q in quarters:
     src = "aers" if q < "2012q4" else "faers"
     dr = keyed(pd.read_parquet(Q / f"{q}.drug.parquet"), src)
-    uniq = dr[["drugname", "prod_ai"]].drop_duplicates()
-    ings = {}
-    for nm, ai in uniq.itertuples(index=False):
+    uniq = dr[["drugname", "prod_ai"]].drop_duplicates().reset_index(drop=True)
+    pair_rows, ing_rows = [], []
+    for i, (nm, ai) in enumerate(uniq.itertuples(index=False)):
         t = ai_to_ings(ai) if ai else ()
         if not t:
             t = name_to_ings(clean(nm))
-        ings[(nm, ai)] = t
-    tup = [ings[(a, b)] for a, b in zip(dr["drugname"], dr["prod_ai"])]
-    lens = np.fromiter((len(t) for t in tup), dtype=np.int64, count=len(tup))
-    mapped_rows += int((lens > 0).sum())
-    unmapped_rows += int((lens == 0).sum())
-    for nm, t in zip(dr["drugname"].values[lens == 0][:200000], [None] * 200000):
-        unmapped_names[nm] += 1
-    rep = np.repeat(dr["key"].values, lens)
-    role = np.repeat(dr["role"].values, lens)
-    flat = [code_of(x) for t in tup for x in t]
-    drug_parts.append(pd.DataFrame({"key": rep, "ing": np.asarray(flat, dtype=np.int32), "role": role}))
+        for x in t:
+            pair_rows.append(i)
+            ing_rows.append(code_of(x))
+    uniq["pair"] = np.arange(len(uniq))
+    expl = pd.DataFrame({"pair": np.asarray(pair_rows, dtype=np.int64), "ing": np.asarray(ing_rows, dtype=np.int32)})
+    dr = dr.merge(uniq, on=["drugname", "prod_ai"], how="left")
+    unm = ~dr["pair"].isin(expl["pair"].unique())
+    mapped_rows += int((~unm).sum())
+    unmapped_rows += int(unm.sum())
+    unmapped_names.update(dr.loc[unm, "drugname"].value_counts().head(500).to_dict())
+    m = dr[["key", "role", "pair"]].merge(expl, on="pair", how="inner")
+    drug_parts.append(pd.DataFrame({"key": m["key"].values, "ing": m["ing"].values, "role": m["role"].values}))
 
     rc = keyed(pd.read_parquet(Q / f"{q}.reac.parquet"), src)
-    rc["pt"] = rc["pt"].map(lambda s: pt_code.setdefault(s, len(pt_code))).astype(np.int32)
+    for v in rc["pt"].unique():
+        pt_code.setdefault(v, len(pt_code))
+    rc["pt"] = rc["pt"].map(pt_code).astype(np.int32)
     reac_parts.append(rc[["key", "pt"]].drop_duplicates())
 
     ind = keyed(pd.read_parquet(Q / f"{q}.indi.parquet"), src)
-    ind["indi_pt"] = ind["indi_pt"].map(lambda s: pt_code.setdefault(s, len(pt_code))).astype(np.int32)
+    for v in ind["indi_pt"].unique():
+        pt_code.setdefault(v, len(pt_code))
+    ind["indi_pt"] = ind["indi_pt"].map(pt_code).astype(np.int32)
     indi_parts.append(ind[["key", "indi_pt"]].drop_duplicates())
     print(q, len(dr), flush=True)
 

@@ -24,12 +24,16 @@ def load_faers():
     rep = pd.read_parquet(F / "reports.parquet")
     ing = pd.read_csv(F / "ing_vocab.csv", index_col="code")["name"]
     pt = pd.read_csv(F / "pt_vocab.csv", index_col="code", keep_default_na=False)["name"]
+    # vocab codes are 0..K-1 in creation order, so they are valid categorical codes
+    assert (ing.index == np.arange(len(ing))).all() and (pt.index == np.arange(len(pt))).all()
+    ing_cats, pt_cats = ing.fillna("").astype(str).values, pt.astype(str).values
     dr = pd.read_parquet(F / "drugs.parquet")
-    dr["ing"] = ing.reindex(dr["ing"].values).values
+    dr["ing"] = pd.Categorical.from_codes(dr["ing"].values, categories=pd.Index(ing_cats).unique()) \
+        if pd.Index(ing_cats).is_unique else ing.reindex(dr["ing"].values).values
     rc = pd.read_parquet(F / "reacs.parquet")
-    rc["pt"] = pt.reindex(rc["pt"].values).values
+    rc["pt"] = pd.Categorical.from_codes(rc["pt"].values, categories=pt_cats)
     ind = pd.read_parquet(F / "indis.parquet")
-    ind["indi_pt"] = pt.reindex(ind["indi_pt"].values).values
+    ind["indi_pt"] = pd.Categorical.from_codes(ind["indi_pt"].values, categories=pt_cats)
     return rep, dr, rc, ind
 
 

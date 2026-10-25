@@ -1,0 +1,131 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
+\onehalfspacing
+
+\title{Which drug--hearing-loss signals in FAERS survive adjustment and independent replication?
+A label-referenced, externally replicated disproportionality study}
+\author{Oleg Tropynin\\ \small Independent researcher, Karaganda, Kazakhstan\\ \small \texttt{tropininoleg@gmail.com}}
+\date{}
+
+\begin{document}
+\maketitle
+
+%%ABSTRACT%%
+
+\section*{Key points}
+%%KEYPOINTS%%
+
+\section{Introduction}
+Drug-induced hearing loss is usually irreversible, and the classical ototoxic drug classes---aminoglycosides,
+platinum agents, loop diuretics, antimalarials, macrolides and salicylates---were identified clinically long before
+spontaneous-reporting databases existed \cite{lanvers2017}. For newer drugs, post-marketing spontaneous reports are often
+the first source of evidence, and several recent studies have screened the FDA Adverse Event Reporting System (FAERS)
+for hearing-loss signals across all drugs \cite{li2024,wu2025,liu2025} and for tinnitus \cite{narasimhaswamy2026}.
+
+Those screens share a design: crude disproportionality across all reports, with novelty defined as absence from the
+label. Crude disproportionality in this setting is vulnerable to at least three biases that are specific to hearing
+outcomes. First, confounding by indication and protopathic bias: corticosteroids, vasodilators and antivirals are
+prescribed \emph{for} sudden hearing loss, tinnitus and vestibular disorders, so they co-occur with the event in reports
+for reasons unrelated to toxicity. Second, the ``innocent bystander'' effect: a drug that is routinely co-administered with
+a strongly ototoxic one---an antiemetic given with cisplatin, an antibiotic given with an aminoglycoside---inherits part
+of the association \cite{salvo2013}. Third, stimulated reporting after safety communications or litigation
+\cite{pariente2007}. In addition, crude screens rarely test whether their signal list agrees with an independent data
+source, and editors have begun to reject FAERS analyses that lack such validation \cite{ramessur2025}.
+
+We therefore asked a narrower question than ``which drugs are ototoxic?'': \emph{which hearing-loss and tinnitus signals
+remain after adjustment for these biases, and do the signals that remain replicate in an independent national database
+and over time?} We evaluated crude and adjusted detection against a reference set derived from current US labels,
+replicated every signal in Canada Vigilance, and compared our results with the signal lists of previous FAERS screens.
+The analysis protocol, including all thresholds, was committed to a public repository before the first result was
+computed.
+
+\section{Methods}
+Reporting follows the READUS-PV guideline for disproportionality analyses \cite{readuspv}; the checklist is provided as
+Supplementary Table S1.
+
+\subsection{Data sources}
+We used all 90 quarterly ASCII extracts of the legacy Adverse Event Reporting System (2004Q1--2012Q3) and FAERS
+(2012Q4--2026Q2), the Canada Vigilance Adverse Reaction Online Database extract covering 1965 to 30 June 2026, and the
+openFDA bulk export of structured product labels (23 October 2026) \cite{openfda}. All data are public and de-identified;
+no ethics approval was required.
+
+\subsection{Pre-processing and deduplication}
+In FAERS, we kept the most recent version of each case (by FDA receipt date, preferring FAERS over legacy records, then
+case version), removed all case identifiers that FDA lists as deleted, and collapsed content duplicates: reports with
+identical sex, age, event date, country, set of suspect ingredients and set of reactions (applied only when event date
+and age were present). Drug names were mapped to active ingredients: the \texttt{prod\_ai} field was split into
+ingredients, salt and hydrate words were removed when the remaining base was itself an observed ingredient, and
+free-text names in records without \texttt{prod\_ai} were mapped to the dominant ingredient seen for that name ($\geq$70\%
+of $\geq$5 records). In Canada Vigilance, reports flagged as duplicates of a report present in the extract were removed,
+and product ingredients were normalised with the same rules.
+
+\subsection{Outcomes and exposure}
+The primary outcome, hearing loss, comprised the MedDRA preferred terms Deafness; Deafness unilateral, bilateral,
+neurosensory, transitory, permanent and mixed; Hypoacusis; Neurosensory hypoacusis; Sudden hearing loss; Ototoxicity;
+Hearing impaired; Hearing disability; and High frequency hearing loss. Conductive and congenital deafness were excluded.
+The secondary outcome was Tinnitus. An ingredient was considered exposed when reported as a suspect drug (FAERS primary
+suspect, secondary suspect or interacting; Canada suspect or interacting).
+
+\subsection{Disproportionality}
+For each ingredient we computed the reporting odds ratio (ROR) with a Woolf 95\% confidence interval \cite{rothman2004}
+and the information component (IC) with its lower credibility bound IC$_{025}$ \cite{noren2006}. A \emph{crude signal}
+required at least three cases, a lower ROR bound above 1 and IC$_{025}>0$.
+
+The \emph{adjusted} analysis was run in a restricted population and stratified. We excluded (i) reports in which any
+drug had an ear or hearing indication (deafness, hearing, tinnitus, ototoxicity, M\'eni\`ere's disease, otitis, vertigo,
+vestibular, labyrinthine and cochlear terms), (ii) reports that mentioned, in any role, a drug from an a-priori list of
+29 established ototoxic drugs \cite{lanvers2017} other than the drug under study, and (iii) FAERS reports submitted by
+lawyers. We then computed the Mantel--Haenszel OR \cite{mantel1959} over 60 strata (five age bands $\times$ sex
+[male, female, unknown] $\times$ four reporting periods) with the Robins--Breslow--Greenland variance
+\cite{robins1986}. An \emph{adjusted signal} required at least three cases in the restricted population and a lower
+95\% bound above 1. The implementation was checked against \texttt{statsmodels} on simulated data (identical estimates to
+nine decimal places).
+
+\subsection{Reference set}
+From single-ingredient labels we classified each ingredient as label-positive when a hearing-loss term appeared in a
+safety section (boxed warning, warnings, precautions, adverse reactions, post-marketing experience, contraindications,
+overdosage, or the corresponding over-the-counter sections) of at least half of its prescription labels, and
+label-negative when no label mentioned hearing loss or tinnitus at all; other ingredients were left out. Phrases that
+contain a hearing word without describing an adverse effect (for example, the disease name ``maternally inherited
+diabetes and deafness'' and telephone lines for deaf users) were removed before matching. Discrimination was assessed
+by the area under the ROC curve (AUC) among ingredients with at least 1{,}000 suspect reports, comparing crude IC$_{025}$
+with the adjusted lower bound; the difference was bootstrapped (2{,}000 resamples). Because labels are partly informed by
+spontaneous reports, the reference set is used to compare methods with each other, not to estimate absolute accuracy.
+
+\subsection{Replication}
+For external replication, signals were derived in FAERS after removing reports originating in Canada and tested in
+Canada Vigilance. An ingredient was testable when the observed or expected number of Canadian cases was at least three,
+and replicated when the Canadian lower ROR bound exceeded 1 with at least three cases. The same rule was applied to
+label-negative ingredients that were not FAERS signals, giving the rate at which replication occurs without a true
+association. For temporal replication, signals derived from reports received up to 2014 were tested in reports received
+from 2015 onwards.
+
+\subsection{Robust signals and novelty}
+A \emph{robust signal} was an adjusted FAERS signal that replicated in Canada. Robust signals without a hearing-loss term in
+any US label were checked against PubMed (drug name with hearing-loss or ototoxicity terms in title or abstract) and
+against the signal lists of the previous FAERS screens \cite{li2024,wu2025,liu2025,narasimhaswamy2026}.
+
+%%RESULTS%%
+
+%%DISCUSSION%%
+
+\section*{Declarations}
+\textbf{Funding:} none. \textbf{Conflicts of interest:} %%COI%%
+\textbf{Ethics:} not applicable (public, de-identified data).
+\textbf{Data and code availability:} all code, the pre-registered protocol and result tables are available at
+%%REPO%%.
+\textbf{Author contributions:} OT conceived the study, ran the analysis and wrote the manuscript.
+\textbf{Use of AI tools:} %%AI%%
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+\end{document}

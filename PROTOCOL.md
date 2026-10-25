@@ -69,3 +69,14 @@ at the end under "Deviations", with the reason.
    Vigilance to reports submitted directly to Health Canada (source not "MAH"). Reason: the
    public documentation does not state explicitly that the extract is domestic-only, and
    manufacturer-submitted reports are the route by which the same case could also reach FAERS.
+3. (03:25, AFTER the primary results were inspected — post-hoc, reported as such)
+   a. Canada replication repeated without solicited ("Study") reports. Reason: label-negative
+      biologics replicated in Canada through patient-support-programme reports (e.g. 93 % of
+      ocrelizumab and mepolizumab hearing-loss cases were "Study" reports vs ~1 % for
+      gentamicin and cisplatin).
+   b. Indication exclusion extended to diseases that themselves cause hearing loss (Fabry,
+      mucopolysaccharidoses, cryopyrin-associated syndromes, Alport, meningitis, mitochondrial
+      disease, Usher, Wolfram, CMV, NF2, Paget, osteogenesis imperfecta, hypophosphatasia,
+      Cogan, Susac, mumps, measles, syphilis). Reason: enzyme-replacement therapies and
+      canakinumab appeared among robust unlabelled signals.
+   The primary, pre-specified results are reported unchanged; these are sensitivity analyses.

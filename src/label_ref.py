@@ -23,6 +23,24 @@ OUT = Path("data/work/labels.parquet")
 HL = re.compile(r"\b(hearing (loss|impairment|impaired|disorder|decrease|decreased|disturbance)|"
                 r"deaf(ness)?\b|ototoxic\w*|hypoacusis|loss of hearing|decreased hearing|"
                 r"sudden (sensorineural )?hearing|sensorineural hearing)", re.I)
+REPEAT = re.compile(r"(?=\b((?:[A-Za-z0-9\-]+ ){0,4}[A-Za-z0-9\-]+) (\1)\b)", re.I)
+
+
+def generic_from_elements(el: str):
+    """Phrase written once in lower/title case and repeated in capitals ('teprotumumab TEPROTUMUMAB');
+    failing that, a phrase simply repeated ('Losartan Potassium Losartan Potassium')."""
+    ms = list(REPEAT.finditer(el))
+    for m in ms:
+        if m.group(2).isupper() and not m.group(1).isupper():
+            w = m.group(1).split()
+            half = len(w) // 2
+            if len(w) % 2 == 0 and [x.lower() for x in w[:half]] == [x.lower() for x in w[half:]]:
+                return " ".join(w[:half])          # "Mirtazapine Mirtazapine MIRTAZAPINE MIRTAZAPINE"
+            return m.group(1)
+    for m in ms:
+        if not m.group(1).isupper() and len(m.group(1)) > 3:
+            return m.group(1)
+    return None
 TIN = re.compile(r"\b(tinnitus|ringing in (the|your) ears)", re.I)
 STRONG = ["boxed_warning", "warnings_and_cautions", "warnings", "precautions"]
 OTHER = ["adverse_reactions", "adverse_reactions_table", "postmarketing_experience",
@@ -46,6 +64,20 @@ def scan(path):
     for rec in data["results"]:
         of = rec.get("openfda", {})
         subs = of.get("substance_name") or []
+        if not subs:
+            # some BLA labels carry no substance_name; fall back to the generic name,
+            # dropping the four-letter biologic suffix (e.g. TEPROTUMUMAB-TRBW)
+            gen = of.get("generic_name") or []
+            subs = [re.sub(r"-[A-Z]{4}$", "", g.strip().upper()) for g in gen]
+            if len(subs) == 1 and re.search(r"\bAND\b|,|/", subs[0]):
+                continue
+        if not subs:
+            # ~40 % of labels have an empty openfda block; the product-data string reads
+            # "BRAND generic ACTIVE INGREDIENT ...", so the generic is the phrase repeated in capitals
+            el = (rec.get("spl_product_data_elements") or [""])[0]
+            g = generic_from_elements(el[:200])
+            if g and not re.search(r"\band\b|,", g, re.I):
+                subs = [re.sub(r"-[a-z]{4}$", "", g, flags=re.I)]
         if len(subs) != 1:
             continue
         strong = text(rec, STRONG)

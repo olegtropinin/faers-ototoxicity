@@ -165,14 +165,17 @@ indis = pd.concat(indi_parts, ignore_index=True)
 latest = latest[latest["key"].isin(set(reacs["key"].unique()))]       # a report needs >= 1 reaction
 latest = latest[latest["key"].isin(set(drugs["key"].unique()))]       # and >= 1 mapped drug
 log["cases_with_reaction_and_mapped_drug"] = len(latest)
-latest = latest.reset_index(drop=True)
+# a handful of report ids appear under two case ids across quarters; keep the later one
+log["report_ids_under_two_cases"] = int(latest["key"].duplicated().sum())
+latest = latest.drop_duplicates("key", keep="last").reset_index(drop=True)
 latest["rid"] = np.arange(len(latest), dtype=np.int32)
-rid_of = pd.Series(latest["rid"].values, index=latest["key"].values)
+rid_index = pd.Index(latest["key"].values)
 
 
 def to_rid(df):
-    df = df[df["key"].isin(rid_of.index)].copy()
-    df["rid"] = rid_of.loc[df["key"].values].values
+    pos = rid_index.get_indexer(df["key"].values)
+    df = df[pos != -1].copy()
+    df["rid"] = latest["rid"].values[pos[pos != -1]]
     return df.drop(columns="key")
 
 

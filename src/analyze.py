@@ -50,13 +50,13 @@ def reindex(rep, dr, rc, ind):
     return (rep, *out)
 
 
-def analyse(name, rep, dr, rc, ind, suspect_roles, lawyer_col=None):
+def analyse(name, rep, dr, rc, ind, suspect_roles, lawyer_col=None, extended_indication=False):
     rep, dr, rc, ind = reindex(rep, dr, rc, ind)
     sus = dr[dr["role"].isin(suspect_roles)][["rid", "ing"]].drop_duplicates()
     lawyer = (rep[lawyer_col] == "LW").values if lawyer_col else None
     res, pops = {}, {}
     for ev_name, pts in (("hl", HL_PTS), ("tin", TIN_PTS)):
-        r = run(rep, sus, dr, rc, ind, pts, lawyer)
+        r = run(rep, sus, dr, rc, ind, pts, lawyer, extended_indication)
         res[ev_name] = r.add_prefix(f"{name}_")
         pops[f"{name}_{ev_name}"] = r.attrs["population"]
         print(name, ev_name, r.attrs["population"], flush=True)
@@ -80,37 +80,74 @@ def label_table():
     return g
 
 
-if __name__ == "__main__":
-    pops = {}
-    rep, dr, rc, ind = load_faers()
-    print("faers loaded", len(rep), flush=True)
-    f_all, p = analyse("faers", rep, dr, rc, ind, ["PS", "SS", "I"], "occp_cod")
-    pops.update(p)
-    noca = rep[rep["country"] != "CA"]
-    f_noca, p = analyse("faersnoca", noca, dr, rc, ind, ["PS", "SS", "I"], "occp_cod")
-    pops.update(p)
-    # temporal split: signals from reports received <= 2014, checked in reports received >= 2015
-    f_early, p = analyse("early", rep[rep["year"] <= 2014], dr, rc, ind, ["PS", "SS", "I"], "occp_cod")
-    pops.update(p)
-    f_late, p = analyse("late", rep[rep["year"] >= 2015], dr, rc, ind, ["PS", "SS", "I"], "occp_cod")
-    pops.update(p)
-    del rep, dr, rc, ind, noca
+def save(parts, pops, tag):
+    for name, res in parts.items():
+        for ev, df in res.items():
+            df.to_csv(RES / f"part_{name}_{ev}.csv", index_label="ingredient")
+    json.dump(pops, open(RES / f"population_{tag}.json", "w"), indent=1)
 
-    crep = pd.read_parquet(C / "an_reports.parquet")
-    cdr = pd.read_parquet(C / "an_drugs.parquet")
-    crc = pd.read_parquet(C / "an_reacs.parquet")
-    cind = pd.read_parquet(C / "an_indis.parquet")
-    c_all, p = analyse("canada", crep, cdr, crc, cind, ["S"])
-    pops.update(p)
-    # reports sent straight to Health Canada (not via manufacturers), so they cannot reach FAERS
-    direct = crep[crep["source"] != "MAH"]
-    c_sp, p = analyse("canadadirect", direct, cdr, crc, cind, ["S"])
-    pops.update(p)
 
+def join():
     labels = label_table()
+    pops = {}
+    for f in sorted(RES.glob("population_*.json")):
+        pops.update(json.load(open(f)))
+    json.dump(pops, open(RES / "population.json", "w"), indent=1)
     for ev in ("hl", "tin"):
-        m = f_all[ev].join([f_noca[ev], f_early[ev], f_late[ev], c_all[ev], c_sp[ev]], how="outer") \
-            .join(labels, how="left")
+        parts = [pd.read_csv(f, index_col="ingredient") for f in sorted(RES.glob(f"part_*_{ev}.csv"))]
+        m = parts[0].join(parts[1:], how="outer").join(labels, how="left")
         m.index.name = "ingredient"
         m.to_csv(RES / f"{ev}_master.csv")
-    json.dump(pops, open(RES / "population.json", "w"), indent=1)
+        print(ev, m.shape)
+
+
+if __name__ == "__main__":
+    mode = sys.argv[1]
+    if mode == "faers":
+        pops, parts = {}, {}
+        rep, dr, rc, ind = load_faers()
+        print("faers loaded", len(rep), flush=True)
+        roles = ["PS", "SS", "I"]
+        subsets = {"faers": rep, "faersnoca": rep[rep["country"] != "CA"],
+                   # temporal split: signals from reports received <= 2014, checked in reports >= 2015
+                   "early": rep[rep["year"] <= 2014], "late": rep[rep["year"] >= 2015]}
+        for name, sub in subsets.items():
+            parts[name], p = analyse(name, sub, dr, rc, ind, roles, "occp_cod")
+            pops.update(p)
+        save(parts, pops, "faers")
+    elif mode == "canada":
+        crep = pd.read_parquet(C / "an_reports.parquet")
+        cdr = pd.read_parquet(C / "an_drugs.parquet")
+        crc = pd.read_parquet(C / "an_reacs.parquet")
+        cind = pd.read_parquet(C / "an_indis.parquet")
+        pops, parts = {}, {}
+        parts["canada"], p = analyse("canada", crep, cdr, crc, cind, ["S"])
+        pops.update(p)
+        # reports sent straight to Health Canada (not via manufacturers), so they cannot reach FAERS
+        parts["canadadirect"], p = analyse("canadadirect", crep[crep["source"] != "MAH"], cdr, crc, cind, ["S"])
+        pops.update(p)
+        save(parts, pops, "canada")
+    elif mode == "faers_posthoc":
+        # post-hoc (after primary results): extended disease-indication exclusion
+        rep, dr, rc, ind = load_faers()
+        parts, pops = {}, {}
+        parts["faersnocax"], p = analyse("faersnocax", rep[rep["country"] != "CA"], dr, rc, ind,
+                                         ["PS", "SS", "I"], "occp_cod", extended_indication=True)
+        pops.update(p)
+        save(parts, pops, "faers_posthoc")
+    elif mode == "canada_posthoc":
+        # post-hoc: drop solicited ("Study") reports, which carry patient-support-programme reporting,
+        # and apply the extended disease-indication exclusion
+        crep = pd.read_parquet(C / "an_reports.parquet")
+        cdr = pd.read_parquet(C / "an_drugs.parquet")
+        crc = pd.read_parquet(C / "an_reacs.parquet")
+        cind = pd.read_parquet(C / "an_indis.parquet")
+        parts, pops = {}, {}
+        ns = crep[crep["report_type"] != "Study"]
+        parts["canadanostudy"], p = analyse("canadanostudy", ns, cdr, crc, cind, ["S"])
+        pops.update(p)
+        parts["canadax"], p = analyse("canadax", ns, cdr, crc, cind, ["S"], extended_indication=True)
+        pops.update(p)
+        save(parts, pops, "canada_posthoc")
+    elif mode == "join":
+        join()

@@ -186,6 +186,36 @@ def evaluate(ev):
     return out
 
 
+def prior_screens():
+    """How the signals reported by earlier FAERS screens fare here (crude -> adjusted -> Canada)."""
+    rows = []
+    for f in sorted(Path("data/raw/prior").glob("*.csv")):
+        p = pd.read_csv(f)
+        if p.empty or "drug" not in p:
+            continue
+        for scope, ev in (("hearing_loss", "hl"), ("hearing_any", "hl"), ("tinnitus", "tin")):
+            sub = p[p["event_scope"] == scope]
+            if sub.empty:
+                continue
+            m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient")
+            names = sub["drug"].str.upper().str.strip().drop_duplicates()
+            found = names[names.isin(m.index)]
+            mm = m.loc[found]
+            crude, adj = crude_sig(mm, "faers"), adj_sig(mm, "faers")
+            t, r = testable(mm, "canada"), replicated(mm, "canada")
+            rows.append({"study": f.stem, "scope": scope, "reported": len(names), "matched": len(found),
+                         "crude_here": int(crude.sum()), "adjusted_here": int(adj.sum()),
+                         "adjusted_and_testable": int((adj & t).sum()), "adjusted_and_replicated": int((adj & r).sum()),
+                         "lost_on_adjustment": ";".join(sorted(found[(crude & ~adj).values])),
+                         "unmatched": ";".join(sorted(set(names) - set(found)))})
+    out = pd.DataFrame(rows)
+    out.to_csv(RES / "prior_screens.csv", index=False)
+    return out
+
+
 if __name__ == "__main__":
+    if sys.argv[1:] == ["prior"]:
+        print(prior_screens().to_string())
+        sys.exit()
     for ev in sys.argv[1:] or ["hl", "tin"]:
         print(ev, json.dumps(evaluate(ev), indent=1, default=float))

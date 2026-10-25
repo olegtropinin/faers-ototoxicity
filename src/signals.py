@@ -29,6 +29,14 @@ EAR_INDICATION = re.compile(
     r"\b(?:DEAF\w*|HEARING|HYPOACUSIS|TINNITUS|OTOTOX\w*|MENIERE\w*|OTITIS|EAR|LABYRINTH\w*|VERTIGO|"
     r"VESTIBUL\w*|COCHLE\w*|ACOUSTIC|OTOSCLEROSIS|AUDIT\w*|OTOLOGIC\w*)\b")
 
+# Post-hoc extension (added after the primary results were seen): indications that are themselves
+# diseases with hearing loss, so the drug treating them inherits the association.
+DISEASE_WITH_HEARING_LOSS = re.compile(
+    r"\b(?:FABRY\w*|MUCOPOLYSACCHARIDOS\w*|HURLER\w*|HUNTER\w*|MORQUIO\w*|MAROTEAUX\w*|SANFILIPPO\w*|"
+    r"CRYOPYRIN\w*|MUCKLE\w*|AUTOINFLAMMATORY|CINCA|NOMID|ALPORT\w*|MENINGITIS|MITOCHONDRIAL|MELAS|USHER\w*|"
+    r"WOLFRAM\w*|CYTOMEGALOVIRUS|NEUROFIBROMATOSIS|PAGET\w*|OSTEITIS DEFORMANS|OSTEOGENESIS IMPERFECTA|"
+    r"HYPOPHOSPHATASIA|COGAN\w*|SUSAC\w*|MUMPS|MEASLES|SYPHILIS)\b")
+
 # A-priori established ototoxic drugs (classes reviewed in Lanvers-Kaminsky et al. 2017).
 KNOWN_OTOTOXIC = {
     "GENTAMICIN", "TOBRAMYCIN", "AMIKACIN", "STREPTOMYCIN", "NEOMYCIN", "KANAMYCIN", "NETILMICIN",
@@ -89,7 +97,7 @@ def _mh(ing, rid, ev, st, n_ing, n_st, pop):
     return a_s.sum(1), n_s.sum(1), orr, lo, hi
 
 
-def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None):
+def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended_indication=False):
     """rep: reports with rid 0..R-1; sus: (rid, ing_name) suspect pairs; any_drug: (rid, ing_name)
     any role; reac_pts / indi_pts: (rid, name). Returns one row per suspect ingredient."""
     R = len(rep)
@@ -108,7 +116,11 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None):
 
     # adjusted population
     ear_ind = np.zeros(R, bool)
-    ear_ind[indi_pts.loc[indi_pts["indi_pt"].astype(str).str.contains(EAR_INDICATION).fillna(False).values, "rid"].values] = True
+    ind_txt = indi_pts["indi_pt"].astype(str)
+    hit = ind_txt.str.contains(EAR_INDICATION).fillna(False)
+    if extended_indication:
+        hit |= ind_txt.str.contains(DISEASE_WITH_HEARING_LOSS).fillna(False)
+    ear_ind[indi_pts.loc[hit.values, "rid"].values] = True
     base = ~ear_ind
     if lawyer is not None:
         base &= ~lawyer

@@ -127,6 +127,12 @@ def evaluate(ev):
         "label_negative_non_signals": rate(t & neg & ~m["crude"], m["ca_repl"]),
         "label_negative_all": rate(t & neg & (m["faersnoca_n"] >= MIN_REPORTS), m["ca_repl"]),
     }
+    td, rd = testable(m, "canadadirect"), replicated(m, "canadadirect")
+    out["replication_canada_direct_only"] = {
+        "adjusted_signals": rate(td & m["adjusted"], rd),
+        "crude_only_signals": rate(td & m["crude"] & ~m["adjusted"], rd),
+        "label_negative_non_signals": rate(td & neg & ~m["crude"], rd),
+    }
     # --- 3. temporal replication (<= 2014 -> >= 2015) ---
     m["early_crude"], m["early_adj"] = crude_sig(m, "early"), adj_sig(m, "early")
     lt, lr = testable(m, "late"), replicated(m, "late")

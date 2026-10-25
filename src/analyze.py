@@ -102,8 +102,9 @@ if __name__ == "__main__":
     cind = pd.read_parquet(C / "an_indis.parquet")
     c_all, p = analyse("canada", crep, cdr, crc, cind, ["S"])
     pops.update(p)
-    sp = crep[crep["report_type"] == "Spontaneous"]
-    c_sp, p = analyse("canadaspont", sp, cdr, crc, cind, ["S"])
+    # reports sent straight to Health Canada (not via manufacturers), so they cannot reach FAERS
+    direct = crep[crep["source"] != "MAH"]
+    c_sp, p = analyse("canadadirect", direct, cdr, crc, cind, ["S"])
     pops.update(p)
 
     labels = label_table()

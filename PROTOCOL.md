@@ -65,3 +65,7 @@ at the end under "Deviations", with the reason.
    Reason: label spot-checks showed non-ADR matches (metformin: the disease name "maternally
    inherited diabetes and deafness"; TTY/TDD lines for deaf users) and single outlier
    labels among hundreds of generics. Non-ADR phrases are now removed before matching.
+2. (02:20, before any FAERS result existed) Added a sensitivity analysis restricting Canada
+   Vigilance to reports submitted directly to Health Canada (source not "MAH"). Reason: the
+   public documentation does not state explicitly that the extract is domestic-only, and
+   manufacturer-submitted reports are the route by which the same case could also reach FAERS.

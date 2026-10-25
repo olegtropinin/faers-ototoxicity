@@ -158,6 +158,25 @@ def evaluate(ev):
         "crude_only_signals": rate(td & m["crude"] & ~m["adjusted"], rd),
         "label_negative_non_signals": rate(td & neg & ~m["crude"], rd),
     }
+    # --- 2b. post-hoc: extended disease-indication exclusion, Canada without solicited reports ---
+    if "faersnocax_mh_lo" in m and "canadanostudy_a" in m:
+        m["adjusted_x"] = adj_sig(m, "faersnocax")
+        tn, rn = testable(m, "canadanostudy"), replicated(m, "canadanostudy")
+        out["posthoc"] = {
+            "adjusted_signals_extended": int(m["adjusted_x"].sum()),
+            "primary_signals_lost_by_extension": sorted(m.index[m["adjusted"] & ~m["adjusted_x"]].tolist()),
+            "repl_nostudy_adjusted_x": rate(tn & m["adjusted_x"], rn),
+            "repl_nostudy_adjusted_x_unlabelled": rate(tn & m["adjusted_x"] & unl, rn),
+            "repl_nostudy_adjusted_x_labelled": rate(tn & m["adjusted_x"] & ~unl, rn),
+            "repl_nostudy_crude_only": rate(tn & m["crude"] & ~m["adjusted"], rn),
+            "repl_nostudy_label_negative_non_signals": rate(tn & neg & ~m["crude"], rn),
+        }
+        m["ns_testable"], m["ns_repl"] = tn, rn
+        strict = m[m["adjusted_x"] & rn]
+        strict.to_csv(RES / f"{ev}_robust_posthoc.csv")
+        out["posthoc"]["robust_strict"] = len(strict)
+        out["posthoc"]["robust_strict_unlabelled"] = int((strict["label_mention"] != True).sum())  # noqa: E712
+
     # --- 3. temporal replication (<= 2014 -> >= 2015) ---
     m["early_crude"], m["early_adj"] = crude_sig(m, "early"), adj_sig(m, "early")
     lt, lr = testable(m, "late"), replicated(m, "late")

@@ -65,6 +65,14 @@ def label_table():
     lab["ing"] = lab["substance"].map(lambda s: s if s in vocab else strip_salt(s, vocab))
     g = lab.groupby("ing").agg(n_labels=("set_id", "size"), rx=("rx", "any"), hl_any=("hl_any", "any"),
                                hl_strong=("hl_strong", "any"), tin_any=("tin_any", "any"))
+    rx = lab[lab["rx"]].groupby("ing").agg(n_rx=("set_id", "size"), hl_frac_rx=("hl_any", "mean"),
+                                           tin_frac_rx=("tin_any", "mean"))
+    g = g.join(rx, how="left")
+    # reference classes: consistent Rx labelling = positive; no hearing/tinnitus wording anywhere = negative
+    g["ref_hl"] = np.where(g["hl_frac_rx"] >= 0.5, "pos",
+                           np.where(~g["hl_any"] & ~g["tin_any"], "neg", "ambiguous"))
+    g["ref_tin"] = np.where(g["tin_frac_rx"] >= 0.5, "pos",
+                            np.where(~g["tin_any"] & ~g["hl_any"], "neg", "ambiguous"))
     return g
 
 

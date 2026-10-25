@@ -171,8 +171,22 @@ drugs, reacs, indis = to_rid(drugs), to_rid(reacs), to_rid(indis)
 
 # ---------- 5. secondary deduplication on content ----------
 # Same demographics + same suspect-ingredient set + same reaction set = one report.
-sus = drugs[drugs["role"].isin(["PS", "SS"])].groupby("rid")["ing"].apply(lambda s: hash(tuple(sorted(set(s)))))
-rx = reacs.groupby("rid")["pt"].apply(lambda s: hash(tuple(sorted(set(s)))))
+def mix64(x):
+    """splitmix64 finaliser; summing mixed codes per report gives an order-free set hash."""
+    with np.errstate(over="ignore"):
+        z = x.astype(np.uint64) + np.uint64(0x9E3779B97F4A7C15)
+        z = (z ^ (z >> np.uint64(30))) * np.uint64(0xBF58476D1CE4E5B9)
+        z = (z ^ (z >> np.uint64(27))) * np.uint64(0x94D049BB133111EB)
+        return (z ^ (z >> np.uint64(31))).view(np.int64)
+
+
+def set_hash(df, col):
+    u = df[["rid", col]].drop_duplicates()
+    return pd.Series(mix64(u[col].values), index=u["rid"].values).groupby(level=0).sum()
+
+
+sus = set_hash(drugs[drugs["role"].isin(["PS", "SS"])], "ing")
+rx = set_hash(reacs, "pt")
 latest["sig"] = (latest["rid"].map(sus).fillna(0).astype("int64").astype(str) + "|" +
                  latest["rid"].map(rx).fillna(0).astype("int64").astype(str) + "|" +
                  latest["sex"].fillna("") + "|" + latest["age_y"].round(0).astype(str) + "|" +

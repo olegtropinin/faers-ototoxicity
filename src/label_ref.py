@@ -29,8 +29,14 @@ OTHER = ["adverse_reactions", "adverse_reactions_table", "postmarketing_experien
          "contraindications", "overdosage", "user_safety_warnings", "do_not_use", "stop_use", "ask_doctor"]
 
 
+# Phrases that contain a hearing word without describing an adverse effect of the drug.
+NOT_ADR = re.compile(r"maternally inherited diabetes and deafness|\(MIDD\)|"
+                     r"(deaf|hard of hearing|hearing[- ]impaired)[^.]{0,60}\b(TTY|TDD|TTD|relay)\b|"
+                     r"\b(TTY|TDD|TTD)\b[^.]{0,60}(deaf|hard of hearing|hearing)", re.I)
+
+
 def text(rec, fields):
-    return " ".join(" ".join(rec.get(f, [])) for f in fields)
+    return NOT_ADR.sub(" ", " ".join(" ".join(rec.get(f, [])) for f in fields))
 
 
 def scan(path):

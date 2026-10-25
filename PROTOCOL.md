@@ -59,4 +59,9 @@ at the end under "Deviations", with the reason.
   signals that are adjusted signals and that replicate.
 
 ## Deviations
-(none yet)
+1. (02:12, before any FAERS result existed) Reference positives tightened from "any label
+   mentions hearing loss" to "hearing-loss term in >= 50 % of the ingredient's prescription
+   labels"; ingredients with partial mention are "ambiguous" and left out of the AUC.
+   Reason: label spot-checks showed non-ADR matches (metformin: the disease name "maternally
+   inherited diabetes and deafness"; TTY/TDD lines for deaf users) and single outlier
+   labels among hundreds of generics. Non-ADR phrases are now removed before matching.

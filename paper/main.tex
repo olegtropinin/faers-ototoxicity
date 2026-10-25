@@ -19,10 +19,39 @@ A label-referenced, externally replicated disproportionality study}
 \begin{document}
 \maketitle
 
-%%ABSTRACT%%
+\begin{abstract}
+\noindent\textbf{Introduction.} Several recent studies screened the FDA Adverse Event Reporting System (FAERS) for
+drug-associated hearing loss using crude disproportionality and reported many unlabelled signals. We asked which signals
+survive adjustment for hearing-specific biases and independent replication.
+
+\noindent\textbf{Methods.} We analysed 19.9 million deduplicated FAERS reports (2004--2026) and 1.2 million Canada
+Vigilance reports, with a protocol committed before analysis. For hearing loss and tinnitus, crude reporting odds ratios
+were compared with Mantel--Haenszel estimates stratified by age, sex and period in a population excluding ear-related
+indications, reports naming established ototoxic drugs and lawyer reports. Methods were evaluated against a reference set
+from US labels (106 positive, 911 negative ingredients) and by replication in Canada and over time; robust unlabelled
+signals underwent case-level review.
+
+\noindent\textbf{Results.} Adjustment changed about a fifth of the 310 crude hearing-loss signals but not agreement with
+labels (AUC 0.715 vs 0.717). In Canada, 73\% of labelled and 43\% of unlabelled adjusted signals replicated, as did 21\% of
+label-negative drugs, largely through solicited patient-support-programme reports. With both databases adjusted (post hoc),
+unlabelled hearing-loss signals replicated at 23\% against a 16\% background. Co-medication bias replicated across databases
+(vincristine: crude ROR 1.6 in FAERS and 12.1 in Canada; adjusted 0.45 and 1.15). Of 36 robust unlabelled signals, 26 were
+traced to report clusters, ototoxic co-medication, stimulated reporting, indication or an established ototoxic class;
+10 remained, led by pregabalin.
+
+\noindent\textbf{Conclusion.} Most unlabelled FAERS hearing-loss signals do not survive adjustment, adjusted replication
+and provenance review. Cross-database replication needs adjusted estimates and explicit handling of solicited reports.
+\end{abstract}
 
 \section*{Key points}
-%%KEYPOINTS%%
+\begin{itemize}
+\item Adjusting FAERS hearing-loss screens for indication, ototoxic co-medication and stimulated reporting changes which
+drugs are flagged but does not improve agreement with drug labels.
+\item Replication in Canada Vigilance confirms most labelled associations, but solicited patient-support-programme reports
+and shared co-medication patterns make about one in five label-negative drugs ``replicate'' too.
+\item After adjusted replication and case-level review of report provenance, few unlabelled hearing-loss signals remain;
+these, led by pregabalin, are hypotheses for exposure-based studies.
+\end{itemize}
 
 \section{Introduction}
 Drug-induced hearing loss is usually irreversible, and the classical ototoxic drug classes---aminoglycosides,
@@ -37,7 +66,7 @@ outcomes. First, confounding by indication and protopathic bias: corticosteroids
 prescribed \emph{for} sudden hearing loss, tinnitus and vestibular disorders, so they co-occur with the event in reports
 for reasons unrelated to toxicity. Second, the ``innocent bystander'' effect: a drug that is routinely co-administered with
 a strongly ototoxic one---an antiemetic given with cisplatin, an antibiotic given with an aminoglycoside---inherits part
-of the association \cite{salvo2013}. Third, stimulated reporting after safety communications or litigation
+of the association. Third, stimulated reporting after safety communications or litigation
 \cite{pariente2007}. In addition, crude screens rarely test whether their signal list agrees with an independent data
 source, and editors have begun to reject FAERS analyses that lack such validation \cite{ramessur2025}.
 
@@ -45,8 +74,8 @@ We therefore asked a narrower question than ``which drugs are ototoxic?'': \emph
 remain after adjustment for these biases, and do the signals that remain replicate in an independent national database
 and over time?} We evaluated crude and adjusted detection against a reference set derived from current US labels,
 replicated every signal in Canada Vigilance, and compared our results with the signal lists of previous FAERS screens.
-The analysis protocol, including all thresholds, was committed to a public repository before the first result was
-computed.
+The analysis protocol, including all thresholds, was committed to a version-controlled repository (time-stamped
+commits) before the first result was computed; the repository is released with this paper.
 
 \section{Methods}
 Reporting follows the READUS-PV guideline for disproportionality analyses \cite{readuspv}; the checklist is provided as
@@ -114,17 +143,211 @@ A \emph{robust signal} was an adjusted FAERS signal that replicated in Canada. R
 any US label were checked against PubMed (drug name with hearing-loss or ototoxicity terms in title or abstract) and
 against the signal lists of the previous FAERS screens \cite{li2024,wu2025,liu2025,narasimhaswamy2026}.
 
-%%RESULTS%%
 
-%%DISCUSSION%%
+\section{Results}
+
+\subsection{Data}
+The 90 FAERS extracts contained 24{,}812{,}424 report versions. Keeping the latest version of each case left
+20{,}692{,}682 cases; removing 229{,}233 case identifiers deleted by FDA, cases without a reaction or mappable drug, and
+508{,}497 content duplicates left \textbf{19{,}886{,}036 reports} (72.9 million drug rows mapped to 8{,}447 suspect
+ingredients; 3.0\% of drug rows could not be mapped). These contained 83{,}914 hearing-loss reports and 42{,}917 tinnitus
+reports. The adjusted population excluded 19{,}305 reports with an ear or hearing indication, 1{,}843{,}306 reports
+mentioning an established ototoxic drug and 486{,}393 lawyer reports, leaving 17{,}580{,}497 reports
+(70{,}459 hearing-loss cases). Canada Vigilance contributed 1{,}210{,}957 reports after removing 58{,}623 duplicates,
+with 4{,}001 hearing-loss and 3{,}285 tinnitus reports.
+
+Established ototoxic drugs gave strong signals in both databases (Supplementary Table S2): for example amikacin
+(FAERS adjusted OR 12.7, 95\% CI 11.6--13.9), gentamicin (11.4, 9.8--13.2), cisplatin (4.3, 4.0--4.6), the PDE5
+inhibitors sildenafil (3.9, 3.7--4.2) and tadalafil (4.2, 3.9--4.6), deferoxamine and teprotumumab. Two
+expected positives did not: oxaliplatin (crude ROR 0.44) and, after adjustment, carboplatin (crude 1.96, adjusted 0.82),
+whose crude association was carried largely by reports that also named another established ototoxic drug---an
+example of the sensitivity that the co-medication filter costs.
+
+\subsection{Adjustment changes the signal list but not its agreement with labels}
+In FAERS without Canadian reports, the crude rule flagged 310 ingredients for hearing loss and the adjusted rule 322;
+66 crude signals were lost on adjustment and 78 appeared (Table~\ref{tab:methods}). Against the label reference set
+(106 positive and 911 negative ingredients with $\geq$1{,}000 suspect reports), discrimination was moderate and
+practically identical for the crude IC$_{025}$ (AUC 0.715) and the adjusted lower bound (0.717; difference
++0.003, 95\% CI $-$0.023 to +0.028). Adjustment traded sensitivity (0.40 to 0.35) for specificity (0.86 to 0.87).
+Tinnitus showed the same pattern (AUC 0.772 vs 0.776).
+
+\subsection{Replication in a second database}
+Adjusted hearing-loss signals that were already labelled replicated in Canada Vigilance in 33 of 45 testable cases
+(73\%), unlabelled adjusted signals in 36 of 84 (43\%), crude-only signals in 9 of 21 (43\%), and label-negative
+ingredients that were not FAERS signals---the false-replication background---in 48 of 226 (21\%)
+(Table~\ref{tab:methods}, Figure~\ref{fig:repl}). Restricting Canada to reports sent directly to Health Canada gave
+similar rates (adjusted signals 54\%, background 20\%).
+
+The background was not random. The label-negative ingredients that ``replicated'' were dominated by biologics
+(etanercept, rituximab, omalizumab, mepolizumab, ocrelizumab, denosumab) whose Canadian hearing-loss reports came
+overwhelmingly from solicited \emph{Study} reports---patient-support programmes run by manufacturers---which made up
+93\% of such reports for ocrelizumab and mepolizumab, 86\% for omalizumab, but about 1\% for gentamicin and cisplatin.
+The mirror image appeared in FAERS: sacubitril/valsartan (2{,}801 hearing-loss reports; 88\% from consumers) and
+tafamidis (361; 86\% consumers) were strong FAERS signals, yet Canada Vigilance recorded 0 sacubitril cases against
+1.9 expected and 0 tafamidis cases against 3.4 expected.
+
+In a post-hoc analysis that removed solicited reports from Canada Vigilance and extended the indication filter to
+diseases that themselves cause hearing loss (which removed enzyme-replacement therapies for Fabry disease and
+mucopolysaccharidoses, canakinumab and cytomegalovirus immune globulin), the background fell to 16\%. When the Canadian
+estimate was adjusted in the same way as the FAERS one, labelled signals still replicated in 66\%, but unlabelled
+hearing-loss signals replicated in only 12 of 52 (23\%)---close to the 16\% background. For tinnitus the separation was
+clearer: 32\% of unlabelled signals against a 7\% background.
+
+Adjusting both databases mattered because co-medication bias replicates. Etoposide and vincristine, given in the same
+regimens as cisplatin, were crude signals in both databases (Canada ROR 5.1 and 12.1) and disappeared after adjustment
+in both (FAERS adjusted OR 0.78 and 0.45; Canada 1.15 and 1.15). Temporal replication within FAERS did not separate
+signal classes at all: early crude-only signals recurred after 2014 at least as often (64\%) as early adjusted ones (52\%),
+consistent with biases that persist over time.
+
+\subsection{Signals from previous screens}
+Of the 23 hearing-loss signals that Li et al.\ classified as unlabelled \cite{li2024}, 15 were crude and adjusted
+signals in our data, 5 were testable in Canada and 2 replicated (clofazimine and glycopyrrolate; Table~\ref{tab:prior}).
+Their strongest unlabelled signals included sacubitril/valsartan and tafamidis, discussed above. Of the 28 unlabelled
+paediatric signals of Liu et al.\ \cite{liu2025}, 11 survived adjustment in our all-age data; the chemotherapy drugs
+etoposide, vincristine, doxorubicin and gemcitabine were among those that did not.
+
+\subsection{Case-level review of robust unlabelled signals}
+Under the strict post-hoc definition, 17 hearing-loss and 19 tinnitus signals without any US label mention were adjusted
+FAERS signals that replicated in Canada. A rule-based review of their FAERS case series (Figure~\ref{fig:cand},
+Supplementary Table S3) attributed 7 to report clusters (most cases in reports listing $\geq$15 drugs; for example
+candesartan--tinnitus: 63\% of cases from the United Kingdom, 42\% received in 2023, median 43 drugs per report),
+5 to treatment regimens containing established ototoxic drugs (clofazimine, linezolid and rifabutin in mycobacterial
+disease with amikacin; mesna with cisplatin; polymyxin B, chiefly as ear drops), 6 to stimulated or mass-exposure
+reporting (mRNA COVID-19 vaccines, rofecoxib, finasteride), 7 to an indication or comorbidity linked to the event,
+and 1 (oral paromomycin--tinnitus) belongs to an established ototoxic class. Ten remained without an evident explanation
+(Table~\ref{tab:cand}): for hearing loss pregabalin, amlodipine, travoprost, glycopyrronium, interferon alfa-2b,
+ondansetron and, weakly, etanercept and tocilizumab; for tinnitus clonazepam and procaine benzylpenicillin. Several have
+a plausible mechanism or prior clinical descriptions (tinnitus on benzodiazepine withdrawal, auditory symptoms in procaine
+reactions, interferon-associated hearing loss), and three (amlodipine, travoprost, glycopyrronium) had at most one PubMed
+record linking the drug to hearing loss.
+
+\begin{table}[t]
+\centering\small
+\caption{Crude versus adjusted detection: reference-set discrimination and replication. Replication counts are
+replicated/testable ingredients.}
+\label{tab:methods}
+\begin{tabular}{p{9.2cm}cc}
+\toprule
+ & Crude & Adjusted \\
+\midrule
+\input{generated/table_methods.tex}
+\bottomrule
+\end{tabular}
+
+\smallskip
+\raggedright\footnotesize $^a$ Post hoc: FAERS with the extended indication filter; Canada without solicited reports,
+adjusted in the same way.
+\end{table}
+
+\begin{table}[t]
+\centering\small
+\caption{Previously reported FAERS hearing-loss signals re-tested in this study. Columns: drugs reported, crude signal
+here, adjusted signal here, adjusted and testable in Canada, adjusted and replicated in Canada.}
+\label{tab:prior}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccc}
+\toprule
+Study & Authors' label status & Reported & Crude & Adjusted & Testable & Replicated \\
+\midrule
+\input{generated/table_prior.tex}
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering\small
+\caption{Robust unlabelled signals without an evident artefactual explanation after case-level review. FAERS: adjusted
+Mantel--Haenszel OR (extended indication filter, Canadian reports excluded); FAERS cases: all reports naming the drug
+as suspect with the event; Canada: ROR without solicited reports; Consumer: share of FAERS cases reported by consumers;
+PubMed: records linking drug and event in title/abstract.
+These are hypotheses for further study, not evidence of causation.}
+\label{tab:cand}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrcrccr}
+\toprule
+Drug & Event & FAERS cases & FAERS adj.\ OR (95\% CI) & CA cases & Canada ROR (95\% CI) & Consumer & PubMed \\
+\midrule
+\input{generated/table_candidates.tex}
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/replication.png}
+\caption{Share of signals replicated, by signal class: in Canada Vigilance (all reports; post hoc without solicited
+reports) and in later FAERS reports. Grey bars are label-negative ingredients that were not FAERS signals: the rate at
+which ``replication'' happens without a known association.}
+\label{fig:repl}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/candidates.png}
+\caption{The 36 robust signals without a US label mention, by case-review category: A report cluster, B co-reported
+established ototoxic drug, C stimulated reporting, D indication or comorbidity, K established ototoxic class,
+E no evident artefact (bold).}
+\label{fig:cand}
+\end{figure}
+
+
+
+\section{Discussion}
+Three findings matter for anyone screening spontaneous reports for ototoxicity. First, adjusting for indication,
+ototoxic co-medication, lawyer reports and demographics changed about a fifth of the hearing-loss signal list but did
+not improve agreement with labels; crude and adjusted rules were equally (and only moderately) able to separate labelled
+from label-silent drugs. Second, replication in an independent national database was informative for labelled
+associations---two thirds replicated---but not a clean validator: up to one in five label-negative drugs also
+``replicated'', mostly through solicited patient-support-programme reports, and co-medication bias replicated as well
+when crude estimates were compared. Third, when both databases were adjusted and solicited reports set aside, unlabelled
+hearing-loss signals replicated barely above background, and a case-level review traced most robust unlabelled signals to
+identifiable artefacts. The list of credible new hearing-loss signals that an all-drug FAERS screen can support is
+therefore short.
+
+These results qualify the previous all-drug screens \cite{li2024,wu2025,liu2025} rather than contradict them. Their
+labelled signals largely held; their unlabelled signals mostly did not survive, and some of the strongest ones are
+explained by how reports were collected rather than by pharmacology. Sacubitril/valsartan and tafamidis are the clearest
+examples: thousands of consumer reports in FAERS, consistent with manufacturer support programmes in the United States,
+and none in Canada. The same mechanism produced spurious Canadian ``replications'' for biologics. Report provenance is a
+confounder that disproportionality statistics cannot see, and it differs between databases, so it can manufacture both
+signals and their replication.
+
+Methodologically, two inexpensive steps removed most of the artefacts we found: comparing \emph{adjusted} estimates in both
+databases, and inspecting the case series for concentration---share of solicited or consumer reports, a single country or
+year, and very drug-dense reports. The latter flagged report clusters that ordinary deduplication cannot catch because
+successive versions differ slightly. We suggest that FAERS screens for hearing outcomes report these provenance indicators
+for every signal, in line with the case-by-case review item of READUS-PV \cite{readuspv,readuspv_ee}.
+
+The ten remaining candidates are hypotheses. Some are pharmacologically or clinically familiar (tinnitus during
+benzodiazepine withdrawal; auditory symptoms in procaine reactions; interferon-associated hearing loss). Others are less familiar: pregabalin, an $\alpha_2\delta$ ligand with 1{,}795 FAERS
+hearing-loss reports that replicated in Canada; the long-acting muscarinic antagonist glycopyrronium; topical travoprost;
+and amlodipine, whose labels mention tinnitus but not hearing loss. Each is confounded by age and comorbidity that our
+strata capture only coarsely, and none should change practice without pharmacoepidemiological study with exposure data.
+
+\paragraph{Limitations.} Spontaneous reports lack exposure denominators, and disproportionality measures reporting, not risk.
+The label reference set is imperfect: labels are partly informed by spontaneous reports, often list rare events without
+causal assessment, and route-specific labels (for example topical gentamicin) blur ingredient-level status; we used it
+only to compare methods with each other. The indication filter depends on reported indications, which are often missing.
+The co-medication filter removes reports with an established ototoxic drug only when it is reported; unreported
+co-treatment (for example aminoglycosides in mycobacterial disease) remains. The Canada Vigilance documentation does not
+state that the extract is limited to domestic reports; sensitivity analyses restricted to reports submitted directly to
+Health Canada gave similar results. Mineral salts were merged at the ingredient level. Part of the analysis---the
+solicited-report exclusion, the extended indication filter, adjusted-to-adjusted replication and the case-level review---was
+added after the primary results were seen; it is reported as post hoc, and the pre-specified results are given unchanged.
+
+\paragraph{Conclusions.} In FAERS, most drug--hearing-loss signals that are not already on the label do not survive adjustment,
+adjusted replication in Canada Vigilance and a review of report provenance. Replication in a second spontaneous-reporting
+database is useful only when both estimates are adjusted and solicited reports are handled explicitly. A short list of
+candidates---led by pregabalin for hearing loss---merits study with exposure-based designs.
+
 
 \section*{Declarations}
-\textbf{Funding:} none. \textbf{Conflicts of interest:} %%COI%%
+\textbf{Funding:} none. \textbf{Conflicts of interest:} [TO CONFIRM BY AUTHOR] The author is employed as a software engineer by a company that develops practice-management software for hearing clinics; the company had no role in this work. 
 \textbf{Ethics:} not applicable (public, de-identified data).
 \textbf{Data and code availability:} all code, the pre-registered protocol and result tables are available at
-%%REPO%%.
+[REPOSITORY URL --- to be made public before submission].
 \textbf{Author contributions:} OT conceived the study, ran the analysis and wrote the manuscript.
-\textbf{Use of AI tools:} %%AI%%
+\textbf{Use of AI tools:} [TO CONFIRM BY AUTHOR] Data processing code, analyses and a first draft of the manuscript were produced with an AI assistant (Claude, Anthropic) under the author's direction; the author reviewed the code, results and text and takes full responsibility for them.
 
 \bibliographystyle{unsrtnat}
 \bibliography{refs}

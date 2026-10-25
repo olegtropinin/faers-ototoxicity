@@ -69,7 +69,7 @@ def candidates_figure():
                                  clo=x["canadanostudy_ror_lo"], chi=x["canadanostudy_ror_hi"]))
     d = pd.DataFrame(rows).sort_values(["ev", "cat", "flo"], ascending=[True, False, True]).reset_index(drop=True)
     catname = {"A": "report cluster", "B": "ototoxic co-medication", "C": "stimulated reporting",
-               "D": "indication / comorbidity", "E": "candidate"}
+               "D": "indication / comorbidity", "E": "candidate", "K": "established ototoxic class"}
     fig, ax = plt.subplots(figsize=(6.6, 0.2 * len(d) + 1.4))
     y = np.arange(len(d))
     ax.errorbar(d["f"], y + 0.15, xerr=[d["f"] - d["flo"], d["fhi"] - d["f"]], fmt="o", ms=3, color="#0a8a5f",

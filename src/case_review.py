@@ -8,9 +8,16 @@ short clinical reading of each profile. Category precedence: first matching rule
   B  treatment-context confounding >= 50 % of cases co-report an established ototoxic drug
   C  stimulated / mass-exposure    vaccines and drugs with litigation-era reporting
   D  indication or comorbidity     the indication itself is linked to the event
+  K  established ototoxic class   drug is on the a-priori ototoxic list (not novel)
   E  candidate                     none of the above
 """
+import sys
+from pathlib import Path
+
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).parent))
+from signals import KNOWN_OTOTOXIC  # noqa: E402
 
 VACCINE_OR_STIMULATED = {"TOZINAMERAN", "ELASOMERAN", "ROFECOXIB", "FINASTERIDE"}
 INDICATION_LINKED = {
@@ -42,6 +49,8 @@ NOTES = {
 def category(r):
     mega = float(r["mega_ge15_drugs"].rstrip("%")) / 100
     oto = float(r["with_known_ototoxic"].rstrip("%")) / 100
+    if r["drug"] in KNOWN_OTOTOXIC:
+        return "K"
     if mega >= 0.5:
         return "A"
     if oto >= 0.5:

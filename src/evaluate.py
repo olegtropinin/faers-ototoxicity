@@ -171,6 +171,15 @@ def evaluate(ev):
             "repl_nostudy_crude_only": rate(tn & m["crude"] & ~m["adjusted"], rn),
             "repl_nostudy_label_negative_non_signals": rate(tn & neg & ~m["crude"], rn),
         }
+        # adjusted-to-adjusted: the Canadian estimate is adjusted the same way as the FAERS one
+        ta = np.maximum(m["canadax_a_adj"].fillna(0), m["canadax_E"].fillna(0)) >= 3
+        ra = (m["canadax_a_adj"] >= 3) & (m["canadax_mh_lo"] > 1)
+        out["posthoc"].update({
+            "adjrepl_adjusted_x_labelled": rate(ta & m["adjusted_x"] & ~unl, ra),
+            "adjrepl_adjusted_x_unlabelled": rate(ta & m["adjusted_x"] & unl, ra),
+            "adjrepl_crude_only": rate(ta & m["crude"] & ~m["adjusted"], ra),
+            "adjrepl_label_negative_non_signals": rate(ta & neg & ~m["crude"], ra),
+        })
         m["ns_testable"], m["ns_repl"] = tn, rn
         strict = m[m["adjusted_x"] & rn]
         strict.to_csv(RES / f"{ev}_robust_posthoc.csv")

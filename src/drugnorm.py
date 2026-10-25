@@ -57,3 +57,33 @@ def build_base_map(names_with_counts: dict, min_count: int = 20) -> dict:
     itself observed at least `min_count` times."""
     vocab = {n for n, c in names_with_counts.items() if c >= min_count}
     return {n: strip_salt(n, vocab) for n in names_with_counts}
+
+
+# INN / USAN pairs that FAERS records under both names (mapped to the more frequent FAERS spelling).
+SYNONYMS = {
+    "GLYCOPYRRONIUM": "GLYCOPYRROLATE", "DIPYRONE": "METAMIZOLE", "SALBUTAMOL": "ALBUTEROL",
+    "PARACETAMOL": "ACETAMINOPHEN", "ADRENALINE": "EPINEPHRINE", "NORADRENALINE": "NOREPINEPHRINE",
+    "CICLOSPORIN": "CYCLOSPORINE", "RIFAMPICIN": "RIFAMPIN", "FRUSEMIDE": "FUROSEMIDE", "PETHIDINE": "MEPERIDINE",
+    "LIGNOCAINE": "LIDOCAINE", "ACETYLSALICYLIC ACID": "ASPIRIN", "VALPROATE": "VALPROIC ACID",
+    "OESTRADIOL": "ESTRADIOL", "AMOXYCILLIN": "AMOXICILLIN", "CEFALEXIN": "CEPHALEXIN",
+    "SULPHASALAZINE": "SULFASALAZINE", "COLESTYRAMINE": "CHOLESTYRAMINE", "GLIBENCLAMIDE": "GLYBURIDE",
+    "ISOPRENALINE": "ISOPROTERENOL", "PHENOBARBITONE": "PHENOBARBITAL", "ETACRYNIC ACID": "ETHACRYNIC ACID",
+    "BENZYLPENICILLIN PROCAINE": "PENICILLIN G PROCAINE", "PROCAINE BENZYLPENICILLIN": "PENICILLIN G PROCAINE",
+    "BENZYLPENICILLIN": "PENICILLIN G", "MESALAZINE": "MESALAMINE", "BECLOMETASONE": "BECLOMETHASONE",
+    "DEXAMFETAMINE": "DEXTROAMPHETAMINE", "CROMOGLICIC ACID": "CROMOLYN", "GLYCERYL TRINITRATE": "NITROGLYCERIN",
+    "TORASEMIDE": "TORSEMIDE", "ALUMINIUM HYDROXIDE": "ALUMINUM HYDROXIDE", "ACICLOVIR": "ACYCLOVIR",
+    "VALACICLOVIR": "VALACYCLOVIR", "CHLORPHENAMINE": "CHLORPHENIRAMINE", "TIOGUANINE": "THIOGUANINE",
+    "INSULIN NOS": "INSULIN",
+}
+# Non-specific "ingredients" that cannot carry a drug-level signal.
+NON_SPECIFIC = re.compile(r"^(?:MINERALS|VITAMINS?|HERBALS|UNSPECIFIED.*|.*\bNOS\b.*|NOS|OTHER CLAIMS|"
+                          r"ALL OTHER.*|UNKNOWN.*)$")
+
+
+def canonical(name: str) -> str:
+    """Final ingredient key: synonym-merged, biologic four-letter suffix removed; '' if non-specific."""
+    n = re.sub(r"-[A-Z]{4}$", "", name.strip())        # INFLIXIMAB-DYYB -> INFLIXIMAB
+    n = SYNONYMS.get(n, n)
+    if n.endswith(" HYDROCHLORIDE") and n[:-14] in SYNONYMS.values():
+        n = n[:-14]
+    return "" if NON_SPECIFIC.match(n) else n

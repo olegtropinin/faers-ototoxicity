@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from drugnorm import clean, strip_salt
+from drugnorm import canonical, clean, strip_salt
 
 C = Path("data/work/canada")
 log = {}
@@ -44,7 +44,7 @@ keep = set(rep["rid"])
 faers_vocab = set(pd.read_csv("data/work/faers/ing_vocab.csv")["name"].dropna())
 ing = pd.read_parquet(C / "ingredients.parquet")
 ing["ing"] = ing["ACTIVE_INGREDIENT_NAME"].fillna("").map(clean)
-uniq = {n: (n if n in faers_vocab else strip_salt(n, faers_vocab)) for n in ing["ing"].unique()}
+uniq = {n: canonical(n if n in faers_vocab else strip_salt(n, faers_vocab)) for n in ing["ing"].unique()}
 ing["ing"] = ing["ing"].map(uniq)
 ing = ing[ing["ing"] != ""][["DRUG_PRODUCT_ID", "ing"]].drop_duplicates()
 

@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
-from drugnorm import clean, strip_salt  # noqa: E402
-from signals import HL_PTS, TIN_PTS, run  # noqa: E402
+from drugnorm import canonical, clean, strip_salt  # noqa: E402
+from signals import HL_PTS, STRONG_OTOTOXIC, TIN_PTS, run  # noqa: E402
 
 F = Path("data/work/faers")
 C = Path("data/work/canada")
@@ -50,13 +50,13 @@ def reindex(rep, dr, rc, ind):
     return (rep, *out)
 
 
-def analyse(name, rep, dr, rc, ind, suspect_roles, lawyer_col=None, extended_indication=False):
+def analyse(name, rep, dr, rc, ind, suspect_roles, lawyer_col=None, **kw):
     rep, dr, rc, ind = reindex(rep, dr, rc, ind)
     sus = dr[dr["role"].isin(suspect_roles)][["rid", "ing"]].drop_duplicates()
     lawyer = (rep[lawyer_col] == "LW").values if lawyer_col else None
     res, pops = {}, {}
     for ev_name, pts in (("hl", HL_PTS), ("tin", TIN_PTS)):
-        r = run(rep, sus, dr, rc, ind, pts, lawyer, extended_indication)
+        r = run(rep, sus, dr, rc, ind, pts, lawyer, **kw)
         res[ev_name] = r.add_prefix(f"{name}_")
         pops[f"{name}_{ev_name}"] = r.attrs["population"]
         print(name, ev_name, r.attrs["population"], flush=True)
@@ -66,7 +66,8 @@ def analyse(name, rep, dr, rc, ind, suspect_roles, lawyer_col=None, extended_ind
 def label_table():
     lab = pd.read_parquet("data/work/labels.parquet")
     vocab = set(pd.read_csv(F / "ing_vocab.csv")["name"].dropna())
-    lab["ing"] = lab["substance"].map(lambda s: s if s in vocab else strip_salt(s, vocab))
+    lab["ing"] = lab["substance"].map(lambda s: canonical(s if s in vocab else strip_salt(s, vocab)))
+    lab = lab[lab["ing"] != ""]
     g = lab.groupby("ing").agg(n_labels=("set_id", "size"), rx=("rx", "any"), hl_any=("hl_any", "any"),
                                hl_strong=("hl_strong", "any"), tin_any=("tin_any", "any"))
     rx = lab[lab["rx"]].groupby("ing").agg(n_rx=("set_id", "size"), hl_frac_rx=("hl_any", "mean"),
@@ -101,10 +102,25 @@ def join():
         print(ev, m.shape)
 
 
+# Post-hoc / sensitivity variants (see PROTOCOL.md deviations 3-4). Every variant uses the extended
+# indication filter; they differ in how ototoxic co-medication and report clusters are handled.
+VARIANTS = {
+    "x": dict(extended_indication=True),
+    "xstrat": dict(extended_indication=True, comed="stratify"),
+    "xstrong": dict(extended_indication=True, ototoxic=STRONG_OTOTOXIC),
+    "xnomega": dict(extended_indication=True, mega_max=15),
+}
+
+
+def load_canada():
+    return (pd.read_parquet(C / "an_reports.parquet"), pd.read_parquet(C / "an_drugs.parquet"),
+            pd.read_parquet(C / "an_reacs.parquet"), pd.read_parquet(C / "an_indis.parquet"))
+
+
 if __name__ == "__main__":
     mode = sys.argv[1]
+    pops, parts = {}, {}
     if mode == "faers":
-        pops, parts = {}, {}
         rep, dr, rc, ind = load_faers()
         print("faers loaded", len(rep), flush=True)
         roles = ["PS", "SS", "I"]
@@ -115,38 +131,32 @@ if __name__ == "__main__":
             parts[name], p = analyse(name, sub, dr, rc, ind, roles, "occp_cod")
             pops.update(p)
         save(parts, pops, "faers")
+    elif mode == "faers_posthoc":
+        rep, dr, rc, ind = load_faers()
+        noca = rep[rep["country"] != "CA"]
+        for v, kw in VARIANTS.items():
+            parts[f"faersnoca{v}"], p = analyse(f"faersnoca{v}", noca, dr, rc, ind, ["PS", "SS", "I"], "occp_cod", **kw)
+            pops.update(p)
+        save(parts, pops, "faers_posthoc")
     elif mode == "canada":
-        crep = pd.read_parquet(C / "an_reports.parquet")
-        cdr = pd.read_parquet(C / "an_drugs.parquet")
-        crc = pd.read_parquet(C / "an_reacs.parquet")
-        cind = pd.read_parquet(C / "an_indis.parquet")
-        pops, parts = {}, {}
+        crep, cdr, crc, cind = load_canada()
         parts["canada"], p = analyse("canada", crep, cdr, crc, cind, ["S"])
         pops.update(p)
         # reports sent straight to Health Canada (not via manufacturers), so they cannot reach FAERS
         parts["canadadirect"], p = analyse("canadadirect", crep[crep["source"] != "MAH"], cdr, crc, cind, ["S"])
         pops.update(p)
         save(parts, pops, "canada")
-    elif mode == "faers_posthoc":
-        # post-hoc (after primary results): extended disease-indication exclusion
-        rep, dr, rc, ind = load_faers()
-        parts, pops = {}, {}
-        parts["faersnocax"], p = analyse("faersnocax", rep[rep["country"] != "CA"], dr, rc, ind,
-                                         ["PS", "SS", "I"], "occp_cod", extended_indication=True)
-        pops.update(p)
-        save(parts, pops, "faers_posthoc")
     elif mode == "canada_posthoc":
-        # post-hoc: drop solicited ("Study") reports, which carry patient-support-programme reporting,
-        # and apply the extended disease-indication exclusion
-        crep = pd.read_parquet(C / "an_reports.parquet")
-        cdr = pd.read_parquet(C / "an_drugs.parquet")
-        crc = pd.read_parquet(C / "an_reacs.parquet")
-        cind = pd.read_parquet(C / "an_indis.parquet")
-        parts, pops = {}, {}
+        # post-hoc: drop solicited ("Study") reports, which carry patient-support-programme reporting
+        crep, cdr, crc, cind = load_canada()
         ns = crep[crep["report_type"] != "Study"]
         parts["canadanostudy"], p = analyse("canadanostudy", ns, cdr, crc, cind, ["S"])
         pops.update(p)
-        parts["canadax"], p = analyse("canadax", ns, cdr, crc, cind, ["S"], extended_indication=True)
+        for v, kw in VARIANTS.items():
+            parts[f"canada{v}"], p = analyse(f"canada{v}", ns, cdr, crc, cind, ["S"], **kw)
+            pops.update(p)
+        parts["canada2004x"], p = analyse("canada2004x", ns[ns["year"] >= 2004], cdr, crc, cind, ["S"],
+                                          **VARIANTS["x"])
         pops.update(p)
         save(parts, pops, "canada_posthoc")
     elif mode == "join":

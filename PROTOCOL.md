@@ -80,3 +80,24 @@ at the end under "Deviations", with the reason.
       Cogan, Susac, mumps, measles, syphilis). Reason: enzyme-replacement therapies and
       canakinumab appeared among robust unlabelled signals.
    The primary, pre-specified results are reported unchanged; these are sensitivity analyses.
+4. (03:35-03:45, after an internal review round of the first draft — reported as such)
+   Corrections applied to ALL analyses, primary included (they fix errors, not choices):
+   a. Ingredient mapping: INN/USAN synonyms merged (e.g. glycopyrronium = glycopyrrolate),
+      four-letter biologic suffixes removed, non-specific entries (MINERALS, VITAMINS, "NOS") dropped.
+   b. For drugs on the a-priori ototoxic list, reports naming the drug itself in a non-suspect role
+      are removed from that drug's population (they sat, exposed, among its comparators).
+   c. The replication "background" now excludes adjusted as well as crude FAERS signals, as the
+      protocol text intended ("label-negative ingredients that were not FAERS signals").
+   Added sensitivity analyses (post hoc):
+   d. Co-reported ototoxic drugs handled by stratification instead of exclusion (collider concern);
+      a short "strong ototoxic" list; exclusion of reports naming >= 15 drugs (report clusters);
+      Canada restricted to 2004 onwards.
+   e. Extended indication filter now also covers further ear terms (presbycusis, hyperacusis,
+      tympanic, mastoid, cholesteatoma, Eustachian, otorrhoea), further diseases with hearing loss
+      (giant cell arteritis, GPA, relapsing polychondritis, Behcet, sarcoidosis, VKH, thyroid eye
+      disease, Turner, achondroplasia, alpha-mannosidosis, X-linked hypophosphataemia, rubella,
+      toxoplasmosis, Ramsay Hunt) and reports of prenatal exposure.
+   f. Power-calibrated replication: observed vs expected replications given Canadian expected counts.
+   g. Robust signals for case review are defined by adjusted-to-adjusted replication; the review
+      rubric is written down and applied by two assessors (author + independent AI assessor blind to
+      the first assignment); agreement is reported.

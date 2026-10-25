@@ -35,7 +35,22 @@ DISEASE_WITH_HEARING_LOSS = re.compile(
     r"\b(?:FABRY\w*|MUCOPOLYSACCHARIDOS\w*|HURLER\w*|HUNTER\w*|MORQUIO\w*|MAROTEAUX\w*|SANFILIPPO\w*|"
     r"CRYOPYRIN\w*|MUCKLE\w*|AUTOINFLAMMATORY|CINCA|NOMID|ALPORT\w*|MENINGITIS|MITOCHONDRIAL|MELAS|USHER\w*|"
     r"WOLFRAM\w*|CYTOMEGALOVIRUS|NEUROFIBROMATOSIS|PAGET\w*|OSTEITIS DEFORMANS|OSTEOGENESIS IMPERFECTA|"
-    r"HYPOPHOSPHATASIA|COGAN\w*|SUSAC\w*|MUMPS|MEASLES|SYPHILIS)\b")
+    r"HYPOPHOSPHATASIA|COGAN\w*|SUSAC\w*|MUMPS|MEASLES|SYPHILIS|"
+    # added after the clinical review (round 1): further ear terms and diseases with hearing loss
+    r"PRESBY\w*CUSIS|HYPERACUSIS|TYMPAN\w*|MASTOID\w*|CHOLESTEATOMA|EUSTACHIAN|OTORRH\w*|"
+    r"GIANT CELL ARTERITIS|TEMPORAL ARTERITIS|GRANULOMATOSIS WITH POLYANGIITIS|WEGENER\w*|POLYCHONDRITIS|"
+    r"BEHCET\w*|SARCOIDOSIS|VOGT|HARADA|THYROID EYE DISEASE|ENDOCRINE OPHTHALMOPATHY|"
+    r"GRAVES\W? OPHTHALMOPATHY|TURNER\W?S? SYNDROME|ACHONDROPLASIA|MANNOSIDOSIS|HYPOPHOSPHATA?EMI\w*|"
+    r"RUBELLA|TOXOPLASMOSIS|RAMSAY HUNT|HERPES ZOSTER OTICUS)\b")
+# reports describing prenatal exposure: hearing loss there is congenital, not a drug effect in the patient
+FOETAL = re.compile(r"\b(?:FOETAL|FETAL) EXPOSURE|EXPOSURE DURING PREGNANCY|MATERNAL EXPOSURE")
+
+# Sensitivity list: drugs with strong, consistent ototoxicity evidence only.
+STRONG_OTOTOXIC = {
+    "GENTAMICIN", "TOBRAMYCIN", "AMIKACIN", "STREPTOMYCIN", "NEOMYCIN", "KANAMYCIN", "NETILMICIN", "PLAZOMICIN",
+    "PAROMOMYCIN", "CAPREOMYCIN", "FRAMYCETIN", "DIHYDROSTREPTOMYCIN", "CISPLATIN", "CARBOPLATIN",
+    "FUROSEMIDE", "BUMETANIDE", "TORSEMIDE", "ETHACRYNIC ACID", "QUININE", "DEFEROXAMINE",
+}
 
 # A-priori established ototoxic drugs (classes reviewed in Lanvers-Kaminsky et al. 2017).
 KNOWN_OTOTOXIC = {
@@ -97,9 +112,15 @@ def _mh(ing, rid, ev, st, n_ing, n_st, pop):
     return a_s.sum(1), n_s.sum(1), orr, lo, hi
 
 
-def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended_indication=False):
-    """rep: reports with rid 0..R-1; sus: (rid, ing_name) suspect pairs; any_drug: (rid, ing_name)
-    any role; reac_pts / indi_pts: (rid, name). Returns one row per suspect ingredient."""
+def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended_indication=False,
+        comed="exclude", ototoxic=None, mega_max=None):
+    """rep: reports with rid 0..R-1; sus: (rid, ing) suspect pairs; any_drug: (rid, ing, role) any role;
+    reac_pts / indi_pts: (rid, name). Returns one row per suspect ingredient.
+
+    comed: "exclude" drops reports naming an established ototoxic drug (primary); "stratify" keeps them and
+    adds "ototoxic co-reported yes/no" as a stratum dimension. ototoxic: the list used (default KNOWN_OTOTOXIC).
+    mega_max: drop reports naming >= this many distinct drugs (report-cluster sensitivity)."""
+    ototoxic = KNOWN_OTOTOXIC if ototoxic is None else ototoxic
     R = len(rep)
     ev = np.zeros(R)
     ev[reac_pts.loc[reac_pts["pt"].isin(event_pts), "rid"].values] = 1
@@ -109,7 +130,6 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended
     n_ing = len(names)
 
     # crude
-    allpop = np.ones(R, bool)
     a = np.bincount(ing, weights=ev[rid], minlength=n_ing)
     n = np.bincount(ing, minlength=n_ing).astype(float)
     out = pd.DataFrame(_crude(a, n, ev.sum(), R), index=names)
@@ -120,30 +140,46 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended
     hit = ind_txt.str.contains(EAR_INDICATION).fillna(False)
     if extended_indication:
         hit |= ind_txt.str.contains(DISEASE_WITH_HEARING_LOSS).fillna(False)
+        hit |= ind_txt.str.contains(FOETAL).fillna(False)
     ear_ind[indi_pts.loc[hit.values, "rid"].values] = True
+    if extended_indication:
+        ear_ind[reac_pts.loc[reac_pts["pt"].astype(str).str.contains(FOETAL).fillna(False).values, "rid"].values] = True
     base = ~ear_ind
     if lawyer is not None:
         base &= ~lawyer
-    k = any_drug[any_drug["ing"].isin(KNOWN_OTOTOXIC)][["rid", "ing"]].drop_duplicates()
+    u = any_drug[["rid", "ing"]].drop_duplicates()
+    if mega_max is not None:
+        base &= np.bincount(u["rid"].values, minlength=R) < mega_max
+    k = u[u["ing"].isin(ototoxic)]
     k_count = np.bincount(k["rid"].values, minlength=R)
-    st = strata(rep)
-    n_st = 60
-
-    pop = base & (k_count == 0)
+    st0 = strata(rep)
+    if comed == "exclude":
+        pop, st, n_st = base & (k_count == 0), st0, 60
+    else:
+        pop, st, n_st = base, st0 * 2 + (k_count > 0), 120
     a_adj, n_adj, orr, lo, hi = _mh(ing, rid, ev, st, n_ing, n_st, pop)
     out["a_adj"], out["n_adj"], out["mh_or"], out["mh_lo"], out["mh_hi"] = a_adj, n_adj, orr, lo, hi
 
-    # known ototoxic drugs: exclude only reports with *another* known ototoxic drug
-    for kname in sorted(KNOWN_OTOTOXIC & set(names)):
+    # drugs on the ototoxic list: only *other* listed drugs count, and reports naming the drug itself in a
+    # non-suspect role are removed from its population (they would sit, exposed, among its comparators)
+    sus_pairs = set(zip(sus["rid"].values, sus["ing"].values))
+    for kname in sorted(set(ototoxic) & set(names)):
+        k_rids = k.loc[k["ing"] == kname, "rid"].values
         has_self = np.zeros(R, bool)
-        has_self[k.loc[k["ing"] == kname, "rid"].values] = True
-        popk = base & ((k_count - has_self) == 0)
+        has_self[k_rids] = True
+        nonsus = np.zeros(R, bool)
+        nonsus[[r for r in k_rids if (r, kname) not in sus_pairs]] = True
+        other = (k_count - has_self) > 0
+        if comed == "exclude":
+            popk, stk = base & ~other & ~nonsus, st0
+        else:
+            popk, stk = base & ~nonsus, st0 * 2 + other
         j = names.get_loc(kname)
         m = ing == j
-        aa, nn, o, l, h = _mh(np.zeros(m.sum(), np.int32), rid[m], ev, st, 1, n_st, popk)
+        aa, nn, o, l, h = _mh(np.zeros(m.sum(), np.int32), rid[m], ev, stk, 1, n_st, popk)
         out.loc[kname, ["a_adj", "n_adj", "mh_or", "mh_lo", "mh_hi"]] = [aa[0], nn[0], o[0], l[0], h[0]]
 
-    out["known_ototoxic"] = out.index.isin(KNOWN_OTOTOXIC)
+    out["known_ototoxic"] = out.index.isin(ototoxic)
     out.attrs["population"] = dict(reports=R, events=int(ev.sum()), adj_reports=int(pop.sum()),
                                    adj_events=int(ev[pop].sum()), ear_indication=int(ear_ind.sum()),
                                    with_known_ototoxic=int((k_count > 0).sum()),

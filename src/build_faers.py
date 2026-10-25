@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from drugnorm import build_base_map, clean, split_prod_ai
+from drugnorm import build_base_map, canonical, clean, split_prod_ai
 
 Q = Path(os.environ.get("FAERS_Q", "data/work/faers/q"))
 OUT = Path(os.environ.get("FAERS_OUT", "data/work/faers"))
@@ -130,6 +130,9 @@ for q in quarters:
         if not t:
             t = name_to_ings(clean(nm))
         for x in t:
+            x = canonical(x)
+            if not x:
+                continue
             pair_rows.append(i)
             ing_rows.append(code_of(x))
     uniq["pair"] = np.arange(len(uniq))

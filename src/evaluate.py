@@ -1,28 +1,44 @@
-"""Evaluate crude vs adjusted signal detection against the label reference set, the
-Canadian replication and the temporal replication; list robust signals; draw figures.
+"""Evaluate crude vs adjusted signal detection: label reference set, replication in Canada Vigilance
+(observed and power-calibrated), temporal replication, sensitivity variants, prior screens.
 
-Reads results/<event>_master.csv; writes results/<event>_*.csv, results/summary_<event>.json
-and figures/*.png.
+Reads results/<event>_master.csv; writes results/summary_<event>.json, results/<event>_robust*.csv,
+results/prior_screens.csv and figures/roc_<event>.png.
 """
 import json
 import sys
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import matplotlib
 import numpy as np
 import pandas as pd
+from scipy.stats import fisher_exact, poisson
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).parent))
+from signals import KNOWN_OTOTOXIC  # noqa: E402
 
 RES, FIG = Path("results"), Path("figures")
 FIG.mkdir(exist_ok=True)
 rng = np.random.default_rng(20261026)
 MIN_REPORTS = 1000
+FLOOR = -20.0
+VARIANTS = ["x", "xstrat", "xstrong", "xnomega"]
+
+
+def half_up(x, nd=0):
+    return float(Decimal(str(x)).quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP))
 
 
 def crude_sig(m, p):
     return (m[f"{p}_a"] >= 3) & (m[f"{p}_ror_lo"] > 1) & (m[f"{p}_ic025"] > 0)
+
+
+def ror_sig(m, p):
+    """Crude rule with the same single criterion as the adjusted rule (symmetric comparison)."""
+    return (m[f"{p}_a"] >= 3) & (m[f"{p}_ror_lo"] > 1)
 
 
 def adj_sig(m, p):
@@ -38,7 +54,6 @@ def replicated(m, p):
 
 
 def auc(score, y):
-    """Mann-Whitney AUC; ties count 1/2."""
     pos, neg = score[y], score[~y]
     r = pd.Series(np.concatenate([pos, neg])).rank().values
     return (r[:len(pos)].sum() - len(pos) * (len(pos) + 1) / 2) / (len(pos) * len(neg))
@@ -47,195 +62,199 @@ def auc(score, y):
 def wilson(k, n):
     if n == 0:
         return (np.nan, np.nan, np.nan)
-    p, z = k / n, 1.96
+    p, z = k / n, 1.959963984540054
     c = (p + z * z / (2 * n)) / (1 + z * z / n)
     h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
     return (p, c - h, c + h)
 
 
-def rate(mask_den, mask_num):
-    n, k = int(mask_den.sum()), int((mask_den & mask_num).sum())
+def rate(den, num):
+    n, k = int(den.sum()), int((den & num).sum())
     p, lo, hi = wilson(k, n)
     return {"k": k, "n": n, "rate": p, "lo": lo, "hi": hi}
 
 
-def forest(robust, ev, top=30):
-    """Adjusted FAERS OR next to the Canadian ROR for robust signals (log scale)."""
-    lab = "hl_any" if ev == "hl" else "tin_any"
-    r = robust.head(top).iloc[::-1]
-    if r.empty:
-        return
-    fig, ax = plt.subplots(figsize=(6.2, 0.26 * len(r) + 1.2))
-    y = np.arange(len(r))
-    ax.errorbar(r["faers_mh_or"], y + 0.15, xerr=[r["faers_mh_or"] - r["faers_mh_lo"], r["faers_mh_hi"] - r["faers_mh_or"]],
-                fmt="o", ms=3, color="#0a6", lw=1, label="FAERS, adjusted MH OR")
-    ax.errorbar(r["canada_ror"], y - 0.15, xerr=[r["canada_ror"] - r["canada_ror_lo"], r["canada_ror_hi"] - r["canada_ror"]],
-                fmt="s", ms=3, color="#c60", lw=1, label="Canada Vigilance, ROR")
-    names = [f"{n.title()}{'' if l is True else ' *'}" for n, l in zip(r.index, r[lab])]
-    ax.set_yticks(y)
-    ax.set_yticklabels(names, fontsize=7)
-    ax.set_xscale("log")
-    ax.axvline(1, color="#999", lw=0.8)
-    ax.set_xlabel("odds ratio (95% CI), log scale")
-    ax.legend(fontsize=7, loc="lower right")
-    ax.set_title(f"Robust {'hearing-loss' if ev == 'hl' else 'tinnitus'} signals (* = no US label mention)", fontsize=9)
-    fig.tight_layout()
-    fig.savefig(FIG / f"forest_{ev}.png", dpi=200)
-    plt.close(fig)
+def fisher(r1, r2):
+    """Two rate dicts -> odds ratio and two-sided Fisher p for r1 vs r2."""
+    o, p = fisher_exact([[r1["k"], r1["n"] - r1["k"]], [r2["k"], r2["n"] - r2["k"]]])
+    return {"odds_ratio": o, "p": p}
 
 
-def evaluate(ev):
-    m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient")
-    ref = m[f"ref_{ev}"] if f"ref_{ev}" in m else m["ref_hl"]
-    out = {}
+def score(x):
+    return np.log(x).replace([-np.inf, np.inf], FLOOR).fillna(FLOOR).values
 
-    # --- 1. reference set ---
-    base = (m["faers_n"] >= MIN_REPORTS) & ref.isin(["pos", "neg"])
+
+def reference(m, ref, min_reports=MIN_REPORTS, exclude=None):
+    base = (m["faers_n"] >= min_reports) & ref.isin(["pos", "neg"])
+    if exclude is not None:
+        base &= ~m.index.isin(exclude)
     r = m[base]
     y = (ref[base] == "pos").values
-    floor = -20.0
-    scores = {
-        "crude_IC025": r["faers_ic025"].fillna(floor).values,
-        "crude_logROR025": np.log(r["faers_ror_lo"]).replace([-np.inf, np.inf], floor).fillna(floor).values,
-        "adjusted_logMH025": np.log(r["faers_mh_lo"]).replace([-np.inf, np.inf], floor).fillna(floor).values,
-    }
-    aucs = {k: auc(v, y) for k, v in scores.items()}
-    boot = []
-    idx = np.arange(len(y))
+    scores = {"crude_logROR025": score(r["faers_ror_lo"]), "adjusted_logMH025": score(r["faers_mh_lo"]),
+              "crude_IC025": r["faers_ic025"].fillna(FLOOR).values,
+              "crude_logROR": score(r["faers_ror"]), "adjusted_logMH": score(r["faers_mh_or"])}
+    a = {k: auc(v, y) for k, v in scores.items()}
+    idx, boot = np.arange(len(y)), []
     for _ in range(2000):
         b = rng.choice(idx, len(idx))
         if y[b].all() or (~y[b]).all():
             continue
-        boot.append(auc(scores["adjusted_logMH025"][b], y[b]) - auc(scores["crude_IC025"][b], y[b]))
-    cs, as_ = crude_sig(r, "faers").values, adj_sig(r, "faers").values
-    out["reference"] = {
-        "n_pos": int(y.sum()), "n_neg": int((~y).sum()), "min_reports": MIN_REPORTS,
-        "auc": aucs, "auc_diff_adj_minus_crude": float(np.mean(boot)),
-        "auc_diff_ci": [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))],
-        "crude_sens": float(cs[y].mean()), "crude_spec": float(1 - cs[~y].mean()),
-        "adj_sens": float(as_[y].mean()), "adj_spec": float(1 - as_[~y].mean()),
-    }
-    # ROC figure
+        boot.append(auc(scores["adjusted_logMH025"][b], y[b]) - auc(scores["crude_logROR025"][b], y[b]))
+    cs, rs, as_ = crude_sig(r, "faers").values, ror_sig(r, "faers").values, adj_sig(r, "faers").values
+    return {"n_pos": int(y.sum()), "n_neg": int((~y).sum()), "min_reports": min_reports, "auc": a,
+            "auc_diff_observed": a["adjusted_logMH025"] - a["crude_logROR025"],
+            "auc_diff_ci": [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))],
+            "adjusted_score_at_floor": int((scores["adjusted_logMH025"] == FLOOR).sum()),
+            "crude_sens": float(cs[y].mean()), "crude_spec": float(1 - cs[~y].mean()),
+            "ror_sens": float(rs[y].mean()), "ror_spec": float(1 - rs[~y].mean()),
+            "adj_sens": float(as_[y].mean()), "adj_spec": float(1 - as_[~y].mean())}, scores, y
+
+
+def roc_figure(ev, scores, y, aucs):
     fig, ax = plt.subplots(figsize=(4.2, 4.2))
-    for (k, v), c in zip(scores.items(), ["#888", "#bbb", "#0a6"]):
+    for k, c in (("crude_logROR025", "#999"), ("crude_IC025", "#bbb"), ("adjusted_logMH025", "#0a8a5f")):
+        v = scores[k]
         o = np.argsort(-v)
         tpr = np.concatenate([[0], np.cumsum(y[o]) / y.sum()])
         fpr = np.concatenate([[0], np.cumsum(~y[o]) / (~y).sum()])
-        ax.plot(fpr, tpr, color=c, lw=2 if "adj" in k else 1.2, label=f"{k} (AUC {aucs[k]:.2f})")
+        ax.plot(fpr, tpr, color=c, lw=2 if "adj" in k else 1.2, label=f"{k} (AUC {aucs[k]:.3f})")
     ax.plot([0, 1], [0, 1], ":", color="#ccc")
-    ax.set_xlabel("1 - specificity (label-negative ingredients)")
-    ax.set_ylabel("sensitivity (label-positive ingredients)")
-    ax.set_title(f"{'Hearing loss' if ev == 'hl' else 'Tinnitus'}: label reference set\n"
-                 f"{int(y.sum())} positive, {int((~y).sum())} negative ingredients", fontsize=9)
-    ax.legend(fontsize=7, loc="lower right")
+    ax.set_xlabel("1 - specificity (label-negative)")
+    ax.set_ylabel("sensitivity (label-positive)")
+    ax.set_title(f"{'Hearing loss' if ev == 'hl' else 'Tinnitus'}: {int(y.sum())} positive, "
+                 f"{int((~y).sum())} negative ingredients", fontsize=9)
+    ax.legend(fontsize=6.5, loc="lower right")
     fig.tight_layout()
     fig.savefig(FIG / f"roc_{ev}.png", dpi=200)
     plt.close(fig)
 
-    # --- 2. signal flow and external replication (FAERS without Canada -> Canada) ---
-    m["crude"] = crude_sig(m, "faersnoca")
-    m["adjusted"] = adj_sig(m, "faersnoca")
-    m["ca_testable"] = testable(m, "canada")
-    m["ca_repl"] = replicated(m, "canada")
-    m["label_mention"] = m["hl_any"] if ev == "hl" else m["tin_any"]
-    unl = m["label_mention"] != True  # noqa: E712  (NaN = no single-ingredient US label found)
+
+def calibrated(m, mask, faers_or, ca):
+    """Observed vs power-expected replications. Replication = Canadian count >= a_crit, the smallest count >= 3
+    with Poisson P(X >= a | E) < 0.025. Expected if true uses lambda = E x FAERS adjusted OR (floored at 1)."""
+    E = m[f"{ca}_E"].fillna(0).values
+    a = m[f"{ca}_a"].fillna(0).values
+    orr = m[faers_or].replace([np.inf], np.nan).fillna(1).clip(lower=1).values
+    sel = mask.fillna(False).values & (E > 0)
+    obs = exp1 = exp0 = 0.0
+    n = 0
+    for e, aa, o in zip(E[sel], a[sel], orr[sel]):
+        crit = 3
+        while poisson.sf(crit - 1, e) >= 0.025:
+            crit += 1
+        obs += aa >= crit
+        exp1 += poisson.sf(crit - 1, e * o)
+        exp0 += poisson.sf(crit - 1, e)
+        n += 1
+    return {"n": n, "observed": int(obs), "expected_if_true": exp1, "expected_if_null": exp0,
+            "obs_over_exp": obs / exp1 if exp1 > 0 else np.nan}
+
+
+def evaluate(ev):
+    m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient", low_memory=False)
+    ref = m[f"ref_{ev}"]
+    lab_col = "hl_any" if ev == "hl" else "tin_any"
+    labelled = m[lab_col] == True  # noqa: E712  (NaN = no single-ingredient US label found)
     neg = ref == "neg"
+    out = {}
+
+    # 1. reference set
+    out["reference"], scores, y = reference(m, ref)
+    roc_figure(ev, scores, y, out["reference"]["auc"])
+    out["reference_sensitivity"] = {f"min_reports_{k}": reference(m, ref, k)[0]["auc"] for k in (100, 500)}
+    out["reference_sensitivity"]["without_29_listed"] = reference(m, ref, exclude=KNOWN_OTOTOXIC)[0]["auc"]
+
+    # 2. pre-specified replication: FAERS without Canada -> Canada (crude), all reports
+    m["crude"], m["adjusted"] = crude_sig(m, "faersnoca"), adj_sig(m, "faersnoca")
+    t, r = testable(m, "canada"), replicated(m, "canada")
+    bg = neg & ~m["crude"] & ~m["adjusted"]
     out["flow"] = {"crude_signals": int(m["crude"].sum()), "adjusted_signals": int(m["adjusted"].sum()),
                    "crude_not_adjusted": int((m["crude"] & ~m["adjusted"]).sum()),
-                   "adjusted_not_crude": int((m["adjusted"] & ~m["crude"]).sum())}
-    t = m["ca_testable"]
-    out["replication_canada"] = {
-        "adjusted_signals": rate(t & m["adjusted"], m["ca_repl"]),
-        "adjusted_unlabelled": rate(t & m["adjusted"] & unl, m["ca_repl"]),
-        "adjusted_labelled": rate(t & m["adjusted"] & ~unl, m["ca_repl"]),
-        "crude_only_signals": rate(t & m["crude"] & ~m["adjusted"], m["ca_repl"]),
-        "label_negative_non_signals": rate(t & neg & ~m["crude"], m["ca_repl"]),
-        "label_negative_all": rate(t & neg & (m["faersnoca_n"] >= MIN_REPORTS), m["ca_repl"]),
-    }
+                   "adjusted_not_crude": int((m["adjusted"] & ~m["crude"]).sum()),
+                   "symmetric_ror_signals": int(ror_sig(m, "faersnoca").sum()),
+                   "symmetric_ror_not_adjusted": int((ror_sig(m, "faersnoca") & ~m["adjusted"]).sum()),
+                   "adjusted_not_symmetric_ror": int((m["adjusted"] & ~ror_sig(m, "faersnoca")).sum())}
+    rc = {"adjusted_labelled": rate(t & m["adjusted"] & labelled, r),
+          "adjusted_unlabelled": rate(t & m["adjusted"] & ~labelled, r),
+          "adjusted_label_negative": rate(t & m["adjusted"] & neg, r),
+          "crude_only": rate(t & m["crude"] & ~m["adjusted"], r),
+          "background": rate(t & bg, r)}
+    rc["test_unlabelled_vs_background"] = fisher(rc["adjusted_unlabelled"], rc["background"])
+    rc["test_labelled_vs_background"] = fisher(rc["adjusted_labelled"], rc["background"])
+    out["replication_canada"] = rc
     td, rd = testable(m, "canadadirect"), replicated(m, "canadadirect")
-    out["replication_canada_direct_only"] = {
-        "adjusted_signals": rate(td & m["adjusted"], rd),
-        "crude_only_signals": rate(td & m["crude"] & ~m["adjusted"], rd),
-        "label_negative_non_signals": rate(td & neg & ~m["crude"], rd),
-    }
-    # --- 2b. post-hoc: extended disease-indication exclusion, Canada without solicited reports ---
-    if "faersnocax_mh_lo" in m and "canadanostudy_a" in m:
-        m["adjusted_x"] = adj_sig(m, "faersnocax")
-        tn, rn = testable(m, "canadanostudy"), replicated(m, "canadanostudy")
-        out["posthoc"] = {
-            "adjusted_signals_extended": int(m["adjusted_x"].sum()),
-            "primary_signals_lost_by_extension": sorted(m.index[m["adjusted"] & ~m["adjusted_x"]].tolist()),
-            "repl_nostudy_adjusted_x": rate(tn & m["adjusted_x"], rn),
-            "repl_nostudy_adjusted_x_unlabelled": rate(tn & m["adjusted_x"] & unl, rn),
-            "repl_nostudy_adjusted_x_labelled": rate(tn & m["adjusted_x"] & ~unl, rn),
-            "repl_nostudy_crude_only": rate(tn & m["crude"] & ~m["adjusted"], rn),
-            "repl_nostudy_label_negative_non_signals": rate(tn & neg & ~m["crude"], rn),
-        }
-        # adjusted-to-adjusted: the Canadian estimate is adjusted the same way as the FAERS one
-        ta = np.maximum(m["canadax_a_adj"].fillna(0), m["canadax_E"].fillna(0)) >= 3
-        ra = (m["canadax_a_adj"] >= 3) & (m["canadax_mh_lo"] > 1)
-        out["posthoc"].update({
-            "adjrepl_adjusted_x_labelled": rate(ta & m["adjusted_x"] & ~unl, ra),
-            "adjrepl_adjusted_x_unlabelled": rate(ta & m["adjusted_x"] & unl, ra),
-            "adjrepl_crude_only": rate(ta & m["crude"] & ~m["adjusted"], ra),
-            "adjrepl_label_negative_non_signals": rate(ta & neg & ~m["crude"], ra),
-        })
-        m["ns_testable"], m["ns_repl"] = tn, rn
-        strict = m[m["adjusted_x"] & rn]
-        strict.to_csv(RES / f"{ev}_robust_posthoc.csv")
-        out["posthoc"]["robust_strict"] = len(strict)
-        out["posthoc"]["robust_strict_unlabelled"] = int((strict["label_mention"] != True).sum())  # noqa: E712
+    out["replication_canada_direct"] = {"adjusted": rate(td & m["adjusted"], rd), "background": rate(td & bg, rd)}
+    out["calibrated_canada"] = {
+        "adjusted_labelled": calibrated(m, m["adjusted"] & labelled, "faersnoca_mh_or", "canada"),
+        "adjusted_unlabelled": calibrated(m, m["adjusted"] & ~labelled, "faersnoca_mh_or", "canada"),
+        "adjusted_label_negative": calibrated(m, m["adjusted"] & neg, "faersnoca_mh_or", "canada"),
+        "background": calibrated(m, bg, "faersnoca_mh_or", "canada")}
 
-    # --- 3. temporal replication (<= 2014 -> >= 2015) ---
+    # 3. temporal
     m["early_crude"], m["early_adj"] = crude_sig(m, "early"), adj_sig(m, "early")
     lt, lr = testable(m, "late"), replicated(m, "late")
     out["replication_temporal"] = {
         "early_adjusted": rate(lt & m["early_adj"], lr),
         "early_crude_only": rate(lt & m["early_crude"] & ~m["early_adj"], lr),
-        "label_negative_non_signals": rate(lt & neg & ~m["early_crude"], lr),
-    }
+        "background": rate(lt & neg & ~m["early_crude"] & ~m["early_adj"], lr)}
 
-    # --- 4. robust signals ---
-    cols = ["faers_n", "faers_a", "faers_ror", "faers_ror_lo", "faers_a_adj", "faers_mh_or", "faers_mh_lo",
-            "faers_mh_hi", "faersnoca_a_adj", "faersnoca_mh_or", "faersnoca_mh_lo", "canada_n", "canada_a",
-            "canada_E", "canada_ror", "canada_ror_lo", "canada_ror_hi", "canada_a_adj", "canada_mh_or",
-            "canada_mh_lo", "known_ototoxic" if "known_ototoxic" in m else "faers_known_ototoxic",
-            "n_labels", "hl_any", "tin_any", f"ref_{ev}", "crude", "adjusted", "ca_testable", "ca_repl"]
-    cols = [c for c in cols if c in m]
-    robust = m[m["adjusted"] & m["ca_repl"]][cols].sort_values("faers_mh_lo", ascending=False)
-    robust.to_csv(RES / f"{ev}_robust_signals.csv")
-    robust[robust["hl_any" if ev == "hl" else "tin_any"] != True].to_csv(  # noqa: E712
-        RES / f"{ev}_robust_unlabelled.csv")
-    m[m["crude"] | m["adjusted"]][cols].to_csv(RES / f"{ev}_all_signals.csv")
-    forest(robust, ev)
-    out["robust"] = {"all": len(robust),
-                     "unlabelled": int((robust["hl_any" if ev == "hl" else "tin_any"] != True).sum())}  # noqa: E712
+    # 4. post hoc: extended indication filter, Canada without solicited reports, both adjusted
+    sel_ref = (m["faers_n"] >= MIN_REPORTS) & ref.isin(["pos", "neg"])
+    ph = {}
+    for v in VARIANTS:
+        f, c = f"faersnoca{v}", f"canada{v}"
+        if f"{f}_mh_lo" not in m or f"{c}_mh_lo" not in m:
+            continue
+        sig = adj_sig(m, f)
+        rep_adj = (m[f"{c}_a_adj"] >= 3) & (m[f"{c}_mh_lo"] > 1)
+        tst = np.maximum(m[f"{c}_a"].fillna(0), m[f"{c}_E"].fillna(0)) >= 3
+        bgv = neg & ~m["crude"] & ~sig
+        res = {"adjusted_signals": int(sig.sum()),
+               "lost_vs_primary": int((m["adjusted"] & ~sig).sum()),
+               "auc_adjusted_logMH025": auc(score(m.loc[sel_ref, f"{f}_mh_lo"]), (ref[sel_ref] == "pos").values),
+               "labelled": rate(tst & sig & labelled, rep_adj),
+               "unlabelled": rate(tst & sig & ~labelled, rep_adj),
+               "label_negative_signals": rate(tst & sig & neg, rep_adj),
+               "background": rate(tst & bgv, rep_adj),
+               "calibrated_unlabelled": calibrated(m, sig & ~labelled, f"{f}_mh_or", c),
+               "calibrated_labelled": calibrated(m, sig & labelled, f"{f}_mh_or", c)}
+        res["test_unlabelled_vs_background"] = fisher(res["unlabelled"], res["background"])
+        robust = m[sig & rep_adj].copy()
+        robust["labelled"] = labelled[robust.index]
+        res["robust"] = len(robust)
+        res["robust_unlabelled"] = int((~robust["labelled"]).sum())
+        robust.to_csv(RES / f"{ev}_robust_{v}.csv")
+        ph[v] = res
+    out["posthoc"] = ph
     json.dump(out, open(RES / f"summary_{ev}.json", "w"), indent=1, default=float)
     return out
 
 
 def prior_screens():
-    """How the signals reported by earlier FAERS screens fare here (crude -> adjusted -> Canada)."""
     rows = []
     for f in sorted(Path("data/raw/prior").glob("*.csv")):
         p = pd.read_csv(f)
-        if p.empty or "drug" not in p:
-            continue
         for scope, ev in (("hearing_loss", "hl"), ("hearing_any", "hl"), ("tinnitus", "tin")):
             sub = p[p["event_scope"] == scope]
             if sub.empty:
                 continue
-            m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient")
-            names = sub["drug"].str.upper().str.strip().drop_duplicates()
-            found = names[names.isin(m.index)]
-            mm = m.loc[found]
-            crude, adj = crude_sig(mm, "faers"), adj_sig(mm, "faers")
-            t, r = testable(mm, "canada"), replicated(mm, "canada")
-            rows.append({"study": f.stem, "scope": scope, "reported": len(names), "matched": len(found),
-                         "crude_here": int(crude.sum()), "adjusted_here": int(adj.sum()),
-                         "adjusted_and_testable": int((adj & t).sum()), "adjusted_and_replicated": int((adj & r).sum()),
-                         "lost_on_adjustment": ";".join(sorted(found[(crude & ~adj).values])),
-                         "unmatched": ";".join(sorted(set(names) - set(found)))})
+            m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient", low_memory=False)
+            for lab_flag in ("yes", "no", "unknown"):
+                names = sub[sub["labeled_per_authors"] == lab_flag]["drug"].str.upper().str.strip().drop_duplicates()
+                if names.empty:
+                    continue
+                x = m.reindex(names)
+                crude, adj = crude_sig(x, "faersnoca"), adj_sig(x, "faersnoca")
+                t, r = testable(x, "canada"), replicated(x, "canada")
+                adjx = adj_sig(x, "faersnocax")
+                radj = (x["canadax_a_adj"] >= 3) & (x["canadax_mh_lo"] > 1)
+                rows.append({"study": f.stem, "scope": scope, "labelled_per_authors": lab_flag,
+                             "reported": len(names), "matched": int(x["faersnoca_n"].notna().sum()),
+                             "crude_here": int(crude.sum()), "adjusted_here": int(adj.sum()),
+                             "adjusted_testable": int((adj & t).sum()), "adjusted_replicated": int((adj & r).sum()),
+                             "posthoc_robust": int((adjx & radj).sum()),
+                             "posthoc_robust_drugs": ";".join(sorted(x.index[(adjx & radj).fillna(False).values])),
+                             "lost_on_adjustment": ";".join(sorted(x.index[(crude & ~adj).fillna(False).values]))})
     out = pd.DataFrame(rows)
     out.to_csv(RES / "prior_screens.csv", index=False)
     return out
@@ -246,4 +265,4 @@ if __name__ == "__main__":
         print(prior_screens().to_string())
         sys.exit()
     for ev in sys.argv[1:] or ["hl", "tin"]:
-        print(ev, json.dumps(evaluate(ev), indent=1, default=float))
+        print(ev, json.dumps(evaluate(ev), indent=1, default=float)[:3000])

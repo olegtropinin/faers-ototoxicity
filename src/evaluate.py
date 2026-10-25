@@ -59,6 +59,31 @@ def rate(mask_den, mask_num):
     return {"k": k, "n": n, "rate": p, "lo": lo, "hi": hi}
 
 
+def forest(robust, ev, top=30):
+    """Adjusted FAERS OR next to the Canadian ROR for robust signals (log scale)."""
+    lab = "hl_any" if ev == "hl" else "tin_any"
+    r = robust.head(top).iloc[::-1]
+    if r.empty:
+        return
+    fig, ax = plt.subplots(figsize=(6.2, 0.26 * len(r) + 1.2))
+    y = np.arange(len(r))
+    ax.errorbar(r["faers_mh_or"], y + 0.15, xerr=[r["faers_mh_or"] - r["faers_mh_lo"], r["faers_mh_hi"] - r["faers_mh_or"]],
+                fmt="o", ms=3, color="#0a6", lw=1, label="FAERS, adjusted MH OR")
+    ax.errorbar(r["canada_ror"], y - 0.15, xerr=[r["canada_ror"] - r["canada_ror_lo"], r["canada_ror_hi"] - r["canada_ror"]],
+                fmt="s", ms=3, color="#c60", lw=1, label="Canada Vigilance, ROR")
+    names = [f"{n.title()}{'' if l is True else ' *'}" for n, l in zip(r.index, r[lab])]
+    ax.set_yticks(y)
+    ax.set_yticklabels(names, fontsize=7)
+    ax.set_xscale("log")
+    ax.axvline(1, color="#999", lw=0.8)
+    ax.set_xlabel("odds ratio (95% CI), log scale")
+    ax.legend(fontsize=7, loc="lower right")
+    ax.set_title(f"Robust {'hearing-loss' if ev == 'hl' else 'tinnitus'} signals (* = no US label mention)", fontsize=9)
+    fig.tight_layout()
+    fig.savefig(FIG / f"forest_{ev}.png", dpi=200)
+    plt.close(fig)
+
+
 def evaluate(ev):
     m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient")
     ref = m[f"ref_{ev}"] if f"ref_{ev}" in m else m["ref_hl"]
@@ -154,6 +179,7 @@ def evaluate(ev):
     robust[robust["hl_any" if ev == "hl" else "tin_any"] != True].to_csv(  # noqa: E712
         RES / f"{ev}_robust_unlabelled.csv")
     m[m["crude"] | m["adjusted"]][cols].to_csv(RES / f"{ev}_all_signals.csv")
+    forest(robust, ev)
     out["robust"] = {"all": len(robust),
                      "unlabelled": int((robust["hl_any" if ev == "hl" else "tin_any"] != True).sum())}  # noqa: E712
     json.dump(out, open(RES / f"summary_{ev}.json", "w"), indent=1, default=float)

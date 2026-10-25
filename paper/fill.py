@@ -357,7 +357,7 @@ def posthoc_table():
         for v, p in s["posthoc"].items():
             lines.append(rf"{names[v]} & {p['adjusted_signals']} & {r(p['auc_adjusted_logMH025'],3)} & "
                          rf"{frac(p['labelled'])} & {frac(p['unlabelled'])} & {frac(p['background'])} & "
-                         rf"{r(p['test_unlabelled_vs_background']['p'], 3)} & "
+                         rf"{'$<$0.001' if p['test_unlabelled_vs_background']['p'] < 0.001 else r(p['test_unlabelled_vs_background']['p'], 3)} & "
                          rf"{r(p['calibrated_labelled']['obs_over_exp'],2)} / {r(p['calibrated_unlabelled']['obs_over_exp'],2)} & "
                          rf"{p['robust']} ({p['robust_unlabelled']}) \\")
         lines.append(r"\midrule")

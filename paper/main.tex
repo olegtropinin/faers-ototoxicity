@@ -50,7 +50,8 @@ of every robust unlabelled signal.
 \section{Methods}
 The study is reported according to the READUS-PV guideline \cite{readuspv,readuspv_ee}; the checklist is given in
 Supplementary Table~S1. The analysis protocol, with all definitions and thresholds of the primary analysis, was written and
-committed to a version-controlled repository (git commit ff77c40, 26 October 2026, 02:05 UTC+5) before the first result was computed; every later change is dated and
+committed to a version-controlled repository (git commit ff77c40, 26 October 2026, 02:05 UTC+5) before the first result was
+computed; it is time-stamped, not registered with a third party; every later change is dated and
 labelled in that file (\texttt{PROTOCOL.md}), and analyses added after results were seen are reported as post hoc.
 
 \subsection{Data sources}
@@ -58,7 +59,8 @@ We used all 90 quarterly ASCII extracts of the legacy Adverse Event Reporting Sy
 (2012Q4--2026Q2), published by the US Food and Drug Administration; the Canada Vigilance Adverse Reaction Online Database
 extract (Health Canada; reports received 1965 to 30 June 2026); and the openFDA bulk export of structured product labels
 (23 October 2026) \cite{openfda}. Events are coded in MedDRA preferred terms (PTs), at the version current when each
-quarter was released (FAERS) and version 29.0 (Canada Vigilance). All data are public and de-identified.
+quarter was released (FAERS) and version 29.0 (Canada Vigilance); outcome terms were matched by preferred-term name, which
+is stable across these versions for the terms used. All data are public and de-identified.
 
 \subsection{Pre-processing and deduplication}
 In FAERS we kept the most recent version of each case (by FDA receipt date, preferring FAERS over legacy records, then case
@@ -94,7 +96,7 @@ carboplatin and oxaliplatin; loop diuretics; quinine and related antimalarials; 
 vincristine; eflornithine) other than the drug under study; and (iii) FAERS reports submitted by lawyers (Canada Vigilance
 does not record this). For a drug on the list, reports naming the drug itself in a non-suspect role were also removed from
 its population. We then computed the Mantel--Haenszel (MH) OR \cite{mantel1959} over 60 strata (five age bands $\times$ sex
-[male, female, unknown] $\times$ four reporting periods) with the Robins--Breslow--Greenland variance \cite{robins1986}. An
+[male, female, unknown] $\times$ four periods of report receipt: before 2004, 2004--2012, 2013--2018, 2019--2026) with the Robins--Breslow--Greenland variance \cite{robins1986}. An
 \emph{adjusted signal} required at least three cases in the restricted population and a lower 95\% bound above 1. The
 implementation reproduces \texttt{statsmodels} estimates on simulated data to nine decimal places.
 
@@ -106,7 +108,7 @@ labels, and label-negative when no label mentioned hearing loss or tinnitus; oth
 contain a hearing word without describing an adverse effect (for example the disease name ``maternally inherited diabetes and
 deafness'' and telephone lines for deaf users) were removed first. Discrimination was measured by the area under the ROC
 curve (AUC) among ingredients with $\geq$1{,}000 suspect FAERS reports, comparing the crude and adjusted lower 95\% bounds
-(the like-for-like pair) and, secondarily, the IC$_{025}$ and point estimates; the difference was bootstrapped (2{,}000
+(the like-for-like pair; the protocol pre-specified the crude IC$_{025}$, which is also reported) and point estimates; the difference was bootstrapped (2{,}000
 resamples). Because labels are partly informed by spontaneous reports, the reference set compares methods with each other;
 it does not estimate absolute accuracy.
 
@@ -141,8 +143,10 @@ restricted to reports received from 2004.
 
 \subsection{Robust signals and case-level review}
 A \emph{robust signal} (post hoc) was an adjusted FAERS signal that replicated adjusted-to-adjusted in Canada Vigilance
-without solicited reports. Robust signals whose event appears on no US label of any product containing the drug
-(single-ingredient or combination) were reviewed. For each we profiled the FAERS case series (without Canadian reports):
+without solicited reports. Throughout, a signal is \emph{labelled} when the event is mentioned in any safety section of any US label of a product
+containing the drug (single-ingredient or combination) and \emph{unlabelled} otherwise, including drugs with no US label in the
+export; \emph{label-positive} and \emph{label-negative} refer to the stricter reference-set classes. Robust unlabelled signals
+were reviewed. For each we profiled the FAERS case series (without Canadian reports):
 share of cases from the most frequent country and receipt year, consumer reports, reports listing $\geq$15 drugs, reports
 co-naming an established ototoxic drug, prenatal exposure and leading indications; we searched PubMed for the drug with
 hearing terms. Each signal was assigned the first applicable category of a written rubric: K, established ototoxic class or

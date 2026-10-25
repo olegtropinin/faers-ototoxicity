@@ -29,11 +29,12 @@ co-medication filter costs.
 In FAERS without Canadian reports the crude rule flagged 300 ingredients for hearing loss and the adjusted
 rule 310; 63 crude signals were lost and 73 appeared
 (Table~\ref{tab:methods}). Against the reference set (106 label-positive and 927 label-negative
-ingredients with $\geq$1{,}000 suspect reports), discrimination was moderate and practically identical for the crude and
-adjusted lower bounds (AUC 0.718 and 0.723; difference
-0.005, 95\% CI -0.023 to 0.030). The same held for point
-estimates (0.700 vs 0.705), for the IC$_{025}$
-(0.720), after excluding the 83 ingredients without an estimable
+ingredients with $\geq$1{,}000 suspect reports), discrimination was moderate and practically identical: crude IC$_{025}$
+versus adjusted lower bound, as pre-specified, AUC 0.720 vs 0.723;
+crude versus adjusted lower bound, the like-for-like pair, 0.718 vs
+0.723 (difference 0.005, 95\% CI -0.023 to
+0.030). The same held for point estimates (0.700 vs
+0.705), after excluding the 83 ingredients without an estimable
 adjusted bound (0.698 vs
 0.703), at lower report thresholds, without the 29 listed
 drugs, and for tinnitus (0.775 vs 0.777). Adjustment lowered
@@ -45,12 +46,30 @@ Under the pre-specified rule, adjusted hearing-loss signals already on a label r
 of testable cases, unlabelled adjusted signals in 31/76 (41\%), label-negative adjusted signals in
 21/54 (39\%), crude-only signals in 9/21 (43\%), and label-negative ingredients that
 were neither crude nor adjusted signals in 43/214 (20\%) (all label-negative ingredients, as literally specified in
-the protocol: 68/281 (24\%); Table~\ref{tab:methods}). The power-calibrated comparison
-separated the groups more clearly (Figure~\ref{fig:repl}): labelled signals replicated as often as their shrunken FAERS
-estimates predicted (31 observed vs 30.5 expected; O/E 1.02, 95\% CI 0.77--1.32), whereas unlabelled signals replicated less than half as often
-(25 observed vs 56.8 expected; O/E 0.44, 95\% CI 0.29--0.62), like label-negative signals (18 observed vs 37.5 expected; O/E 0.48, 95\% CI 0.27--0.72). Results were the same
-with unshrunken estimates and with the pre-specified label definition, and for tinnitus (60 observed vs 63.2 expected; O/E 0.95, 95\% CI 0.79--1.13
-for labelled and 22 observed vs 46.4 expected; O/E 0.47, 95\% CI 0.30--0.66 for unlabelled signals).
+the protocol: 68/281 (24\%); Table~\ref{tab:methods}). In this pre-specified
+comparison unlabelled signals replicated more often than the background (odds ratio
+2.74, Fisher $p<0.001$) but less often than labelled signals. The
+power-calibrated comparison (post hoc) placed this contrast on a common scale (Figure~\ref{fig:repl}): labelled signals
+(n=70 ingredients) replicated about as often as their shrunken FAERS estimates predicted
+(31 observed vs 30.5 expected; O/E 1.02, 95\% CI 0.77--1.32), whereas unlabelled signals (n=201) replicated less than half
+as often (25 observed vs 56.8 expected; O/E 0.44, 95\% CI 0.29--0.62); the ratio of the two was 0.43
+(95\% CI 0.26--0.66). The
+label-negative signals, a subset of the unlabelled group, behaved alike (18 observed vs 37.5 expected; O/E 0.48, 95\% CI 0.27--0.72). Results were the
+same with unshrunken estimates, with the pre-specified label definition, and for tinnitus (60 observed vs 63.2 expected; O/E 0.95, 95\% CI 0.79--1.14 for
+labelled and 22 observed vs 46.4 expected; O/E 0.47, 95\% CI 0.29--0.66 for unlabelled signals).
+
+Unlabelled signals were more often reported by consumers (median share of FAERS cases
+58\% vs 39\% for labelled signals) and
+more often from the United States (67\% vs 50\%), so
+provenance could explain the contrast. It did not: among signals with a consumer share at or below the median, O/E was
+1.01 for labelled and
+0.57 (95\% CI
+0.27--0.93) for
+unlabelled signals, and above the median 1.04 and
+0.36. Pooled across ingredients (random effects), the Canadian ROR
+was 3.60 (2.47--5.26)
+for labelled and 1.59 (1.28--1.96)
+for unlabelled signals: as a group, unlabelled signals were attenuated rather than absent.
 
 The replication test was not conservative: label-negative non-signals replicated 4.2 times as often as expected without any association
 (36 vs 8.5). Solicited reports explained much of this:
@@ -60,26 +79,36 @@ replicated labelled signals and 36\% overall; for ocrelizumab, mepolizumab and o
 was 93\%, 93\% and 86\%, against
 1\% for gentamicin and 1\% for cisplatin. The mirror image appeared in FAERS:
 tafamidis (adjusted OR 4.3 (3.8--4.8)) had
-361 hearing-loss reports in FAERS but none in Canada Vigilance against 3.4 expected, and
-sacubitril (2{,}801 FAERS reports) none against 1.9 expected (too few to be testable).
+361 hearing-loss reports in FAERS (86\% from consumers,
+97\% from the United States) but none in Canada Vigilance against 3.4 expected, and
+sacubitril (2{,}801 FAERS hearing-loss reports; 88\% from consumers) none against
+1.9 expected (too few to be testable).
 
 Co-medication bias can also replicate when crude estimates are compared. Etoposide, given in cisplatin-containing regimens,
 was a crude signal in both databases (FAERS ROR 2.09 (1.91--2.28);
 Canada 5.13 (3.68--7.14)); after adjustment the FAERS estimate reversed
 (0.67 (0.46--0.98)) and the Canadian one rested on
 2 cases (1.15 (0.29--4.64)). Temporal replication within FAERS
-did not separate crude-only from adjusted hearing-loss signals (early adjusted signals recurred after 2014 in
-81/155 (52\%), crude-only signals in 18/28 (64\%), background 137/938 (15\%)); for
-tinnitus adjusted signals recurred more often (100/121 (83\%) vs 9/15 (60\%)).
+did not favour adjustment for hearing loss: early crude-only signals recurred after 2014 at least as often
+(18/28 (64\%)) as early adjusted signals (81/155 (52\%); background 137/938 (15\%)),
+consistent with biases that persist within one database; for tinnitus adjusted signals recurred more often
+(100/121 (83\%) vs 9/15 (60\%)).
 
 \subsection{Post-hoc analyses}
 With the extended indication filter, Canada Vigilance restricted to unsolicited reports and both estimates adjusted
 (Table~\ref{tab:posthoc}), labelled hearing-loss signals replicated in 26/44 (59\%), unlabelled signals in
 10/51 (20\%) and the background in 19/158 (12\%) (Fisher $p=0.24$);
 calibrated on adjusted Canadian counts, O/E was 1.10 (95\% CI
-0.76--1.49) for labelled and
+0.79--1.48) for labelled and
 0.26 (0.11--0.43)
-for unlabelled signals. Across the co-medication variants and the restriction of Canada Vigilance to reports from 2004,
+for unlabelled signals (ratio 0.24, 95\% CI
+0.09--0.44); the pooled
+Canadian adjusted OR was 4.25 (2.73--6.64)
+for labelled, 1.37 (1.03--1.83)
+for unlabelled and 1.29 (1.00--1.66)
+for label-negative signals. For tinnitus, labelled signals replicated less fully in this framework (O/E
+0.70, 95\% CI 0.54--0.88),
+with unlabelled signals lower still (0.21). Across the co-medication variants and the restriction of Canada Vigilance to reports from 2004,
 unlabelled O/E ranged 0.23--0.28 and labelled
 0.94--1.18. The comparison with the background depended on
 report clusters: after excluding reports that list $\geq$15 drugs, the background fell to 5/159 (3\%) and
@@ -108,14 +137,16 @@ label (Table~\ref{tab:cand}, Figure~\ref{fig:cand}). The review attributed 4 to 
 example candesartan--tinnitus: 80\%
 of cases from the United Kingdom, median 42 drugs per
 report), 6 to stimulated or mass-exposure reporting (mRNA COVID-19 vaccines, rofecoxib, finasteride),
-1 to an established ototoxic class (oral paromomycin) and 4 to an indication whose
-association with the event was confirmed by the active-comparator check (etanercept against other rheumatoid-arthritis drugs,
+1 to an established ototoxic class (oral paromomycin) and 4 to an indication, with an
+active-comparator estimate consistent with it (etanercept against other rheumatoid-arthritis drugs,
 ROR 0.93 (0.87--1.00); insulin aspart within diabetes, 1.17 (1.00--1.37); galcanezumab within migraine,
-0.82 (0.63--1.06); chlorthalidone within hypertension, 1.04 (0.43--2.51)). For seven signals the
+0.82 (0.63--1.06); and chlorthalidone within hypertension, 1.04 (0.43--2.51), which is indeterminate with
+5 cases). For seven signals the
 indication did not account for the association, because it persisted against other drugs for the same indication:
 tofacitinib, pregabalin, amlodipine, glycopyrrolate and travoprost for hearing loss (for example pregabalin within pain and neuropathy, ROR 3.27 (3.04--3.52); amlodipine
 within hypertension, 1.89 (1.69--2.10)) and doxycycline and liothyronine for tinnitus (doxycycline, 3.63 (2.98--4.42)).
 A second, AI-based assessor applying the same rubric to the same profiles agreed on 19 of 22 assignments
 before the active-comparator step (Cohen's $\kappa=0.82$) and on 19 after the same mechanical rule
 was applied to both ($\kappa=0.82$); with its assignments, nine signals would remain unexplained
-(Supplementary Table~S3).
+(Supplementary Table~S3). Before the post-hoc active-comparator rule, only two (pregabalin and doxycycline)
+were unexplained; the residual count therefore ranges from 2 to 9 depending on post-hoc choices and assessor.

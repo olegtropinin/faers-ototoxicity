@@ -89,6 +89,8 @@ def join(xs):
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
+MIX = pd.read_csv(RES / "reporter_mix.csv").query("event == 'hl'").set_index("ingredient")
+pre_E = RV[RV["category_pre"] == "E"]
 x_strat = m.loc[["CARBOPLATIN", "VINCRISTINE", "ETOPOSIDE"], ["faersnocax_mh_or", "faersnocaxstrat_mh_or"]]
 nomega = HL["posthoc"]["xnomega"]
 
@@ -123,11 +125,12 @@ co-medication filter costs.
 In FAERS without Canadian reports the crude rule flagged {fl['crude_signals']} ingredients for hearing loss and the adjusted
 rule {fl['adjusted_signals']}; {fl['crude_not_adjusted']} crude signals were lost and {fl['adjusted_not_crude']} appeared
 (Table~\ref{{tab:methods}}). Against the reference set ({ref['n_pos']} label-positive and {ref['n_neg']} label-negative
-ingredients with $\geq$1{{,}}000 suspect reports), discrimination was moderate and practically identical for the crude and
-adjusted lower bounds (AUC {r(ref['auc']['crude_logROR025'],3)} and {r(ref['auc']['adjusted_logMH025'],3)}; difference
-{r(ref['auc_diff_observed'],3)}, 95\% CI {r(ref['auc_diff_ci'][0],3)} to {r(ref['auc_diff_ci'][1],3)}). The same held for point
-estimates ({r(ref['auc']['crude_logROR'],3)} vs {r(ref['auc']['adjusted_logMH'],3)}), for the IC$_{{025}}$
-({r(ref['auc']['crude_IC025'],3)}), after excluding the {ref['adjusted_score_at_floor']} ingredients without an estimable
+ingredients with $\geq$1{{,}}000 suspect reports), discrimination was moderate and practically identical: crude IC$_{{025}}$
+versus adjusted lower bound, as pre-specified, AUC {r(ref['auc']['crude_IC025'],3)} vs {r(ref['auc']['adjusted_logMH025'],3)};
+crude versus adjusted lower bound, the like-for-like pair, {r(ref['auc']['crude_logROR025'],3)} vs
+{r(ref['auc']['adjusted_logMH025'],3)} (difference {r(ref['auc_diff_observed'],3)}, 95\% CI {r(ref['auc_diff_ci'][0],3)} to
+{r(ref['auc_diff_ci'][1],3)}). The same held for point estimates ({r(ref['auc']['crude_logROR'],3)} vs
+{r(ref['auc']['adjusted_logMH'],3)}), after excluding the {ref['adjusted_score_at_floor']} ingredients without an estimable
 adjusted bound ({r(HL['reference_sensitivity']['without_floor']['crude_logROR025'],3)} vs
 {r(HL['reference_sensitivity']['without_floor']['adjusted_logMH025'],3)}), at lower report thresholds, without the 29 listed
 drugs, and for tinnitus ({r(ref_t['auc']['crude_logROR025'],3)} vs {r(ref_t['auc']['adjusted_logMH025'],3)}). Adjustment lowered
@@ -139,12 +142,30 @@ Under the pre-specified rule, adjusted hearing-loss signals already on a label r
 of testable cases, unlabelled adjusted signals in {frac(rc['adjusted_unlabelled'])}, label-negative adjusted signals in
 {frac(rc['adjusted_label_negative'])}, crude-only signals in {frac(rc['crude_only'])}, and label-negative ingredients that
 were neither crude nor adjusted signals in {frac(rc['background'])} (all label-negative ingredients, as literally specified in
-the protocol: {frac(rc['protocol_background_all_label_negative'])}; Table~\ref{{tab:methods}}). The power-calibrated comparison
-separated the groups more clearly (Figure~\ref{{fig:repl}}): labelled signals replicated as often as their shrunken FAERS
-estimates predicted ({oe(cal['adjusted_labelled'])}), whereas unlabelled signals replicated less than half as often
-({oe(cal['adjusted_unlabelled'])}), like label-negative signals ({oe(cal['adjusted_label_negative'])}). Results were the same
-with unshrunken estimates and with the pre-specified label definition, and for tinnitus ({oe(cal_t['adjusted_labelled'])}
-for labelled and {oe(cal_t['adjusted_unlabelled'])} for unlabelled signals).
+the protocol: {frac(rc['protocol_background_all_label_negative'])}; Table~\ref{{tab:methods}}). In this pre-specified
+comparison unlabelled signals replicated more often than the background (odds ratio
+{r(rc['test_unlabelled_vs_background']['odds_ratio'],2)}, Fisher $p<0.001$) but less often than labelled signals. The
+power-calibrated comparison (post hoc) placed this contrast on a common scale (Figure~\ref{{fig:repl}}): labelled signals
+(n={cal['adjusted_labelled']['n']} ingredients) replicated about as often as their shrunken FAERS estimates predicted
+({oe(cal['adjusted_labelled'])}), whereas unlabelled signals (n={cal['adjusted_unlabelled']['n']}) replicated less than half
+as often ({oe(cal['adjusted_unlabelled'])}); the ratio of the two was {r(HL['oe_ratio_unlabelled_vs_labelled']['ratio'],2)}
+(95\% CI {r(HL['oe_ratio_unlabelled_vs_labelled']['ci'][0],2)}--{r(HL['oe_ratio_unlabelled_vs_labelled']['ci'][1],2)}). The
+label-negative signals, a subset of the unlabelled group, behaved alike ({oe(cal['adjusted_label_negative'])}). Results were the
+same with unshrunken estimates, with the pre-specified label definition, and for tinnitus ({oe(cal_t['adjusted_labelled'])} for
+labelled and {oe(cal_t['adjusted_unlabelled'])} for unlabelled signals).
+
+Unlabelled signals were more often reported by consumers (median share of FAERS cases
+{pct(HL['consumer_share_median']['unlabelled'])} vs {pct(HL['consumer_share_median']['labelled'])} for labelled signals) and
+more often from the United States ({pct(HL['us_share_median']['unlabelled'])} vs {pct(HL['us_share_median']['labelled'])}), so
+provenance could explain the contrast. It did not: among signals with a consumer share at or below the median, O/E was
+{r(HL['by_consumer_share']['labelled_low']['obs_over_exp'],2)} for labelled and
+{r(HL['by_consumer_share']['unlabelled_low']['obs_over_exp'],2)} (95\% CI
+{r(HL['by_consumer_share']['unlabelled_low']['ci'][0],2)}--{r(HL['by_consumer_share']['unlabelled_low']['ci'][1],2)}) for
+unlabelled signals, and above the median {r(HL['by_consumer_share']['labelled_high']['obs_over_exp'],2)} and
+{r(HL['by_consumer_share']['unlabelled_high']['obs_over_exp'],2)}. Pooled across ingredients (random effects), the Canadian ROR
+was {ci(HL['pooled_canada_crude']['labelled']['or'], HL['pooled_canada_crude']['labelled']['lo'], HL['pooled_canada_crude']['labelled']['hi'])}
+for labelled and {ci(HL['pooled_canada_crude']['unlabelled']['or'], HL['pooled_canada_crude']['unlabelled']['lo'], HL['pooled_canada_crude']['unlabelled']['hi'])}
+for unlabelled signals: as a group, unlabelled signals were attenuated rather than absent.
 
 The replication test was not conservative: label-negative non-signals replicated {r(cal['background']['observed'] /
 cal['background']['expected_if_null'], 1)} times as often as expected without any association
@@ -155,17 +176,20 @@ replicated labelled signals and {pct(SH['all_HL_cases'][1])} overall; for ocreli
 was {pct(SH['OCRELIZUMAB'][1])}, {pct(SH['MEPOLIZUMAB'][1])} and {pct(SH['OMALIZUMAB'][1])}, against
 {pct(SH['GENTAMICIN'][1])} for gentamicin and {pct(SH['CISPLATIN'][1])} for cisplatin. The mirror image appeared in FAERS:
 tafamidis (adjusted OR {ci(taf.faersnoca_mh_or, taf.faersnoca_mh_lo, taf.faersnoca_mh_hi, 1)}) had
-{thou(taf.faersnoca_a)} hearing-loss reports in FAERS but none in Canada Vigilance against {r(taf.canada_E,1)} expected, and
-sacubitril ({thou(sac.faersnoca_a)} FAERS reports) none against {r(sac.canada_E,1)} expected (too few to be testable).
+{thou(taf.faersnoca_a)} hearing-loss reports in FAERS ({pct(MIX.loc['TAFAMIDIS','consumer'])} from consumers,
+{pct(MIX.loc['TAFAMIDIS','us'])} from the United States) but none in Canada Vigilance against {r(taf.canada_E,1)} expected, and
+sacubitril ({thou(sac.faersnoca_a)} FAERS hearing-loss reports; {pct(MIX.loc['SACUBITRIL','consumer'])} from consumers) none against
+{r(sac.canada_E,1)} expected (too few to be testable).
 
 Co-medication bias can also replicate when crude estimates are compared. Etoposide, given in cisplatin-containing regimens,
 was a crude signal in both databases (FAERS ROR {ci(eto.faersnoca_ror, eto.faersnoca_ror_lo, eto.faersnoca_ror_hi)};
 Canada {ci(eto.canada_ror, eto.canada_ror_lo, eto.canada_ror_hi)}); after adjustment the FAERS estimate reversed
 ({ci(eto.faersnoca_mh_or, eto.faersnoca_mh_lo, eto.faersnoca_mh_hi)}) and the Canadian one rested on
 {int(eto.canada_a_adj)} cases ({ci(eto.canada_mh_or, eto.canada_mh_lo, eto.canada_mh_hi)}). Temporal replication within FAERS
-did not separate crude-only from adjusted hearing-loss signals (early adjusted signals recurred after 2014 in
-{frac(tp['early_adjusted'])}, crude-only signals in {frac(tp['early_crude_only'])}, background {frac(tp['background'])}); for
-tinnitus adjusted signals recurred more often ({frac(tp_t['early_adjusted'])} vs {frac(tp_t['early_crude_only'])}).
+did not favour adjustment for hearing loss: early crude-only signals recurred after 2014 at least as often
+({frac(tp['early_crude_only'])}) as early adjusted signals ({frac(tp['early_adjusted'])}; background {frac(tp['background'])}),
+consistent with biases that persist within one database; for tinnitus adjusted signals recurred more often
+({frac(tp_t['early_adjusted'])} vs {frac(tp_t['early_crude_only'])}).
 
 \subsection{{Post-hoc analyses}}
 With the extended indication filter, Canada Vigilance restricted to unsolicited reports and both estimates adjusted
@@ -174,7 +198,14 @@ With the extended indication filter, Canada Vigilance restricted to unsolicited 
 calibrated on adjusted Canadian counts, O/E was {r(px['calibrated_labelled']['obs_over_exp'],2)} (95\% CI
 {r(px['calibrated_labelled']['ci'][0],2)}--{r(px['calibrated_labelled']['ci'][1],2)}) for labelled and
 {r(px['calibrated_unlabelled']['obs_over_exp'],2)} ({r(px['calibrated_unlabelled']['ci'][0],2)}--{r(px['calibrated_unlabelled']['ci'][1],2)})
-for unlabelled signals. Across the co-medication variants and the restriction of Canada Vigilance to reports from 2004,
+for unlabelled signals (ratio {r(px['oe_ratio_unlabelled_vs_labelled']['ratio'],2)}, 95\% CI
+{r(px['oe_ratio_unlabelled_vs_labelled']['ci'][0],2)}--{r(px['oe_ratio_unlabelled_vs_labelled']['ci'][1],2)}); the pooled
+Canadian adjusted OR was {ci(px['pooled_canada_adjusted']['labelled']['or'], px['pooled_canada_adjusted']['labelled']['lo'], px['pooled_canada_adjusted']['labelled']['hi'])}
+for labelled, {ci(px['pooled_canada_adjusted']['unlabelled']['or'], px['pooled_canada_adjusted']['unlabelled']['lo'], px['pooled_canada_adjusted']['unlabelled']['hi'])}
+for unlabelled and {ci(px['pooled_canada_adjusted']['label_negative']['or'], px['pooled_canada_adjusted']['label_negative']['lo'], px['pooled_canada_adjusted']['label_negative']['hi'])}
+for label-negative signals. For tinnitus, labelled signals replicated less fully in this framework (O/E
+{r(px_t['calibrated_labelled']['obs_over_exp'],2)}, 95\% CI {r(px_t['calibrated_labelled']['ci'][0],2)}--{r(px_t['calibrated_labelled']['ci'][1],2)}),
+with unlabelled signals lower still ({r(px_t['calibrated_unlabelled']['obs_over_exp'],2)}). Across the co-medication variants and the restriction of Canada Vigilance to reports from 2004,
 unlabelled O/E ranged {oe_range('calibrated_unlabelled')[0]}--{oe_range('calibrated_unlabelled')[1]} and labelled
 {oe_range('calibrated_labelled')[0]}--{oe_range('calibrated_labelled')[1]}. The comparison with the background depended on
 report clusters: after excluding reports that list $\geq$15 drugs, the background fell to {frac(nomega['background'])} and
@@ -203,17 +234,19 @@ label (Table~\ref{{tab:cand}}, Figure~\ref{{fig:cand}}). The review attributed {
 example candesartan--tinnitus: {RV.set_index(['drug','event']).loc[('CANDESARTAN','tin'),'top_country'].split()[1].replace('%', chr(92) + '%')}
 of cases from the United Kingdom, median {RV.set_index(['drug','event']).loc[('CANDESARTAN','tin'),'median_drugs']:g} drugs per
 report), {cat_counts.get('C',0)} to stimulated or mass-exposure reporting (mRNA COVID-19 vaccines, rofecoxib, finasteride),
-{cat_counts.get('K',0)} to an established ototoxic class (oral paromomycin) and {cat_counts.get('D',0)} to an indication whose
-association with the event was confirmed by the active-comparator check (etanercept against other rheumatoid-arthritis drugs,
+{cat_counts.get('K',0)} to an established ototoxic class (oral paromomycin) and {cat_counts.get('D',0)} to an indication, with an
+active-comparator estimate consistent with it (etanercept against other rheumatoid-arthritis drugs,
 ROR {wi('ETANERCEPT','hl')}; insulin aspart within diabetes, {wi('INSULIN ASPART','hl')}; galcanezumab within migraine,
-{wi('GALCANEZUMAB','tin')}; chlorthalidone within hypertension, {wi('CHLORTHALIDONE','tin')}). For {WORDS[nE]} signals the
+{wi('GALCANEZUMAB','tin')}; and chlorthalidone within hypertension, {wi('CHLORTHALIDONE','tin')}, which is indeterminate with
+{int(WI.loc[('CHLORTHALIDONE','tin'),'a'])} cases). For {WORDS[nE]} signals the
 indication did not account for the association, because it persisted against other drugs for the same indication:
 {join(E_hl)} for hearing loss (for example pregabalin within pain and neuropathy, ROR {wi('PREGABALIN','hl')}; amlodipine
 within hypertension, {wi('AMLODIPINE','hl')}) and {join(E_tin)} for tinnitus (doxycycline, {wi('DOXYCYCLINE','tin')}).
 A second, AI-based assessor applying the same rubric to the same profiles agreed on {K['agree_pre']} of {K['n']} assignments
 before the active-comparator step (Cohen's $\kappa={r(K['kappa_pre'],2)}$) and on {K['agree']} after the same mechanical rule
 was applied to both ($\kappa={r(K['kappa'],2)}$); with its assignments, {WORDS[K['e2']]} signals would remain unexplained
-(Supplementary Table~S3).
+(Supplementary Table~S3). Before the post-hoc active-comparator rule, only {WORDS[len(pre_E)]} ({join([d.lower() for d in pre_E.drug])})
+were unexplained; the residual count therefore ranges from {len(pre_E)} to {K['e2']} depending on post-hoc choices and assessor.
 """
 
 discussion = rf"""
@@ -222,22 +255,24 @@ Three findings matter for anyone screening spontaneous reports for ototoxicity. 
 co-medication, lawyer reports and demographics changed a substantial part of the hearing-loss signal list
 ({fl['crude_not_adjusted']} of {fl['crude_signals']} crude signals lost, {fl['adjusted_not_crude']} gained) but did not
 improve agreement with labels. Second, replication in an independent national database behaved as a validation test should
-for labelled associations---they replicated about as often as their strength predicted---but unlabelled signals replicated
-less than half as often as predicted, about as often as signals for drugs whose labels are silent on hearing. Third,
+for labelled hearing-loss associations---they replicated about as often as their strength predicted---whereas unlabelled
+signals replicated less than half as often, a contrast that held within strata of consumer reporting and whose pooled
+Canadian estimate (attenuated, not absent) was close to that of signals for drugs whose labels are silent on hearing. Third,
 replication is not a clean validator on its own: solicited patient-support-programme reports and report clusters produced
 ``replications'' for drugs with no known association, and co-medication bias can replicate when crude estimates are compared.
 After adjusted replication, a review of report provenance and an active-comparator check, {nE} of {n_rob} robust unlabelled
-signals remained.
+signals remained ({len(pre_E)} to {K['e2']} under alternative post-hoc choices and assessors). For tinnitus the same pattern held,
+but labelled signals also replicated less fully once both databases were adjusted, so the evidence there is weaker.
 
 These results qualify the previous all-drug screens \cite{{li2024,wu2025,liu2025}} rather than contradict them. Their
 labelled signals largely held; their unlabelled signals mostly did not, and several of the strongest are consistent with how
 reports were collected rather than with pharmacology. Tafamidis and sacubitril/valsartan are examples: hundreds to thousands
-of FAERS reports, consistent with manufacturer programmes in the United States, and none in Canada. The same mechanism
+of FAERS hearing-loss reports, mostly from US consumers and consistent with manufacturer programmes, and none in Canada. The same mechanism
 produced spurious Canadian ``replications'' for biologics. Solicited reports are known to distort disproportionality
 \cite{{psp_solicited}}, and their share differs between databases, so report provenance can manufacture both a signal and its
 replication.
 
-Several steps flagged most of the artefacts identified in this study: comparing \emph{{adjusted}} estimates in both databases;
+In this study three steps did most of the work: comparing \emph{{adjusted}} estimates in both databases;
 profiling each case series for concentration---solicited or consumer reports, a single country or year, very drug-dense
 reports; and comparing the drug with others used for the same indication. The power-calibrated comparison is simple and avoids
 the outcome-dependent testability of rules based on observed counts; it remains sensitive to overdispersion, and empirical
@@ -278,10 +313,12 @@ numbers slightly; they are listed in the protocol file. The solicited-report exc
 adjusted-to-adjusted and calibrated replication, the co-medication variants, the active-comparator check and the case-level
 review were added after the primary results were seen, partly in response to internal review, and are labelled post hoc. The
 case-level review was applied by the author and by an AI assessor that used the same profiles and search tools, not by
-independent clinicians; the two assessments are therefore not fully independent.
+independent clinicians; the two assessments are therefore not fully independent, and the agreement statistic should be read
+in that light. Within-indication comparisons can be affected by channelling (for example tofacitinib as a second-line drug).
+FAERS report-source codes that would identify solicited reports directly were not used.
 
-\paragraph{{Conclusions.}} In FAERS, most drug--hearing-loss signals that are not already on a label do not survive adjustment,
-adjusted replication in Canada Vigilance and a review of report provenance; disproportionality analysis remains a
+\paragraph{{Conclusions.}} In FAERS, most drug--hearing-loss signals that are not already on a label do not survive adjusted
+replication in Canada Vigilance and a review of report provenance; disproportionality analysis remains a
 hypothesis-generating tool. Replication in a second spontaneous-reporting database is informative only when both estimates are
 adjusted and solicited reports and report clusters are handled explicitly. The few remaining candidates, led by pregabalin,
 merit study with exposure-based designs.
@@ -297,29 +334,31 @@ hearing-specific biases and external replication.
 analysis. For hearing loss and tinnitus, crude reporting odds ratios (signal: lower 95\% bound $>1$, $\geq$3 cases) were
 compared with Mantel--Haenszel estimates stratified by age, sex and period after excluding ear-related indications, reports
 naming established ototoxic drugs and lawyer reports. Methods were compared on a label-derived reference set (area under the
-receiver operating characteristic curve, AUC) and by replication in Canada Vigilance, observed and power-calibrated; robust
-unlabelled signals underwent case-by-case review.
+receiver operating characteristic curve, AUC) and by replication in Canada Vigilance; robust unlabelled signals underwent
+case-by-case review.
 
 \noindent\textbf{{Results:}} Adjustment changed the hearing-loss signal list ({fl['crude_signals']} crude, {fl['adjusted_signals']}
 adjusted, {fl['crude_not_adjusted']} lost) but not agreement with labels (AUC {r(ref['auc']['crude_logROR025'],3)} vs
-{r(ref['auc']['adjusted_logMH025'],3)}). Labelled signals replicated in Canada as often as predicted (observed/expected
-{r(cal['adjusted_labelled']['obs_over_exp'],2)}, 95\% CI {r(cal['adjusted_labelled']['ci'][0],2)}--{r(cal['adjusted_labelled']['ci'][1],2)});
-unlabelled signals did not ({r(cal['adjusted_unlabelled']['obs_over_exp'],2)}, {r(cal['adjusted_unlabelled']['ci'][0],2)}--{r(cal['adjusted_unlabelled']['ci'][1],2)};
-post hoc, both databases adjusted: {r(px['calibrated_unlabelled']['obs_over_exp'],2)}). Solicited patient-support-programme
-reports, report clusters and shared co-medication produced spurious replications. Of {n_rob} robust unlabelled signals (post
-hoc), {n_rob - nE} were attributed to report clusters, stimulated reporting, indication or an established class; {nE} remained,
-led by pregabalin.
+{r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more often than background but less often than
+labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
+{r(cal['adjusted_labelled']['obs_over_exp'],2)}, 95\% CI {r(cal['adjusted_labelled']['ci'][0],2)}--{r(cal['adjusted_labelled']['ci'][1],2)})
+and unlabelled ones did not ({r(cal['adjusted_unlabelled']['obs_over_exp'],2)}, {r(cal['adjusted_unlabelled']['ci'][0],2)}--{r(cal['adjusted_unlabelled']['ci'][1],2)}),
+also within strata of consumer reporting. Solicited reports, report clusters and shared
+co-medication produced spurious replications. Of {n_rob} robust unlabelled signals (post hoc), {n_rob - nE} had artefactual or known
+explanations; {nE} remained ({len(pre_E)}--{K['e2']} under
+alternative choices), led by pregabalin.
 
-\noindent\textbf{{Conclusions:}} Most unlabelled FAERS hearing-loss signals do not survive adjustment, adjusted replication and
-provenance review. These findings are hypothesis-generating; cross-database replication needs adjusted estimates and explicit
+\noindent\textbf{{Conclusions:}} Most unlabelled FAERS hearing-loss signals do not survive adjusted replication and provenance
+review. These findings are hypothesis-generating; cross-database replication needs adjusted estimates and explicit
 handling of solicited reports.
 \end{{abstract}}"""
 
 keypoints = rf"""\begin{{itemize}}
 \item Adjusting FAERS hearing-loss screens for indication, ototoxic co-medication and stimulated reporting changes which drugs
 are flagged but not their agreement with drug labels.
-\item In Canada Vigilance, labelled hearing-loss signals replicated about as often as predicted, unlabelled ones less than half
-as often; solicited patient-support-programme reports and shared co-medication produced spurious replications.
+\item In Canada Vigilance, labelled hearing-loss signals replicated about as often as predicted and unlabelled ones less than half
+as often, also among drugs with similar consumer reporting; solicited reports and shared co-medication produced spurious
+replications.
 \item After adjusted replication and case-by-case review of report provenance, {nE} of {n_rob} robust unlabelled signals
 remained, led by pregabalin; they are hypotheses for exposure-based studies.
 \end{{itemize}}"""

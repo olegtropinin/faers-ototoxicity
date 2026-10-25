@@ -113,3 +113,9 @@ at the end under "Deviations", with the reason.
    c. Case review: category D additionally requires that the signal not persist against other drugs used for the
       same indication (active-comparator ROR within the indication; scripts/within_indication.py).
    d. Canada Vigilance from 2004 is evaluated as a reported variant.
+6. (04:50, after an external-style fresh review — post hoc)
+   a. The protocol pre-specified the AUC comparison as crude IC025 vs adjusted lower bound; the like-for-like pair
+      (crude vs adjusted lower bound) is now also reported and used in the bootstrap. Both are in the text.
+   b. Added: ratio of O/E (unlabelled/labelled) with bootstrap CI; O/E within strata of FAERS consumer-report share;
+      random-effects pooled Canadian estimates per signal group (scripts/reporter_mix.py, src/evaluate.py).
+   c. The residual number of unexplained signals is reported as a range across post-hoc choices and assessors.

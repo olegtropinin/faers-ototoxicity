@@ -176,6 +176,52 @@ def calibrated(m, mask, orr, ca, adjusted=False):
     return res
 
 
+def pooled_re(m, mask, c, adjusted=True):
+    """DerSimonian-Laird random-effects pooled Canadian log OR over the ingredients in mask."""
+    o, lo, hi = (m[f"{c}_mh_or"], m[f"{c}_mh_lo"], m[f"{c}_mh_hi"]) if adjusted else \
+        (m[f"{c}_ror"], m[f"{c}_ror_lo"], m[f"{c}_ror_hi"])
+    y = np.log(o[mask.fillna(False)])
+    se = ((np.log(hi) - np.log(lo)) / (2 * 1.959963984540054))[mask.fillna(False)]
+    ok = np.isfinite(y) & np.isfinite(se) & (se > 0)
+    y, se = y[ok].values, se[ok].values
+    if len(y) < 2:
+        return {"k": int(len(y))}
+    w = 1 / se ** 2
+    ybar = (w * y).sum() / w.sum()
+    qq = (w * (y - ybar) ** 2).sum()
+    tau2 = max(0.0, (qq - (len(y) - 1)) / (w.sum() - (w ** 2).sum() / w.sum()))
+    ws = 1 / (se ** 2 + tau2)
+    mu = (ws * y).sum() / ws.sum()
+    sem = np.sqrt(1 / ws.sum())
+    return {"k": int(len(y)), "or": float(np.exp(mu)), "lo": float(np.exp(mu - 1.96 * sem)),
+            "hi": float(np.exp(mu + 1.96 * sem)), "tau2": tau2}
+
+
+def oe_ratio(m, mask_a, mask_b, orr, ca, adjusted=False, nboot=2000):
+    """Ratio of O/E (group a / group b) with a bootstrap CI over ingredients; robust to a common
+    multiplicative miscalibration of the replication test (e.g. overdispersion)."""
+    def parts(mask):
+        E = m[f"{ca}_E_adj" if adjusted else f"{ca}_E"].fillna(0).values
+        a = m[f"{ca}_a_adj" if adjusted else f"{ca}_a"].fillna(0).values
+        o = pd.Series(orr, index=m.index).replace([np.inf], np.nan).fillna(1).clip(lower=1).values
+        sel = mask.fillna(False).values & (E > 0)
+        ob, p1 = [], []
+        for e, aa, oo in zip(E[sel], a[sel], o[sel]):
+            cr = _crit(e)
+            ob.append(aa >= cr)
+            p1.append(poisson.sf(cr - 1, e * oo))
+        return np.array(ob, float), np.array(p1)
+    oa, pa = parts(mask_a)
+    ob, pb = parts(mask_b)
+    est = (oa.sum() / pa.sum()) / (ob.sum() / pb.sum())
+    bs = []
+    for _ in range(nboot):
+        ia, ib = rng.integers(0, len(oa), len(oa)), rng.integers(0, len(ob), len(ob))
+        if pa[ia].sum() > 0 and pb[ib].sum() > 0 and ob[ib].sum() > 0:
+            bs.append((oa[ia].sum() / pa[ia].sum()) / (ob[ib].sum() / pb[ib].sum()))
+    return {"ratio": est, "ci": [float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))]}
+
+
 def evaluate(ev):
     m = pd.read_csv(RES / f"{ev}_master.csv", index_col="ingredient", low_memory=False)
     ref = m[f"ref_{ev}"]
@@ -229,6 +275,22 @@ def evaluate(ev):
         "labeldef0_labelled": calibrated(m, m["adjusted"] & lab0, sh, "canada"),
         "labeldef0_unlabelled": calibrated(m, m["adjusted"] & ~lab0, sh, "canada")}
     rc["protocol_background_all_label_negative"] = rate(t & neg, r)
+    out["oe_ratio_unlabelled_vs_labelled"] = oe_ratio(m, m["adjusted"] & ~labelled, m["adjusted"] & labelled, sh, "canada")
+    # provenance: O/E within strata of the FAERS consumer share of the ingredient's cases
+    mix = pd.read_csv(RES / "reporter_mix.csv")
+    mix = mix[mix["event"] == ev].set_index("ingredient")
+    cons = mix["consumer"].reindex(m.index)
+    med = float(cons[m["adjusted"]].median())
+    out["by_consumer_share"] = {"median_consumer_share_of_signals": med}
+    for lab_name, lab_mask in (("labelled", labelled), ("unlabelled", ~labelled)):
+        for part, pm in (("low", cons <= med), ("high", cons > med)):
+            out["by_consumer_share"][f"{lab_name}_{part}"] = calibrated(m, m["adjusted"] & lab_mask & pm, sh, "canada")
+    out["consumer_share_median"] = {"labelled": float(cons[m["adjusted"] & labelled].median()),
+                                    "unlabelled": float(cons[m["adjusted"] & ~labelled].median())}
+    out["us_share_median"] = {"labelled": float(mix["us"].reindex(m.index)[m["adjusted"] & labelled].median()),
+                              "unlabelled": float(mix["us"].reindex(m.index)[m["adjusted"] & ~labelled].median())}
+    out["pooled_canada_crude"] = {"labelled": pooled_re(m, m["adjusted"] & labelled & t, "canada", adjusted=False),
+                                  "unlabelled": pooled_re(m, m["adjusted"] & ~labelled & t, "canada", adjusted=False)}
 
     # 3. temporal
     m["early_crude"], m["early_adj"] = crude_sig(m, "early"), adj_sig(m, "early")
@@ -260,6 +322,11 @@ def evaluate(ev):
                "calibrated_labelled": calibrated(m, sig & labelled, shrunk_or(m, f)[0], c, adjusted=True),
                "calibrated_label_negative": calibrated(m, sig & neg, shrunk_or(m, f)[0], c, adjusted=True)}
         res["test_unlabelled_vs_background"] = fisher(res["unlabelled"], res["background"])
+        res["oe_ratio_unlabelled_vs_labelled"] = oe_ratio(m, sig & ~labelled, sig & labelled, shrunk_or(m, f)[0], c,
+                                                          adjusted=True)
+        res["pooled_canada_adjusted"] = {"labelled": pooled_re(m, sig & labelled & tst, c),
+                                         "unlabelled": pooled_re(m, sig & ~labelled & tst, c),
+                                         "label_negative": pooled_re(m, sig & neg & tst, c)}
         robust = m[sig & rep_adj].copy()
         robust["labelled"] = labelled[robust.index]
         res["robust"] = len(robust)

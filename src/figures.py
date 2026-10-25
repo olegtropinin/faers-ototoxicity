@@ -34,15 +34,15 @@ def replication_figure():
                 x = gi + (vi - 1) * w
                 ax.bar(x, d["obs_over_exp"], w, color=col,
                        label=["labelled signals", "unlabelled signals", "label-negative signals"][vi] if gi == 0 else None)
-                ax.text(x, d["obs_over_exp"] + 0.03, f"{d['observed']}/{d['expected_if_true']:.0f}", ha="center",
-                        fontsize=5.8, rotation=90, va="bottom")
+                ax.text(x, d["obs_over_exp"] + 0.03, f"{d['observed']}/{d['expected_if_true']:.1f}", ha="center",
+                        fontsize=5.6, rotation=90, va="bottom")
         ax.axhline(1, color="#555", lw=0.8, ls="--")
         ax.set_xticks(range(len(SETS)))
         ax.set_xticklabels([s_[0] for s_ in SETS], fontsize=6.3)
         ax.set_title("Hearing loss" if ev == "hl" else "Tinnitus", fontsize=9)
-        ax.set_ylim(0, 1.45)
+        ax.set_ylim(0, 1.75)
     axes[0].set_ylabel("observed / expected replications\n(expected if the FAERS signal were true)", fontsize=8)
-    axes[0].legend(fontsize=6.5, loc="upper right", frameon=False)
+    axes[0].legend(fontsize=6.5, loc="upper center", ncol=3, frameon=False)
     fig.tight_layout()
     fig.savefig(FIG / "replication.png", dpi=220)
     plt.close(fig)

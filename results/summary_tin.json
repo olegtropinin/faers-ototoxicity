@@ -12,8 +12,8 @@
   },
   "auc_diff_observed": 0.001966106413334723,
   "auc_diff_ci": [
-   -0.015360132036850304,
-   0.01859936321005559
+   -0.015580087418140733,
+   0.018032651355467142
   ],
   "adjusted_score_at_floor": 141,
   "crude_sens": 0.5053763440860215,
@@ -44,6 +44,13 @@
    "crude_IC025": 0.7633923839098091,
    "crude_logROR": 0.7622325732208441,
    "adjusted_logMH": 0.7556228994020115
+  },
+  "without_floor": {
+   "crude_logROR025": 0.7499374043677841,
+   "adjusted_logMH025": 0.7565794964529142,
+   "crude_IC025": 0.7476352761162888,
+   "crude_logROR": 0.7484490193350953,
+   "adjusted_logMH": 0.7458686882737515
   }
  },
  "flow": {
@@ -98,6 +105,13 @@
   "test_labelled_vs_background": {
    "odds_ratio": 14.153225806451612,
    "p": 1.7537741742028724e-20
+  },
+  "protocol_background_all_label_negative": {
+   "k": 53,
+   "n": 252,
+   "rate": 0.21031746031746032,
+   "lo": 0.16454050222051173,
+   "hi": 0.2647935835332607
   }
  },
  "replication_canada_direct": {
@@ -117,33 +131,94 @@
   }
  },
  "calibrated_canada": {
+  "tau2": 1.6269251327976475,
   "adjusted_labelled": {
    "n": 133,
    "observed": 60,
-   "expected_if_true": 64.3828203099985,
-   "expected_if_null": 1.6736384916363178,
-   "obs_over_exp": 0.931925624119982
+   "expected_if_true": 63.15313578912984,
+   "expected_if_null": 1.6736384916363185,
+   "obs_over_exp": 0.9500715878993206,
+   "ci": [
+    0.7874482991403086,
+    1.1283310989662665
+   ]
   },
   "adjusted_unlabelled": {
    "n": 162,
    "observed": 22,
-   "expected_if_true": 49.36609288830449,
-   "expected_if_null": 1.5056953878523947,
-   "obs_over_exp": 0.4456500142674265
+   "expected_if_true": 46.44333250212851,
+   "expected_if_null": 1.5056953878523953,
+   "obs_over_exp": 0.47369555143338893,
+   "ci": [
+    0.30185028236718453,
+    0.658922809542117
+   ]
   },
   "adjusted_label_negative": {
    "n": 118,
    "observed": 16,
-   "expected_if_true": 35.45518088887424,
-   "expected_if_null": 1.1257435399893145,
-   "obs_over_exp": 0.45127396332141595
+   "expected_if_true": 33.80373615558124,
+   "expected_if_null": 1.125743539989314,
+   "obs_over_exp": 0.4733204615714729,
+   "ci": [
+    0.2756027627288064,
+    0.7142276995431673
+   ]
   },
   "background": {
    "n": 1715,
    "observed": 23,
-   "expected_if_true": 14.161650916333066,
-   "expected_if_null": 8.071929605435757,
-   "obs_over_exp": 1.6241044307534367
+   "expected_if_true": 11.505557166267142,
+   "expected_if_null": 8.07192960543573,
+   "obs_over_exp": 1.999034003101834,
+   "ci": [
+    1.2629686115882828,
+    2.9736535193017875
+   ]
+  },
+  "raw_or_labelled": {
+   "n": 133,
+   "observed": 60,
+   "expected_if_true": 64.38282030999846,
+   "expected_if_null": 1.6736384916363185,
+   "obs_over_exp": 0.9319256241199825,
+   "ci": [
+    0.7736575061303672,
+    1.1103762951133476
+   ]
+  },
+  "raw_or_unlabelled": {
+   "n": 162,
+   "observed": 22,
+   "expected_if_true": 49.36609288830449,
+   "expected_if_null": 1.5056953878523953,
+   "obs_over_exp": 0.4456500142674265,
+   "ci": [
+    0.28575015774371454,
+    0.6253001775552669
+   ]
+  },
+  "labeldef0_labelled": {
+   "n": 124,
+   "observed": 57,
+   "expected_if_true": 58.01139955023579,
+   "expected_if_null": 1.54557072663535,
+   "obs_over_exp": 0.982565503365249,
+   "ci": [
+    0.8111388616659814,
+    1.1823495920092257
+   ]
+  },
+  "labeldef0_unlabelled": {
+   "n": 171,
+   "observed": 25,
+   "expected_if_true": 51.58506874102256,
+   "expected_if_null": 1.6337631528533634,
+   "obs_over_exp": 0.4846363610662202,
+   "ci": [
+    0.33218115408421833,
+    0.6606116128529219
+   ]
   }
  },
  "replication_temporal": {
@@ -203,18 +278,37 @@
     "hi": 0.09977641732765787
    },
    "calibrated_unlabelled": {
-    "n": 157,
-    "observed": 12,
-    "expected_if_true": 46.8906608055915,
-    "expected_if_null": 1.3967183539888164,
-    "obs_over_exp": 0.25591449968581065
+    "n": 155,
+    "observed": 8,
+    "expected_if_true": 38.33559455635118,
+    "expected_if_null": 1.2519662490224839,
+    "obs_over_exp": 0.2086833422719047,
+    "ci": [
+     0.07895179060186057,
+     0.3687260506254664
+    ]
    },
    "calibrated_labelled": {
     "n": 132,
-    "observed": 46,
-    "expected_if_true": 66.39017842050535,
-    "expected_if_null": 1.764801505263817,
-    "obs_over_exp": 0.6928735709767634
+    "observed": 41,
+    "expected_if_true": 58.425276439094475,
+    "expected_if_null": 1.7114391720069926,
+    "obs_over_exp": 0.7017510656152481,
+    "ci": [
+     0.5381871277556217,
+     0.8683234795826169
+    ]
+   },
+   "calibrated_label_negative": {
+    "n": 114,
+    "observed": 8,
+    "expected_if_true": 27.60291152371541,
+    "expected_if_null": 0.9931131492578321,
+    "obs_over_exp": 0.28982449888036965,
+    "ci": [
+     0.11251725439690789,
+     0.5382935688373893
+    ]
    },
    "test_unlabelled_vs_background": {
     "odds_ratio": 5.723684210526316,
@@ -256,18 +350,37 @@
     "hi": 0.15448334403244088
    },
    "calibrated_unlabelled": {
-    "n": 209,
-    "observed": 15,
-    "expected_if_true": 81.95545162817633,
-    "expected_if_null": 1.868632069368994,
-    "obs_over_exp": 0.18302626246333795
+    "n": 207,
+    "observed": 13,
+    "expected_if_true": 77.24143015284375,
+    "expected_if_null": 1.8558300470623639,
+    "obs_over_exp": 0.16830346064638974,
+    "ci": [
+     0.08556948019788858,
+     0.26125600947750627
+    ]
    },
    "calibrated_labelled": {
     "n": 151,
-    "observed": 48,
-    "expected_if_true": 74.88657160649535,
-    "expected_if_null": 2.010518849574146,
-    "obs_over_exp": 0.6409693883734514
+    "observed": 46,
+    "expected_if_true": 73.7448159767659,
+    "expected_if_null": 2.059431399938333,
+    "obs_over_exp": 0.6237726596876015,
+    "ci": [
+     0.4896439488984267,
+     0.7776913769512384
+    ]
+   },
+   "calibrated_label_negative": {
+    "n": 148,
+    "observed": 10,
+    "expected_if_true": 53.780751650329414,
+    "expected_if_null": 1.4428840797989544,
+    "obs_over_exp": 0.1859401308672254,
+    "ci": [
+     0.07978662280053604,
+     0.3116215694584402
+    ]
    },
    "test_unlabelled_vs_background": {
     "odds_ratio": 4.028985507246377,
@@ -309,18 +422,37 @@
     "hi": 0.14680534854173694
    },
    "calibrated_unlabelled": {
-    "n": 195,
-    "observed": 12,
-    "expected_if_true": 75.94000673726933,
-    "expected_if_null": 1.7562930829824421,
-    "obs_over_exp": 0.1580194750510961
+    "n": 193,
+    "observed": 8,
+    "expected_if_true": 69.40026429276455,
+    "expected_if_null": 1.6092736773972507,
+    "obs_over_exp": 0.11527333622609928,
+    "ci": [
+     0.043668757113057094,
+     0.2017127948947766
+    ]
    },
    "calibrated_labelled": {
     "n": 147,
-    "observed": 49,
-    "expected_if_true": 77.54617729386948,
-    "expected_if_null": 1.9475124836159265,
-    "obs_over_exp": 0.6318815666994041
+    "observed": 46,
+    "expected_if_true": 73.84782197180068,
+    "expected_if_null": 1.880704905973595,
+    "obs_over_exp": 0.6229025957944356,
+    "ci": [
+     0.4886016231746324,
+     0.7595785952747506
+    ]
+   },
+   "calibrated_label_negative": {
+    "n": 141,
+    "observed": 8,
+    "expected_if_true": 50.19859574370019,
+    "expected_if_null": 1.2297830453775096,
+    "obs_over_exp": 0.15936700781124902,
+    "ci": [
+     0.06215655035174739,
+     0.2768274635023492
+    ]
    },
    "test_unlabelled_vs_background": {
     "odds_ratio": 2.5,
@@ -362,18 +494,37 @@
     "hi": 0.03608966554625311
    },
    "calibrated_unlabelled": {
-    "n": 139,
-    "observed": 11,
-    "expected_if_true": 35.23974267045785,
-    "expected_if_null": 1.232582717612289,
-    "obs_over_exp": 0.3121475688079161
+    "n": 132,
+    "observed": 7,
+    "expected_if_true": 21.58962226883768,
+    "expected_if_null": 0.9269529992856131,
+    "obs_over_exp": 0.32422985047328756,
+    "ci": [
+     0.11418082506118878,
+     0.574893528413157
+    ]
    },
    "calibrated_labelled": {
-    "n": 126,
-    "observed": 46,
-    "expected_if_true": 60.99401131428712,
-    "expected_if_null": 1.7103038361068537,
-    "obs_over_exp": 0.7541724016637196
+    "n": 125,
+    "observed": 41,
+    "expected_if_true": 43.82980802175397,
+    "expected_if_null": 1.5168891622984078,
+    "obs_over_exp": 0.9354364495425247,
+    "ci": [
+     0.7028965109949765,
+     1.176695829183342
+    ]
+   },
+   "calibrated_label_negative": {
+    "n": 102,
+    "observed": 6,
+    "expected_if_true": 14.441994730925584,
+    "expected_if_null": 0.6972646956850329,
+    "obs_over_exp": 0.4154550747170548,
+    "ci": [
+     0.13950015323777334,
+     0.7644636600612549
+    ]
    },
    "test_unlabelled_vs_background": {
     "odds_ratio": 28.0,
@@ -381,6 +532,78 @@
    },
    "robust": 54,
    "robust_unlabelled": 7
+  },
+  "2004x": {
+   "adjusted_signals": 346,
+   "lost_vs_primary": 11,
+   "auc_adjusted_logMH025": 0.7763684448620246,
+   "labelled": {
+    "k": 41,
+    "n": 81,
+    "rate": 0.5061728395061729,
+    "lo": 0.3995078470731793,
+    "hi": 0.6122788432301242
+   },
+   "unlabelled": {
+    "k": 14,
+    "n": 44,
+    "rate": 0.3181818181818182,
+    "lo": 0.19999307710853426,
+    "hi": 0.46556896062182235
+   },
+   "label_negative_signals": {
+    "k": 11,
+    "n": 31,
+    "rate": 0.3548387096774194,
+    "lo": 0.21116659093865403,
+    "hi": 0.5305204593563113
+   },
+   "background": {
+    "k": 8,
+    "n": 111,
+    "rate": 0.07207207207207207,
+    "lo": 0.03697008426552741,
+    "hi": 0.13580252785944805
+   },
+   "calibrated_unlabelled": {
+    "n": 154,
+    "observed": 10,
+    "expected_if_true": 34.16187166058795,
+    "expected_if_null": 1.2057685616559144,
+    "obs_over_exp": 0.29272400819703487,
+    "ci": [
+     0.13321772168427953,
+     0.4810340125439307
+    ]
+   },
+   "calibrated_labelled": {
+    "n": 127,
+    "observed": 35,
+    "expected_if_true": 48.45987796821476,
+    "expected_if_null": 1.438890044016266,
+    "obs_over_exp": 0.7222469693992377,
+    "ci": [
+     0.5257800573842141,
+     0.926276483873236
+    ]
+   },
+   "calibrated_label_negative": {
+    "n": 113,
+    "observed": 9,
+    "expected_if_true": 23.909520688131128,
+    "expected_if_null": 0.8990126621813624,
+    "obs_over_exp": 0.3764190891734467,
+    "ci": [
+     0.1563323603300374,
+     0.657224207189507
+    ]
+   },
+   "test_unlabelled_vs_background": {
+    "odds_ratio": 6.008333333333334,
+    "p": 0.00020804884950253866
+   },
+   "robust": 55,
+   "robust_unlabelled": 14
   }
  }
 }

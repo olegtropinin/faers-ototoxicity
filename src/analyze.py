@@ -69,7 +69,8 @@ def label_table():
     lab["ing"] = lab["substance"].map(lambda s: canonical(s if s in vocab else strip_salt(s, vocab)))
     lab = lab[lab["ing"] != ""]
     g = lab.groupby("ing").agg(n_labels=("set_id", "size"), rx=("rx", "any"), hl_any=("hl_any", "any"),
-                               hl_strong=("hl_strong", "any"), tin_any=("tin_any", "any"))
+                               hl_strong=("hl_strong", "any"), tin_any=("tin_any", "any"),
+                               hl_any0=("hl_any0", "any"), tin_any0=("tin_any0", "any"))
     rx = lab[lab["rx"]].groupby("ing").agg(n_rx=("set_id", "size"), hl_frac_rx=("hl_any", "mean"),
                                            tin_frac_rx=("tin_any", "mean"))
     g = g.join(rx, how="left")

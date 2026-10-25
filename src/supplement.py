@@ -31,7 +31,7 @@ def s3_review():
     for _, r in rv.iterrows():
         rows.append(f"{esc(r.drug.title())} & {'HL' if r.event == 'hl' else 'Tin'} & {r.category} & {r.cat2} & {int(r.cases)} & "
                     f"{esc(r.top_country)} & {esc(r.top_year)} & {esc(r.consumer)} & {r.median_drugs:g} & "
-                    f"{esc(r.mega_ge15_drugs)} & {esc(r.with_known_ototoxic)} & {esc(r.note)} \\\\")
+                    f"{esc(r.mega_ge15_drugs)} & {esc(r.with_known_ototoxic)} & {esc(r.within_indication) if isinstance(r.within_indication, str) else ''} & {esc(r.note)} \\\\")
     return "\n".join(rows)
 
 

@@ -111,13 +111,14 @@ def _mh(ing, rid, ev, st, n_ing, n_st, pop):
         S = b_s * c_s / Ns
         P = (a_s + d_s) / Ns
         Qv = (b_s + c_s) / Ns
+        E_adj = (n_s * H_s / Ns).sum(1)                    # expected cases in the restricted, stratified population
         sR, sS = R.sum(1), S.sum(1)
         orr = sR / sS
         var = ((P * R).sum(1) / (2 * sR ** 2) + (P * S + Qv * R).sum(1) / (2 * sR * sS)
                + (Qv * S).sum(1) / (2 * sS ** 2))
         se = np.sqrt(var)
         lo, hi = np.exp(np.log(orr) - Z * se), np.exp(np.log(orr) + Z * se)
-    return a_s.sum(1), n_s.sum(1), orr, lo, hi
+    return a_s.sum(1), n_s.sum(1), orr, lo, hi, E_adj
 
 
 def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended_indication=False,
@@ -163,8 +164,9 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended
         pop, st, n_st = base & (k_count == 0), st0, 60
     else:
         pop, st, n_st = base, st0 * 2 + (k_count > 0), 120
-    a_adj, n_adj, orr, lo, hi = _mh(ing, rid, ev, st, n_ing, n_st, pop)
+    a_adj, n_adj, orr, lo, hi, e_adj = _mh(ing, rid, ev, st, n_ing, n_st, pop)
     out["a_adj"], out["n_adj"], out["mh_or"], out["mh_lo"], out["mh_hi"] = a_adj, n_adj, orr, lo, hi
+    out["E_adj"] = e_adj
 
     # drugs on the ototoxic list: only *other* listed drugs count, and reports naming the drug itself in a
     # non-suspect role are removed from its population (they would sit, exposed, among its comparators)
@@ -182,8 +184,8 @@ def run(rep, sus, any_drug, reac_pts, indi_pts, event_pts, lawyer=None, extended
             popk, stk = base & ~nonsus, st0 * 2 + other
         j = names.get_loc(kname)
         m = ing == j
-        aa, nn, o, l, h = _mh(np.zeros(m.sum(), np.int32), rid[m], ev, stk, 1, n_st, popk)
-        out.loc[kname, ["a_adj", "n_adj", "mh_or", "mh_lo", "mh_hi"]] = [aa[0], nn[0], o[0], l[0], h[0]]
+        aa, nn, o, l, h, e = _mh(np.zeros(m.sum(), np.int32), rid[m], ev, stk, 1, n_st, popk)
+        out.loc[kname, ["a_adj", "n_adj", "mh_or", "mh_lo", "mh_hi", "E_adj"]] = [aa[0], nn[0], o[0], l[0], h[0], e[0]]
 
     out["known_ototoxic"] = out.index.isin(ototoxic)
     out.attrs["population"] = dict(reports=R, events=int(ev.sum()), adj_reports=int(pop.sum()),

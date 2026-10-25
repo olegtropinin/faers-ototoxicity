@@ -48,6 +48,7 @@ OTHER = ["adverse_reactions", "adverse_reactions_table", "postmarketing_experien
          # added after review: withdrawal effects are described here (e.g. tinnitus with benzodiazepines)
          "drug_abuse_and_dependence", "dependence", "abuse"]
 COMBO_OUT = Path("data/work/labels_combo.parquet")
+OTHER0 = OTHER[:-3]   # the pre-specified section list (before "drug abuse and dependence" was added)
 
 
 # Phrases that contain a hearing word without describing an adverse effect of the drug.
@@ -92,7 +93,10 @@ def scan(path):
             continue
         if len(subs) != 1:
             continue
+        other0 = text(rec, OTHER0)
         rows.append({
+            "hl_any0": bool(HL.search(strong) or HL.search(other0)),
+            "tin_any0": bool(TIN.search(strong) or TIN.search(other0)),
             "substance": clean(subs[0]), "combo": False,
             "rx": "HUMAN PRESCRIPTION DRUG" in (of.get("product_type") or []),
             "hl_strong": bool(HL.search(strong)),

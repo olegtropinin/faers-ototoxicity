@@ -10,7 +10,7 @@
 \usepackage{setspace}
 \onehalfspacing
 
-\title{Adjustment and external replication of drug--hearing-loss signals in FAERS:
+\title{Adjustment and external replication of drug--hearing-loss signals:
 a disproportionality analysis of FAERS and Canada Vigilance}
 \author{Oleg Tropynin\\ \small Independent researcher, Karaganda, Kazakhstan\\ \small \texttt{tropininoleg@gmail.com}}
 \date{}
@@ -39,7 +39,7 @@ strongly ototoxic one---an antiemetic with cisplatin, an antibiotic with an amin
 association (co-medication or ``innocent bystander'' bias). Reporting can be stimulated by safety communications,
 litigation or media attention \cite{pariente2007}. Editorials have questioned the value of disproportionality analyses
 that do not address such biases \cite{ramessur2025}, and few FAERS screens test their signal lists against an independent
-data source or a reference set, as recommended for signal-detection methods \cite{harpaz2013}.
+data source or a reference set, as done in evaluations of signal-detection methods \cite{harpaz2013}.
 
 We therefore asked a narrower question than ``which drugs are ototoxic?'': \emph{which hearing-loss and tinnitus signals
 remain after adjustment for these biases, and do the signals that remain replicate in an independent national database
@@ -50,7 +50,7 @@ of every robust unlabelled signal.
 \section{Methods}
 The study is reported according to the READUS-PV guideline \cite{readuspv,readuspv_ee}; the checklist is given in
 Supplementary Table~S1. The analysis protocol, with all definitions and thresholds of the primary analysis, was written and
-committed to a version-controlled repository (git) before the first result was computed; every later change is dated and
+committed to a version-controlled repository (git commit ff77c40, 26 October 2026, 02:05 UTC+5) before the first result was computed; every later change is dated and
 labelled in that file (\texttt{PROTOCOL.md}), and analyses added after results were seen are reported as post hoc.
 
 \subsection{Data sources}
@@ -120,7 +120,11 @@ Because the testability rule depends on the observed count, we also computed a p
 every ingredient with a Canadian expected count $E>0$, replication was defined as an observed count of at least
 $a_{\mathrm{crit}}$, the smallest count $\geq 3$ with Poisson $P(X\geq a\mid E)<0.025$, and the expected number of
 replications was $\sum_i P(X\geq a_{\mathrm{crit},i}\mid E_i \times \mathrm{OR}_i)$, with OR$_i$ the adjusted FAERS
-estimate; observed-to-expected ratios near 1 indicate that signals replicate as often as their FAERS strength predicts. For
+estimate shrunk towards the null by empirical Bayes (log OR $\times\,\tau^2/(\tau^2+\mathrm{se}^2)$, with $\tau^2$ estimated
+across all ingredients) to counter the selection of signals on their estimate; observed-to-expected ratios near 1 indicate that
+signals replicate as often as their FAERS strength predicts. Confidence intervals were bootstrapped over ingredients (2{,}000
+resamples). In the post-hoc adjusted-to-adjusted analysis the Canadian adjusted case count was compared with its stratified
+expected count. For
 temporal replication, signals derived from reports received up to 2014 were tested in reports received from 2015 onwards.
 Rates were compared with Fisher's exact test.
 
@@ -145,8 +149,12 @@ hearing terms. Each signal was assigned the first applicable category of a writt
 association documented by a prospective or cohort clinical series; A, report cluster ($\geq$50\% of cases in reports listing
 $\geq$15 drugs); B, ototoxic co-medication ($\geq$50\% of cases co-name an established ototoxic drug); C, stimulated or
 solicited reporting documented for the drug; D, main indication itself associated with the event; E, none of these. The
-author applied the rubric, and an independent AI assessor applied it blind to the author's assignments, with the same
-profiles and literature access; agreement is reported as Cohen's $\kappa$.
+rubric distinguishes C from D only on documented evidence; a high consumer share alone does not make a signal C. For
+category D we additionally required that the signal not persist against other drugs used for the same indication: within
+FAERS reports (without Canadian origin) whose indication matched the drug's main indication, we computed the ROR of the drug
+against all other suspect drugs (active-comparator check, post hoc). The author applied the rubric, and a second, AI-based
+assessor applied it blind to the author's assignments, with the same profiles and literature access; agreement is reported as
+Cohen's $\kappa$.
 
 \subsection{Software and use of AI tools}
 Analyses used Python 3.10 (numpy 2.2.6, pandas 2.3.3, scipy 1.15.3, statsmodels 0.15.0, matplotlib 3.10.9). Data processing
@@ -180,9 +188,9 @@ with four ways of handling ototoxic co-medication. O/E: observed/expected replic
 adjusted-to-adjusted (unlabelled in brackets).}
 \label{tab:posthoc}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{lccccccc}
+\begin{tabular}{lcccccccc}
 \toprule
-Co-medication handling & Signals & AUC & Labelled repl. & Unlabelled repl. & Background repl. & O/E lab./unlab. & Robust \\
+Co-medication handling & Signals & AUC & Labelled repl. & Unlabelled repl. & Background repl. & Fisher $p$ & O/E lab./unlab. & Robust \\
 \midrule
 \input{generated/table_posthoc.tex}
 \bottomrule

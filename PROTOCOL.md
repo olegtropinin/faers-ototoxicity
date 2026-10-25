@@ -101,3 +101,15 @@ at the end under "Deviations", with the reason.
    g. Robust signals for case review are defined by adjusted-to-adjusted replication; the review
       rubric is written down and applied by two assessors (author + independent AI assessor blind to
       the first assignment); agreement is reported.
+   h. Label search now also covers "Drug Abuse and Dependence" sections (clonazepam's withdrawal
+      tinnitus is described there), and the novelty check also uses combination-product labels
+      (e.g. Bicillin C-R lists tinnitus). The reference set itself still uses single-ingredient labels.
+5. (04:30-04:40, after the second internal review round — post hoc)
+   a. Calibrated replication now uses empirical-Bayes shrunken FAERS estimates (winner's curse) with bootstrap CIs;
+      the post-hoc adjusted-to-adjusted calibration uses Canadian adjusted counts and stratified expected counts.
+   b. The protocol-literal background (all label-negative ingredients) and the pre-specified label definition
+      (single-ingredient labels, without the dependence sections) are reported alongside the revised ones.
+      Note: deviation 4c redefined the background after results were seen; it is post hoc, not a clarification.
+   c. Case review: category D additionally requires that the signal not persist against other drugs used for the
+      same indication (active-comparator ROR within the indication; scripts/within_indication.py).
+   d. Canada Vigilance from 2004 is evaluated as a reported variant.

@@ -25,7 +25,7 @@ FIG.mkdir(exist_ok=True)
 rng = np.random.default_rng(20261026)
 MIN_REPORTS = 1000
 FLOOR = -20.0
-VARIANTS = ["x", "xstrat", "xstrong", "xnomega"]
+VARIANTS = ["x", "xstrat", "xstrong", "xnomega", "2004x"]
 
 
 def half_up(x, nd=0):
@@ -129,25 +129,51 @@ def roc_figure(ev, scores, y, aucs):
     plt.close(fig)
 
 
-def calibrated(m, mask, faers_or, ca):
+def shrunk_or(m, f):
+    """Empirical-Bayes shrinkage of log adjusted ORs towards 0 (counters the winner's curse of selected signals):
+    log OR * tau^2 / (tau^2 + se^2), with tau^2 = var(log OR) - mean(se^2) over all estimable ingredients."""
+    lo, hi, o = m[f"{f}_mh_lo"], m[f"{f}_mh_hi"], m[f"{f}_mh_or"]
+    ok = np.isfinite(np.log(o)) & np.isfinite(np.log(lo)) & np.isfinite(np.log(hi)) & (m[f"{f}_a_adj"] >= 1)
+    lg = np.log(o.where(ok))
+    se = (np.log(hi) - np.log(lo)).where(ok) / (2 * 1.959963984540054)
+    tau2 = max(float(lg.var() - (se ** 2).mean()), 1e-4)
+    return np.exp(lg * tau2 / (tau2 + se ** 2)), tau2
+
+
+def _crit(e):
+    c = 3
+    while poisson.sf(c - 1, e) >= 0.025:
+        c += 1
+    return c
+
+
+def calibrated(m, mask, orr, ca, adjusted=False):
     """Observed vs power-expected replications. Replication = Canadian count >= a_crit, the smallest count >= 3
-    with Poisson P(X >= a | E) < 0.025. Expected if true uses lambda = E x FAERS adjusted OR (floored at 1)."""
-    E = m[f"{ca}_E"].fillna(0).values
-    a = m[f"{ca}_a"].fillna(0).values
-    orr = m[faers_or].replace([np.inf], np.nan).fillna(1).clip(lower=1).values
+    with Poisson P(X >= a | E) < 0.025; expected if true uses lambda = E x OR (OR floored at 1).
+    adjusted=True uses the Canadian adjusted case count and its stratified expected count E_adj.
+    95% CI by bootstrap over ingredients."""
+    E = m[f"{ca}_E_adj" if adjusted else f"{ca}_E"].fillna(0).values
+    a = m[f"{ca}_a_adj" if adjusted else f"{ca}_a"].fillna(0).values
+    o = pd.Series(orr, index=m.index).replace([np.inf], np.nan).fillna(1).clip(lower=1).values
     sel = mask.fillna(False).values & (E > 0)
-    obs = exp1 = exp0 = 0.0
-    n = 0
-    for e, aa, o in zip(E[sel], a[sel], orr[sel]):
-        crit = 3
-        while poisson.sf(crit - 1, e) >= 0.025:
-            crit += 1
-        obs += aa >= crit
-        exp1 += poisson.sf(crit - 1, e * o)
-        exp0 += poisson.sf(crit - 1, e)
-        n += 1
-    return {"n": n, "observed": int(obs), "expected_if_true": exp1, "expected_if_null": exp0,
-            "obs_over_exp": obs / exp1 if exp1 > 0 else np.nan}
+    obs, p1, p0 = [], [], []
+    for e, aa, oo in zip(E[sel], a[sel], o[sel]):
+        c = _crit(e)
+        obs.append(aa >= c)
+        p1.append(poisson.sf(c - 1, e * oo))
+        p0.append(poisson.sf(c - 1, e))
+    obs, p1, p0 = np.array(obs, float), np.array(p1), np.array(p0)
+    n = len(obs)
+    res = {"n": n, "observed": int(obs.sum()), "expected_if_true": float(p1.sum()),
+           "expected_if_null": float(p0.sum()), "obs_over_exp": obs.sum() / p1.sum() if p1.sum() > 0 else np.nan}
+    if n > 1:
+        bs = []
+        for _ in range(2000):
+            b = rng.integers(0, n, n)
+            if p1[b].sum() > 0:
+                bs.append(obs[b].sum() / p1[b].sum())
+        res["ci"] = [float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))]
+    return res
 
 
 def evaluate(ev):
@@ -166,6 +192,8 @@ def evaluate(ev):
     roc_figure(ev, scores, y, out["reference"]["auc"])
     out["reference_sensitivity"] = {f"min_reports_{k}": reference(m, ref, k)[0]["auc"] for k in (100, 500)}
     out["reference_sensitivity"]["without_29_listed"] = reference(m, ref, exclude=KNOWN_OTOTOXIC)[0]["auc"]
+    finite = m.index[~np.isfinite(np.log(m["faers_mh_lo"]))]
+    out["reference_sensitivity"]["without_floor"] = reference(m, ref, exclude=set(finite))[0]["auc"]
 
     # 2. pre-specified replication: FAERS without Canada -> Canada (crude), all reports
     m["crude"], m["adjusted"] = crude_sig(m, "faersnoca"), adj_sig(m, "faersnoca")
@@ -187,11 +215,20 @@ def evaluate(ev):
     out["replication_canada"] = rc
     td, rd = testable(m, "canadadirect"), replicated(m, "canadadirect")
     out["replication_canada_direct"] = {"adjusted": rate(td & m["adjusted"], rd), "background": rate(td & bg, rd)}
+    sh, tau2 = shrunk_or(m, "faersnoca")
+    raw = m["faersnoca_mh_or"]
+    lab0 = m["hl_any0" if ev == "hl" else "tin_any0"] == True  # noqa: E712  pre-specified label definition
     out["calibrated_canada"] = {
-        "adjusted_labelled": calibrated(m, m["adjusted"] & labelled, "faersnoca_mh_or", "canada"),
-        "adjusted_unlabelled": calibrated(m, m["adjusted"] & ~labelled, "faersnoca_mh_or", "canada"),
-        "adjusted_label_negative": calibrated(m, m["adjusted"] & neg, "faersnoca_mh_or", "canada"),
-        "background": calibrated(m, bg, "faersnoca_mh_or", "canada")}
+        "tau2": tau2,
+        "adjusted_labelled": calibrated(m, m["adjusted"] & labelled, sh, "canada"),
+        "adjusted_unlabelled": calibrated(m, m["adjusted"] & ~labelled, sh, "canada"),
+        "adjusted_label_negative": calibrated(m, m["adjusted"] & neg, sh, "canada"),
+        "background": calibrated(m, bg, sh, "canada"),
+        "raw_or_labelled": calibrated(m, m["adjusted"] & labelled, raw, "canada"),
+        "raw_or_unlabelled": calibrated(m, m["adjusted"] & ~labelled, raw, "canada"),
+        "labeldef0_labelled": calibrated(m, m["adjusted"] & lab0, sh, "canada"),
+        "labeldef0_unlabelled": calibrated(m, m["adjusted"] & ~lab0, sh, "canada")}
+    rc["protocol_background_all_label_negative"] = rate(t & neg, r)
 
     # 3. temporal
     m["early_crude"], m["early_adj"] = crude_sig(m, "early"), adj_sig(m, "early")
@@ -205,7 +242,7 @@ def evaluate(ev):
     sel_ref = (m["faers_n"] >= MIN_REPORTS) & ref.isin(["pos", "neg"])
     ph = {}
     for v in VARIANTS:
-        f, c = f"faersnoca{v}", f"canada{v}"
+        f, c = (f"faersnoca{v}", f"canada{v}") if v != "2004x" else ("faersnocax", "canada2004x")
         if f"{f}_mh_lo" not in m or f"{c}_mh_lo" not in m:
             continue
         sig = adj_sig(m, f)
@@ -219,8 +256,9 @@ def evaluate(ev):
                "unlabelled": rate(tst & sig & ~labelled, rep_adj),
                "label_negative_signals": rate(tst & sig & neg, rep_adj),
                "background": rate(tst & bgv, rep_adj),
-               "calibrated_unlabelled": calibrated(m, sig & ~labelled, f"{f}_mh_or", c),
-               "calibrated_labelled": calibrated(m, sig & labelled, f"{f}_mh_or", c)}
+               "calibrated_unlabelled": calibrated(m, sig & ~labelled, shrunk_or(m, f)[0], c, adjusted=True),
+               "calibrated_labelled": calibrated(m, sig & labelled, shrunk_or(m, f)[0], c, adjusted=True),
+               "calibrated_label_negative": calibrated(m, sig & neg, shrunk_or(m, f)[0], c, adjusted=True)}
         res["test_unlabelled_vs_background"] = fisher(res["unlabelled"], res["background"])
         robust = m[sig & rep_adj].copy()
         robust["labelled"] = labelled[robust.index]

@@ -23,7 +23,7 @@ The main findings are methodological and, I believe, of direct interest to your 
 
 The analysis protocol was committed to a version-controlled repository before the first result was computed; every later
 change, including all post-hoc analyses, is dated and labelled. The study follows READUS-PV and the completed checklist is
-provided (Supplementary Table S1). Code, protocol and result tables are publicly available.
+provided (Supplementary Table S1). Code, protocol and result tables are publicly available (https://github.com/olegtropinin/faers-ototoxicity; doi:10.5281/zenodo.23659658).
 
 The manuscript has not been published and is not under consideration elsewhere. [Preprint: to be confirmed by the author.]
 There was no funding. Until October 2026 the author was employed as a software engineer at Suno, a company that develops practice-management software for hearing clinics; the company had no role in this study. AI tools were used in data processing,

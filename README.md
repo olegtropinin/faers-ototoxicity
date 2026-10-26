@@ -1,5 +1,7 @@
 # Drug–hearing-loss signals in FAERS: adjustment and independent replication
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23659658.svg)](https://doi.org/10.5281/zenodo.23659658)
+
 Code, pre-registered protocol and result tables for the manuscript
 *"Which drug–hearing-loss signals in FAERS survive adjustment and independent replication?
 A disproportionality analysis of FAERS and Canada Vigilance"* (Oleg Tropynin, independent researcher).

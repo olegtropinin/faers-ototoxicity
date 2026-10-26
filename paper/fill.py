@@ -325,7 +325,7 @@ merit study with exposure-based designs.
 """
 
 abstract = rf"""\begin{{abstract}}
-\noindent\textbf{{Introduction:}} Recent disproportionality analyses of the US Food and Drug Administration Adverse Event
+\noindent\textbf{{Introduction:}} Recent analyses of the US Food and Drug Administration Adverse Event
 Reporting System (FAERS) reported many drug--hearing-loss signals absent from labels. We assessed which survive adjustment for
 hearing-specific biases and external replication.
 
@@ -337,10 +337,9 @@ naming established ototoxic drugs and lawyer reports. Methods were compared on a
 receiver operating characteristic curve, AUC) and by replication in Canada Vigilance; robust unlabelled signals underwent
 case-by-case review.
 
-\noindent\textbf{{Results:}} Adjustment changed the hearing-loss signal list ({fl['crude_signals']} crude, {fl['adjusted_signals']}
-adjusted, {fl['crude_not_adjusted']} lost) but not agreement with labels (AUC {r(ref['auc']['crude_logROR025'],3)} vs
-{r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more often than background but less often than
-labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
+\noindent\textbf{{Results:}} Adjustment changed the hearing-loss signal list ({fl['crude_not_adjusted']} of
+{fl['crude_signals']} crude signals lost) but not agreement with labels (AUC, crude vs adjusted lower bound:
+{r(ref['auc']['crude_logROR025'],3)} vs {r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more than background but less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
 {r(cal['adjusted_labelled']['obs_over_exp'],2)}, 95\% CI {r(cal['adjusted_labelled']['ci'][0],2)}--{r(cal['adjusted_labelled']['ci'][1],2)})
 and unlabelled ones did not ({r(cal['adjusted_unlabelled']['obs_over_exp'],2)}, {r(cal['adjusted_unlabelled']['ci'][0],2)}--{r(cal['adjusted_unlabelled']['ci'][1],2)}),
 also within strata of consumer reporting. Solicited reports, report clusters and shared
@@ -349,7 +348,7 @@ explanations; {nE} remained ({len(pre_E)}--{K['e2']} under
 alternative choices), led by pregabalin.
 
 \noindent\textbf{{Conclusions:}} Most unlabelled FAERS hearing-loss signals do not survive adjusted replication and provenance
-review. These findings are hypothesis-generating; cross-database replication needs adjusted estimates and explicit
+review. Findings are hypothesis-generating; cross-database replication needs adjusted estimates and explicit
 handling of solicited reports.
 \end{{abstract}}"""
 

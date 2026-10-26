@@ -1,4 +1,5 @@
 """Build paper/supplement.tex (Tables S2-S5) from result files; S1 (READUS-PV) is maintained by hand."""
+import json
 from pathlib import Path
 
 import numpy as np
@@ -83,5 +84,10 @@ if __name__ == "__main__":
     tex = (tpl.replace("%%S2%%", s2_known()).replace("%%S3%%", s3_review())
               .replace("%%S4%%", s4_characteristics()).replace("%%S5%%", s5_all_robust())
               .replace("%%S6%%", s6_prior()))
+    c = pd.read_csv(RES / "case_characteristics.csv")
+    n = {g: int(c[(c.group == g) & (c.variable == "N")]["n"].iloc[0]) for g in ("hearing loss", "tinnitus", "all other reports")}
+    total = int(json.load(open("data/work/faers/build_log.json"))["final_reports"])
+    overlap = n["hearing loss"] + n["tinnitus"] + n["all other reports"] - total
+    tex = tex.replace("%%OVERLAP%%", f"{overlap:,}".replace(",", "{,}")).replace("%%TOTAL%%", f"{total:,}".replace(",", "{,}"))
     (P / "supplement.tex").write_text(tex)
     print("written paper/supplement.tex")

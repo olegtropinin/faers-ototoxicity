@@ -35,3 +35,4 @@ Yours sincerely,
 Oleg Tropynin
 Independent researcher, Karaganda, Kazakhstan
 tropininoleg@gmail.com
+ORCID: https://orcid.org/0009-0006-5431-4285

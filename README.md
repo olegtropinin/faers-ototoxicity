@@ -46,7 +46,7 @@ Run them from the repository root.
 
 ## Status
 
-Submitted manuscript; not peer reviewed. The protocol was committed before the first result (commit `ff77c40`);
+Manuscript prepared for submission to a peer-reviewed journal; not yet peer reviewed. The protocol was committed before the first result (commit `ff77c40`);
 every later change is dated and labelled in `PROTOCOL.md`. Parts of the analysis and the first draft were produced
 with an AI assistant under the author's direction (see the manuscript's Methods).
 

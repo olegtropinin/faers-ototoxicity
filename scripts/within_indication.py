@@ -7,10 +7,10 @@ import sys
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, "/home/homeserver/faers/src")
+sys.path.insert(0, "src")
 from signals import HL_PTS, TIN_PTS  # noqa: E402
 
-F = "/home/homeserver/faers/data/work/faers/"
+F = "data/work/faers/"
 CHECKS = [  # drug, event, indication regex
     ("PREGABALIN", "hl", r"PAIN|NEURALGIA|NEUROPATHY|FIBROMYALGIA"),
     ("AMLODIPINE", "hl", r"HYPERTENSION"),
@@ -50,7 +50,7 @@ for drug, ev, rx in CHECKS:
     rows.append({"drug": drug, "event": ev, "indication": rx, "reports_in_indication": len(pop), "exposed": len(exposed),
                  "a": a, "ror": ror, "lo": np.exp(np.log(ror) - 1.96 * se), "hi": np.exp(np.log(ror) + 1.96 * se)})
 out = pd.DataFrame(rows)
-out.to_csv("/home/homeserver/faers/results/within_indication.csv", index=False)
+out.to_csv("results/within_indication.csv", index=False)
 print(out.round(2).to_string())
 
 # doxycycline tinnitus: share of cases co-reporting intracranial hypertension features

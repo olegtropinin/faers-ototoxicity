@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this code or these results, please cite the article and this repository."
+title: "Adjustment and external replication of drug-hearing-loss signals: a disproportionality analysis of FAERS and Canada Vigilance (code and results)"
+authors:
+  - family-names: Tropynin
+    given-names: Oleg
+    affiliation: "Independent researcher, Karaganda, Kazakhstan"
+    email: tropininoleg@gmail.com
+license: MIT
+repository-code: "https://github.com/olegtropinin/faers-ototoxicity"
+date-released: 2026-10-26
+keywords: [pharmacovigilance, FAERS, Canada Vigilance, disproportionality analysis, ototoxicity, hearing loss, tinnitus, READUS-PV]

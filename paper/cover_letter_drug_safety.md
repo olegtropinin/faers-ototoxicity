@@ -26,7 +26,7 @@ change, including all post-hoc analyses, is dated and labelled. The study follow
 provided (Supplementary Table S1). Code, protocol and result tables are publicly available.
 
 The manuscript has not been published and is not under consideration elsewhere. [Preprint: to be confirmed by the author.]
-There was no funding. The author works as a software engineer at Suno, a company that develops practice-management software for hearing clinics; the company had no role in this study. AI tools were used in data processing,
+There was no funding. Until October 2026 the author was employed as a software engineer at Suno, a company that develops practice-management software for hearing clinics; the company had no role in this study. AI tools were used in data processing,
 analysis and drafting under the author's direction, as described in the Methods.
 
 Thank you for considering this work.

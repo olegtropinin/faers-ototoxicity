@@ -36,10 +36,19 @@ LaTeX via tectonic 0.17.0.
 2. `python src/faers_load.py && python src/build_faers.py` (about 25 GB RAM at peak)
 3. `python src/canada_load.py && python src/build_canada.py && python src/label_ref.py`
 4. `python src/analyze.py faers && python src/analyze.py canada && python src/analyze.py faers_posthoc && python src/analyze.py canada_posthoc && python src/analyze.py join`
-5. `python src/evaluate.py && python src/case_review.py && python src/tables.py && python src/figures.py && python paper/build.py`
+5. `python scripts/caseprofile.py <candidates.tsv> results/case_profiles.csv`, `python scripts/within_indication.py`, `python scripts/reporter_mix.py`
+6. `python src/evaluate.py && python src/case_review.py && python src/figures.py && python src/flow_figure.py && python src/supplement.py && python paper/fill.py && python paper/build.py`
 
-The case profiles in `results/case_profiles.csv` were produced by a short script run against the
-deduplicated FAERS tables (`scripts/caseprofile.py`).
+Case-level and provenance tables come from scripts run against the deduplicated FAERS tables:
+`scripts/caseprofile.py` (case profiles), `scripts/within_indication.py` (active-comparator check),
+`scripts/reporter_mix.py` (consumer and US share per ingredient), `scripts/chars.py` (Table S4).
+Run them from the repository root.
+
+## Status
+
+Submitted manuscript; not peer reviewed. The protocol was committed before the first result (commit `ff77c40`);
+every later change is dated and labelled in `PROTOCOL.md`. Parts of the analysis and the first draft were produced
+with an AI assistant under the author's direction (see the manuscript's Methods).
 
 ## Data sources and licences
 

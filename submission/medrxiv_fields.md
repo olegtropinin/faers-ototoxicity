@@ -1,5 +1,7 @@
 # medRxiv submission — field values (copy/paste)
 
+> **Not used.** medRxiv rejected MEDRXIV/2026/366466 on 2026-10-27: it requires an organizational affiliation with research oversight. The manuscript goes directly to *Drug Safety*.
+
 **Title:** Adjustment and external replication of drug–hearing-loss signals: a disproportionality analysis of FAERS and Canada Vigilance
 
 **Article type:** New Results · **Subject area:** Pharmacology and Therapeutics (alternative: Otolaryngology)

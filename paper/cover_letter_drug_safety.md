@@ -25,7 +25,8 @@ The analysis protocol was committed to a version-controlled repository before th
 change, including all post-hoc analyses, is dated and labelled. The study follows READUS-PV and the completed checklist is
 provided (Supplementary Table S1). Code, protocol and result tables are publicly available (https://github.com/olegtropinin/faers-ototoxicity; doi:10.5281/zenodo.23659658).
 
-The manuscript has not been published and is not under consideration elsewhere. [Preprint: to be confirmed by the author.]
+The manuscript has not been published in a journal and is not under consideration elsewhere. A version of it is publicly
+available together with the code (doi:10.5281/zenodo.23659658); it has not been posted on a preprint server.
 There was no funding. Until October 2026 the author was employed as a software engineer at Suno, a company that develops practice-management software for hearing clinics; the company had no role in this study. AI tools were used in data processing,
 analysis and drafting under the author's direction, as described in the Methods.
 

@@ -368,6 +368,20 @@ replications.
 remained; they are hypotheses for exposure-based studies, not established adverse effects.
 \end{{itemize}}"""
 
+# BJCP asks for these two statements (each at most 3 bullets and 50 words) instead of key points
+bjcp_points = rf"""\section*{{What is already known about this subject}}
+\begin{{itemize}}
+\item Screens of FAERS using crude disproportionality have reported many drug--hearing-loss signals absent from labels.
+\item These screens rarely address hearing-specific biases or test their signals in an independent database.
+\end{{itemize}}
+
+\section*{{What this study adds}}
+\begin{{itemize}}
+\item Adjustment changed which drugs were flagged but not agreement with labels.
+\item Labelled signals replicated in Canada Vigilance as predicted; unlabelled signals less than half as often.
+\item After review of report provenance, {nE} of {n_rob} robust unlabelled signals remained, as hypotheses only.
+\end{{itemize}}"""
+
 # ---------------------------------------------------------------- tables
 def methods_table():
     lines = []
@@ -437,7 +451,7 @@ def cand_table():
 
 
 for name, txt in {"results.tex": results, "discussion.tex": discussion, "abstract.tex": abstract,
-                  "keypoints.tex": keypoints, "table_methods.tex": methods_table(),
+                  "keypoints.tex": keypoints, "bjcp_points.tex": bjcp_points, "table_methods.tex": methods_table(),
                   "table_posthoc.tex": posthoc_table(), "table_prior.tex": prior_table(),
                   "table_candidates.tex": cand_table()}.items():
     (OUT / name).write_text(txt)

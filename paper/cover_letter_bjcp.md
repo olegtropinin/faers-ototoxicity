@@ -33,7 +33,7 @@ detail to be reproduced; I would be glad to shorten it if the editors prefer. Th
 
 The manuscript has not been published in a journal and is not under consideration elsewhere. A version of it is publicly
 available together with the code (doi:10.5281/zenodo.23659658); it has not been posted on a preprint server.
-There was no funding. Until October 2026 the author was employed as a software engineer at Suno, a company that develops practice-management software for hearing clinics; the company had no role in this study. AI tools were used in data processing,
+The study analysed only public, de-identified spontaneous-report data; no human subjects were investigated, so there is no Principal Investigator or clinician with medical responsibility for participants. There was no funding. Until October 2026 the author was employed as a software engineer at Suno, a company that develops practice-management software for hearing clinics; the company had no role in this study. AI tools were used in data processing,
 analysis and drafting under the author's direction, as described in the Methods.
 
 Thank you for considering this work.

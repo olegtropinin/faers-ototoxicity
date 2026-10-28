@@ -339,16 +339,16 @@ hearing-specific biases and external replication.
 analysis. For hearing loss and tinnitus, crude reporting odds ratios (signal: lower 95\% bound $>1$, $\geq$3 cases) were
 compared with Mantel--Haenszel estimates stratified by age, sex and period after excluding ear-related indications, reports
 naming established ototoxic drugs and lawyer reports. Methods were compared on a label-derived reference set (area under the
-receiver operating characteristic curve, AUC) and by replication in Canada Vigilance; robust unlabelled signals underwent
+receiver operating characteristic curve, AUC) and by replication in Canada; robust unlabelled signals underwent
 case-by-case review.
 
 \noindent\textbf{{Results:}} Adjustment substantially changed the hearing-loss signal list
 ({fl['crude_not_adjusted']} of {fl['crude_signals']} crude signals lost, {fl['adjusted_not_crude']} gained) but not agreement
 with labels (AUC, crude vs adjusted lower bound: {r(ref['auc']['crude_logROR025'],3)} vs
-{r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more than background but less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
+{r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more than background, less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
 {r(cal['adjusted_labelled']['obs_over_exp'],2)}, 95\% CI {r(cal['adjusted_labelled']['ci'][0],2)}--{r(cal['adjusted_labelled']['ci'][1],2)})
 and unlabelled ones did not ({r(cal['adjusted_unlabelled']['obs_over_exp'],2)}, {r(cal['adjusted_unlabelled']['ci'][0],2)}--{r(cal['adjusted_unlabelled']['ci'][1],2)}),
-also within strata of consumer reporting. Solicited reports, report clusters and shared
+even within consumer-reporting strata. Solicited reports, report clusters and shared
 co-medication produced spurious replications. Of {n_rob} robust unlabelled signals (post hoc), {n_rob - nE} had artefactual or known
 explanations; {nE} remained ({len(pre_E)}--{K['e2']} under
 alternative choices).

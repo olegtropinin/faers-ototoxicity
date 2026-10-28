@@ -25,22 +25,21 @@ a disproportionality analysis of FAERS and Canada Vigilance}
 \input{generated/keypoints.tex}
 
 \section{Introduction}
-Drug-induced hearing loss ranges from reversible (salicylates, loop diuretics, quinine, macrolides) to permanent
-(aminoglycosides, platinum agents), and the classical ototoxic drug classes were identified mainly through clinical
-observation and case series \cite{lanvers2017}. For newer drugs, post-marketing spontaneous reports
-are often the first source of evidence, and recent studies have screened the FDA Adverse Event Reporting System (FAERS)
-across all drugs for hearing-loss signals \cite{li2024,wu2025,liu2025} and for tinnitus \cite{narasimhaswamy2026,wang2024};
-national databases in Japan and France have been used for the same purpose \cite{tanaka2019,favreliere2020}.
+The classical ototoxic drugs---aminoglycosides, platinum agents, loop diuretics, quinine, salicylates---were identified
+mainly through clinical observation and case series \cite{lanvers2017}. For newer drugs, spontaneous reports are often the
+first evidence, and recent studies have screened the FDA Adverse Event Reporting System (FAERS) across all drugs for
+hearing-loss signals \cite{li2024,wu2025,liu2025} and for tinnitus \cite{narasimhaswamy2026,wang2024}, as have national
+databases in Japan and France \cite{tanaka2019,favreliere2020}. These screens identify many unlabelled signals, but few
+evaluate whether those signals survive adjustment and independent replication.
 
 The FAERS screens share a design: crude disproportionality across all reports, with novelty defined as absence from the
-label. In this setting crude disproportionality is open to biases specific to hearing outcomes. Corticosteroids,
-vasodilators and antivirals are prescribed \emph{for} sudden hearing loss and tinnitus, and several diseases cause hearing
-loss themselves, so their treatments co-occur with the event (confounding by indication). A drug routinely given with a
-strongly ototoxic one---an antiemetic with cisplatin, an antibiotic with an aminoglycoside---inherits part of the
-association (co-medication or ``innocent bystander'' bias). Reporting can be stimulated by safety communications,
-litigation or media attention \cite{pariente2007}. Editorials have questioned the value of disproportionality analyses
-that do not address such biases \cite{ramessur2025}, and few FAERS screens test their signal lists against an independent
-data source or a reference set, as done in evaluations of signal-detection methods \cite{harpaz2013}.
+label. This design is open to biases specific to hearing outcomes. Corticosteroids, vasodilators and antivirals are
+prescribed \emph{for} sudden hearing loss and tinnitus, and several diseases cause hearing loss themselves (confounding by
+indication). A drug routinely given with a strongly ototoxic one---an antiemetic with cisplatin, an antibiotic with an
+aminoglycoside---inherits part of the association (co-medication bias). Reporting can be stimulated by safety
+communications, litigation or media attention \cite{pariente2007}. Editorials have questioned disproportionality analyses
+that ignore such biases \cite{ramessur2025}, and signal lists are rarely tested against an independent data source or a
+reference set, as is done in evaluations of signal-detection methods \cite{harpaz2013}.
 
 We therefore asked a narrower question than ``which drugs are ototoxic?'': \emph{which hearing-loss and tinnitus signals
 remain after adjustment for these biases, and do the signals that remain replicate in an independent national database
@@ -50,12 +49,21 @@ of every robust unlabelled signal.
 
 \section{Methods}
 The study is reported according to the READUS-PV guideline \cite{readuspv,readuspv_ee}; the checklist is given in
-Supplementary Table~S1. The analysis protocol, with all definitions and thresholds of the primary analysis, was written and
-committed to a version-controlled repository (git commit ff77c40, 26 October 2026, 02:05 UTC+5) before the first result was
-computed (the first disproportionality estimates were produced at 02:47--02:49 the same night, after only data preparation,
-construction of the label reference set and tests on simulated data); it is time-stamped in a repository controlled by the
-author, not registered with a third party; every later change is dated and
-labelled in that file (\texttt{PROTOCOL.md}), and analyses added after results were seen are reported as post hoc.
+Supplementary Table~S1. Primary analysis decisions were committed before the first result was computed; all later analyses
+are labelled post hoc. The protocol, with all definitions and thresholds of the primary analysis, was committed to a
+version-controlled repository at 02:05 UTC+5 on 26 October 2026 (git commit ff77c40). The first disproportionality estimates
+were produced at 02:47--02:49 the same night; before that, only data preparation, the label reference set and tests on
+simulated data had been run. The repository is controlled by the author and the protocol was not registered with a third
+party. Every later change is dated and labelled in the protocol file (\texttt{PROTOCOL.md}). Figure~\ref{fig:workflow}
+separates the pre-specified analyses from those added after the primary results were seen.
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../figures/workflow.png}
+\caption{Study workflow. Blue: pre-specified analyses (protocol committed before the first result). Orange: analyses added
+after the primary results were seen (post hoc). The remaining signals are hypotheses, not evidence of causation.}
+\label{fig:workflow}
+\end{figure}
 
 \subsection{Data sources}
 We used all 90 quarterly ASCII extracts of the legacy Adverse Event Reporting System (2004Q1--2012Q3) and FAERS
@@ -156,18 +164,20 @@ hearing terms. Each signal was assigned the first applicable category of a writt
 association documented by a prospective or cohort clinical series; A, report cluster ($\geq$50\% of cases in reports listing
 $\geq$15 drugs); B, ototoxic co-medication ($\geq$50\% of cases co-name an established ototoxic drug); C, stimulated or
 solicited reporting documented for the drug; D, main indication itself associated with the event; E, none of these. The
-rubric distinguishes C from D only on documented evidence; a high consumer share alone does not make a signal C. For
-category D we additionally required that the signal not persist against other drugs used for the same indication: within
+rubric distinguishes C from D only on documented evidence; a high consumer share alone does not make a signal C. Because
+confounding by indication remained plausible after the indication exclusions (reported indications are often missing or
+non-specific), for category D we additionally required that the signal not persist against other drugs used for the same indication: within
 FAERS reports (without Canadian origin) whose indication matched the drug's main indication, we computed the ROR of the drug
 against all other suspect drugs (active-comparator check, post hoc). The author applied the rubric, and a second, AI-based
 assessor applied it blind to the author's assignments, with the same profiles and literature access; agreement is reported as
 Cohen's $\kappa$.
 
 \subsection{Software and use of AI tools}
-Analyses used Python 3.10 (numpy 2.2.6, pandas 2.3.3, scipy 1.15.3, statsmodels 0.15.0, matplotlib 3.10.9). Data processing
-code, analyses and the first draft of this manuscript were produced with an AI assistant (Claude, Anthropic) working under
-the author's direction; three AI reviewers (methods, clinical, editorial) critiqued the draft, and their findings were
-addressed as described in the protocol file. The author reviewed the code, results and text and is responsible for them.
+Analyses used Python 3.10 (numpy 2.2.6, pandas 2.3.3, scipy 1.15.3, statsmodels 0.15.0, matplotlib 3.10.9). An AI
+assistant (Claude, Anthropic) wrote the code and the first draft of the manuscript under the author's direction, and AI
+reviewers critiqued the methods, clinical interpretation and text; changes made in response are recorded in the protocol
+file. The second assessor of the case-level review was also AI-based. The author reviewed the code, results and text and is
+responsible for them.
 
 \input{generated/results.tex}
 

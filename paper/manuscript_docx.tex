@@ -32,15 +32,16 @@ naming established ototoxic drugs and lawyer reports. Methods were compared on a
 receiver operating characteristic curve, AUC) and by replication in Canada Vigilance; robust unlabelled signals underwent
 case-by-case review.
 
-\noindent\textbf{Results:} Adjustment changed the hearing-loss signal list (63 of
-300 crude signals lost) but not agreement with labels (AUC, crude vs adjusted lower bound:
-0.718 vs 0.723). Unlabelled signals replicated in Canada more than background but less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
+\noindent\textbf{Results:} Adjustment substantially changed the hearing-loss signal list
+(63 of 300 crude signals lost, 73 gained) but not agreement
+with labels (AUC, crude vs adjusted lower bound: 0.718 vs
+0.723). Unlabelled signals replicated in Canada more than background but less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
 1.02, 95\% CI 0.77--1.32)
 and unlabelled ones did not (0.44, 0.29--0.62),
 also within strata of consumer reporting. Solicited reports, report clusters and shared
 co-medication produced spurious replications. Of 22 robust unlabelled signals (post hoc), 15 had artefactual or known
 explanations; 7 remained (2--9 under
-alternative choices), led by pregabalin.
+alternative choices).
 
 \noindent\textbf{Conclusions:} Most unlabelled FAERS hearing-loss signals do not survive adjusted replication and provenance
 review. Findings are hypothesis-generating; cross-database replication needs adjusted estimates and explicit
@@ -55,26 +56,25 @@ are flagged but not their agreement with drug labels.
 as often, also among drugs with similar consumer reporting; solicited reports and shared co-medication produced spurious
 replications.
 \item After adjusted replication and case-by-case review of report provenance, 7 of 22 robust unlabelled signals
-remained, led by pregabalin; they are hypotheses for exposure-based studies.
+remained; they are hypotheses for exposure-based studies, not established adverse effects.
 \end{itemize}
 
 \section{Introduction}
-Drug-induced hearing loss ranges from reversible (salicylates, loop diuretics, quinine, macrolides) to permanent
-(aminoglycosides, platinum agents), and the classical ototoxic drug classes were identified mainly through clinical
-observation and case series \cite{lanvers2017}. For newer drugs, post-marketing spontaneous reports
-are often the first source of evidence, and recent studies have screened the FDA Adverse Event Reporting System (FAERS)
-across all drugs for hearing-loss signals \cite{li2024,wu2025,liu2025} and for tinnitus \cite{narasimhaswamy2026,wang2024};
-national databases in Japan and France have been used for the same purpose \cite{tanaka2019,favreliere2020}.
+The classical ototoxic drugs---aminoglycosides, platinum agents, loop diuretics, quinine, salicylates---were identified
+mainly through clinical observation and case series \cite{lanvers2017}. For newer drugs, spontaneous reports are often the
+first evidence, and recent studies have screened the FDA Adverse Event Reporting System (FAERS) across all drugs for
+hearing-loss signals \cite{li2024,wu2025,liu2025} and for tinnitus \cite{narasimhaswamy2026,wang2024}, as have national
+databases in Japan and France \cite{tanaka2019,favreliere2020}. These screens identify many unlabelled signals, but few
+evaluate whether those signals survive adjustment and independent replication.
 
 The FAERS screens share a design: crude disproportionality across all reports, with novelty defined as absence from the
-label. In this setting crude disproportionality is open to biases specific to hearing outcomes. Corticosteroids,
-vasodilators and antivirals are prescribed \emph{for} sudden hearing loss and tinnitus, and several diseases cause hearing
-loss themselves, so their treatments co-occur with the event (confounding by indication). A drug routinely given with a
-strongly ototoxic one---an antiemetic with cisplatin, an antibiotic with an aminoglycoside---inherits part of the
-association (co-medication or ``innocent bystander'' bias). Reporting can be stimulated by safety communications,
-litigation or media attention \cite{pariente2007}. Editorials have questioned the value of disproportionality analyses
-that do not address such biases \cite{ramessur2025}, and few FAERS screens test their signal lists against an independent
-data source or a reference set, as done in evaluations of signal-detection methods \cite{harpaz2013}.
+label. This design is open to biases specific to hearing outcomes. Corticosteroids, vasodilators and antivirals are
+prescribed \emph{for} sudden hearing loss and tinnitus, and several diseases cause hearing loss themselves (confounding by
+indication). A drug routinely given with a strongly ototoxic one---an antiemetic with cisplatin, an antibiotic with an
+aminoglycoside---inherits part of the association (co-medication bias). Reporting can be stimulated by safety
+communications, litigation or media attention \cite{pariente2007}. Editorials have questioned disproportionality analyses
+that ignore such biases \cite{ramessur2025}, and signal lists are rarely tested against an independent data source or a
+reference set, as is done in evaluations of signal-detection methods \cite{harpaz2013}.
 
 We therefore asked a narrower question than ``which drugs are ototoxic?'': \emph{which hearing-loss and tinnitus signals
 remain after adjustment for these biases, and do the signals that remain replicate in an independent national database
@@ -84,12 +84,21 @@ of every robust unlabelled signal.
 
 \section{Methods}
 The study is reported according to the READUS-PV guideline \cite{readuspv,readuspv_ee}; the checklist is given in
-Supplementary Table~S1. The analysis protocol, with all definitions and thresholds of the primary analysis, was written and
-committed to a version-controlled repository (git commit ff77c40, 26 October 2026, 02:05 UTC+5) before the first result was
-computed (the first disproportionality estimates were produced at 02:47--02:49 the same night, after only data preparation,
-construction of the label reference set and tests on simulated data); it is time-stamped in a repository controlled by the
-author, not registered with a third party; every later change is dated and
-labelled in that file (\texttt{PROTOCOL.md}), and analyses added after results were seen are reported as post hoc.
+Supplementary Table~S1. Primary analysis decisions were committed before the first result was computed; all later analyses
+are labelled post hoc. The protocol, with all definitions and thresholds of the primary analysis, was committed to a
+version-controlled repository at 02:05 UTC+5 on 26 October 2026 (git commit ff77c40). The first disproportionality estimates
+were produced at 02:47--02:49 the same night; before that, only data preparation, the label reference set and tests on
+simulated data had been run. The repository is controlled by the author and the protocol was not registered with a third
+party. Every later change is dated and labelled in the protocol file (\texttt{PROTOCOL.md}). Figure~\ref{fig:workflow}
+separates the pre-specified analyses from those added after the primary results were seen.
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../figures/workflow.png}
+\caption{Study workflow. Blue: pre-specified analyses (protocol committed before the first result). Orange: analyses added
+after the primary results were seen (post hoc). The remaining signals are hypotheses, not evidence of causation.}
+\label{fig:workflow}
+\end{figure}
 
 \subsection{Data sources}
 We used all 90 quarterly ASCII extracts of the legacy Adverse Event Reporting System (2004Q1--2012Q3) and FAERS
@@ -190,18 +199,20 @@ hearing terms. Each signal was assigned the first applicable category of a writt
 association documented by a prospective or cohort clinical series; A, report cluster ($\geq$50\% of cases in reports listing
 $\geq$15 drugs); B, ototoxic co-medication ($\geq$50\% of cases co-name an established ototoxic drug); C, stimulated or
 solicited reporting documented for the drug; D, main indication itself associated with the event; E, none of these. The
-rubric distinguishes C from D only on documented evidence; a high consumer share alone does not make a signal C. For
-category D we additionally required that the signal not persist against other drugs used for the same indication: within
+rubric distinguishes C from D only on documented evidence; a high consumer share alone does not make a signal C. Because
+confounding by indication remained plausible after the indication exclusions (reported indications are often missing or
+non-specific), for category D we additionally required that the signal not persist against other drugs used for the same indication: within
 FAERS reports (without Canadian origin) whose indication matched the drug's main indication, we computed the ROR of the drug
 against all other suspect drugs (active-comparator check, post hoc). The author applied the rubric, and a second, AI-based
 assessor applied it blind to the author's assignments, with the same profiles and literature access; agreement is reported as
 Cohen's $\kappa$.
 
 \subsection{Software and use of AI tools}
-Analyses used Python 3.10 (numpy 2.2.6, pandas 2.3.3, scipy 1.15.3, statsmodels 0.15.0, matplotlib 3.10.9). Data processing
-code, analyses and the first draft of this manuscript were produced with an AI assistant (Claude, Anthropic) working under
-the author's direction; three AI reviewers (methods, clinical, editorial) critiqued the draft, and their findings were
-addressed as described in the protocol file. The author reviewed the code, results and text and is responsible for them.
+Analyses used Python 3.10 (numpy 2.2.6, pandas 2.3.3, scipy 1.15.3, statsmodels 0.15.0, matplotlib 3.10.9). An AI
+assistant (Claude, Anthropic) wrote the code and the first draft of the manuscript under the author's direction, and AI
+reviewers critiqued the methods, clinical interpretation and text; changes made in response are recorded in the protocol
+file. The second assessor of the case-level review was also AI-based. The author reviewed the code, results and text and is
+responsible for them.
 
 
 \section{Results}
@@ -234,11 +245,12 @@ co-medication filter costs.
 In FAERS without Canadian reports the crude rule flagged 300 ingredients for hearing loss and the adjusted
 rule 310; 63 crude signals were lost and 73 appeared
 (Table~\ref{tab:methods}). Against the reference set (106 label-positive and 927 label-negative
-ingredients with $\geq$1{,}000 suspect reports), discrimination was moderate and practically identical: crude IC$_{025}$
-versus adjusted lower bound, as pre-specified, AUC 0.720 vs 0.723;
-crude versus adjusted lower bound, the like-for-like pair, 0.718 vs
+ingredients with $\geq$1{,}000 suspect reports), discrimination was moderate and practically identical. For the
+like-for-like pair, crude versus adjusted lower bound, the AUC was 0.718 vs
 0.723 (difference 0.005, 95\% CI -0.023 to
-0.030). The same held for point estimates (0.700 vs
+0.030); for the pre-specified pair, crude IC$_{025}$ versus adjusted lower bound, it was
+0.720 vs 0.723. Adjustment thus changed which drugs were flagged
+but brought almost no improvement in agreement with labels. The same held for point estimates (0.700 vs
 0.705), after excluding the 83 ingredients without an estimable
 adjusted bound (0.698 vs
 0.703), at lower report thresholds, without the 29 listed
@@ -248,16 +260,18 @@ sensitivity (0.40 to 0.35) with little change in specificity
 
 \subsection{Replication in Canada Vigilance}
 Under the pre-specified rule, adjusted hearing-loss signals already on a label replicated in 34/50 (68\%)
-of testable cases, unlabelled adjusted signals in 31/76 (41\%), label-negative adjusted signals in
-21/54 (39\%), crude-only signals in 9/21 (43\%), and label-negative ingredients that
-were neither crude nor adjusted signals in 43/214 (20\%) (all label-negative ingredients, as literally specified in
-the protocol: 68/281 (24\%); Table~\ref{tab:methods}). In this pre-specified
-comparison unlabelled signals replicated more often than the background (odds ratio
-2.74, Fisher $p<0.001$) but less often than labelled signals. The
-power-calibrated comparison (post hoc) placed this contrast on a common scale (Figure~\ref{fig:repl}): labelled signals
+of testable cases and unlabelled adjusted signals in 31/76 (41\%) (Table~\ref{tab:methods}).
+Label-negative adjusted signals replicated in 21/54 (39\%) and crude-only signals in
+9/21 (43\%). The background---label-negative ingredients that were neither crude nor adjusted signals---replicated
+in 43/214 (20\%) (all label-negative ingredients, as literally specified in the protocol:
+68/281 (24\%)). In this pre-specified comparison unlabelled signals replicated more
+often than the background (odds ratio 2.74, Fisher $p<0.001$) but less
+often than labelled signals.
+
+The power-calibrated comparison (post hoc) placed this contrast on a common scale (Figure~\ref{fig:repl}). Labelled signals
 (n=70 ingredients) replicated about as often as their shrunken FAERS estimates predicted
-(31 observed vs 30.5 expected; O/E 1.02, 95\% CI 0.77--1.32), whereas unlabelled signals (n=201) replicated less than half
-as often (25 observed vs 56.8 expected; O/E 0.44, 95\% CI 0.29--0.62); the ratio of the two was 0.43
+(31 observed vs 30.5 expected; O/E 1.02, 95\% CI 0.77--1.32). Unlabelled signals (n=201) replicated less than half as often
+(25 observed vs 56.8 expected; O/E 0.44, 95\% CI 0.29--0.62); the ratio of the two was 0.43
 (95\% CI 0.26--0.66). The
 label-negative signals, a subset of the unlabelled group, behaved alike (18 observed vs 37.5 expected; O/E 0.48, 95\% CI 0.27--0.72). Results were the
 same with unshrunken estimates, with the pre-specified label definition, and for tinnitus (60 observed vs 63.2 expected; O/E 0.95, 95\% CI 0.79--1.14 for
@@ -300,10 +314,10 @@ consistent with biases that persist within one database; for tinnitus adjusted s
 (100/121 (83\%) vs 9/15 (60\%)).
 
 \subsection{Post-hoc analyses}
-With the extended indication filter, Canada Vigilance restricted to unsolicited reports and both estimates adjusted
-(Table~\ref{tab:posthoc}), labelled hearing-loss signals replicated in 26/44 (59\%), unlabelled signals in
-10/51 (20\%) and the background in 19/158 (12\%) (Fisher $p=0.24$);
-calibrated on adjusted Canadian counts, O/E was 1.10 (95\% CI
+The post-hoc framework combined the extended indication filter, Canada Vigilance restricted to unsolicited reports and
+adjusted estimates in both databases (Table~\ref{tab:posthoc}). In it, labelled hearing-loss signals replicated in
+26/44 (59\%), unlabelled signals in 10/51 (20\%) and the background in 19/158 (12\%)
+(Fisher $p=0.24$). Calibrated on adjusted Canadian counts, O/E was 1.10 (95\% CI
 0.79--1.48) for labelled and
 0.26 (0.11--0.43)
 for unlabelled signals (ratio 0.24, 95\% CI
@@ -514,6 +528,8 @@ signals replicated less than half as often, a contrast that held within strata o
 Canadian estimate (attenuated, not absent) was close to that of signals for drugs whose labels are silent on hearing. Third,
 replication is not a clean validator on its own: solicited patient-support-programme reports and report clusters produced
 ``replications'' for drugs with no known association, and co-medication bias can replicate when crude estimates are compared.
+For regulators and signal-management teams, the practical consequence is that replication in a second database does not
+strengthen a signal unless reporting artefacts are explicitly addressed.
 After adjusted replication, a review of report provenance and an active-comparator check, 7 of 22 robust unlabelled
 signals remained (2 to 9 under alternative post-hoc choices and assessors). For tinnitus the same pattern held,
 but labelled signals also replicated less fully once both databases were adjusted, so the evidence there is weaker.
@@ -574,8 +590,8 @@ FAERS report-source codes that would identify solicited reports directly were no
 \paragraph{Conclusions.} In FAERS, most drug--hearing-loss signals that are not already on a label do not survive adjusted
 replication in Canada Vigilance and a review of report provenance; disproportionality analysis remains a
 hypothesis-generating tool. Replication in a second spontaneous-reporting database is informative only when both estimates are
-adjusted and solicited reports and report clusters are handled explicitly. The few remaining candidates, led by pregabalin,
-merit study with exposure-based designs.
+adjusted and solicited reports and report clusters are handled explicitly. The few remaining candidates, with pregabalin the
+strongest, are hypotheses that merit study with exposure-based designs, not established adverse effects.
 
 \section*{Statements and declarations}
 \textbf{Funding:} no funding was received for this study.

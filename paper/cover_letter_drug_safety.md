@@ -3,13 +3,14 @@ Dear Editor,
 I submit the original research article "Adjustment and external replication of drug–hearing-loss signals:
 a disproportionality analysis of FAERS and Canada Vigilance" for consideration in *Drug Safety*.
 
-Several recent studies screened FAERS for drug-associated hearing loss with crude disproportionality and reported
-many unlabelled signals. This study asks which of those signals survive. Using 19.9 million deduplicated FAERS reports
-and 1.2 million Canada Vigilance reports, it compares crude and adjusted detection against a label-derived reference set,
+This study addresses a methodological question relevant to routine pharmacovigilance: whether widely reported FAERS
+hearing-loss signals survive bias adjustment and independent replication. Several recent studies screened FAERS for
+drug-associated hearing loss with crude disproportionality and reported many unlabelled signals. Using 19.9 million deduplicated FAERS reports
+and 1.2 million Canada Vigilance reports, the study compares crude and adjusted detection against a label-derived reference set,
 replicates every signal in Canada Vigilance with a power-calibrated comparison, and reviews the report provenance of each
 robust unlabelled signal, including an active-comparator check within the indication.
 
-The main findings are methodological and, I believe, of direct interest to your readers:
+The main findings are methodological:
 
 - adjustment for indication, ototoxic co-medication and stimulated reporting changes the signal list but does not
   improve agreement with labels;

@@ -1,0 +1,16 @@
+{
+ "faers_reports": 19876330,
+ "canada_reports": 1210857,
+ "crude_signals": 300,
+ "adjusted_signals": 310,
+ "auc_crude": 0.718,
+ "auc_adjusted": 0.723,
+ "repl_labelled": "34/50 (68%)",
+ "repl_unlabelled": "31/76 (41%)",
+ "oe_labelled": 1.02,
+ "oe_unlabelled": 0.44,
+ "robust_unlabelled": 22,
+ "remaining": 7,
+ "remaining_min": 2,
+ "remaining_max": 9
+}

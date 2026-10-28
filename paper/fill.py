@@ -125,11 +125,12 @@ co-medication filter costs.
 In FAERS without Canadian reports the crude rule flagged {fl['crude_signals']} ingredients for hearing loss and the adjusted
 rule {fl['adjusted_signals']}; {fl['crude_not_adjusted']} crude signals were lost and {fl['adjusted_not_crude']} appeared
 (Table~\ref{{tab:methods}}). Against the reference set ({ref['n_pos']} label-positive and {ref['n_neg']} label-negative
-ingredients with $\geq$1{{,}}000 suspect reports), discrimination was moderate and practically identical: crude IC$_{{025}}$
-versus adjusted lower bound, as pre-specified, AUC {r(ref['auc']['crude_IC025'],3)} vs {r(ref['auc']['adjusted_logMH025'],3)};
-crude versus adjusted lower bound, the like-for-like pair, {r(ref['auc']['crude_logROR025'],3)} vs
+ingredients with $\geq$1{{,}}000 suspect reports), discrimination was moderate and practically identical. For the
+like-for-like pair, crude versus adjusted lower bound, the AUC was {r(ref['auc']['crude_logROR025'],3)} vs
 {r(ref['auc']['adjusted_logMH025'],3)} (difference {r(ref['auc_diff_observed'],3)}, 95\% CI {r(ref['auc_diff_ci'][0],3)} to
-{r(ref['auc_diff_ci'][1],3)}). The same held for point estimates ({r(ref['auc']['crude_logROR'],3)} vs
+{r(ref['auc_diff_ci'][1],3)}); for the pre-specified pair, crude IC$_{{025}}$ versus adjusted lower bound, it was
+{r(ref['auc']['crude_IC025'],3)} vs {r(ref['auc']['adjusted_logMH025'],3)}. Adjustment thus changed which drugs were flagged
+but brought almost no improvement in agreement with labels. The same held for point estimates ({r(ref['auc']['crude_logROR'],3)} vs
 {r(ref['auc']['adjusted_logMH'],3)}), after excluding the {ref['adjusted_score_at_floor']} ingredients without an estimable
 adjusted bound ({r(HL['reference_sensitivity']['without_floor']['crude_logROR025'],3)} vs
 {r(HL['reference_sensitivity']['without_floor']['adjusted_logMH025'],3)}), at lower report thresholds, without the 29 listed
@@ -139,16 +140,18 @@ sensitivity ({r(ref['crude_sens'],2)} to {r(ref['adj_sens'],2)}) with little cha
 
 \subsection{{Replication in Canada Vigilance}}
 Under the pre-specified rule, adjusted hearing-loss signals already on a label replicated in {frac(rc['adjusted_labelled'])}
-of testable cases, unlabelled adjusted signals in {frac(rc['adjusted_unlabelled'])}, label-negative adjusted signals in
-{frac(rc['adjusted_label_negative'])}, crude-only signals in {frac(rc['crude_only'])}, and label-negative ingredients that
-were neither crude nor adjusted signals in {frac(rc['background'])} (all label-negative ingredients, as literally specified in
-the protocol: {frac(rc['protocol_background_all_label_negative'])}; Table~\ref{{tab:methods}}). In this pre-specified
-comparison unlabelled signals replicated more often than the background (odds ratio
-{r(rc['test_unlabelled_vs_background']['odds_ratio'],2)}, Fisher $p<0.001$) but less often than labelled signals. The
-power-calibrated comparison (post hoc) placed this contrast on a common scale (Figure~\ref{{fig:repl}}): labelled signals
+of testable cases and unlabelled adjusted signals in {frac(rc['adjusted_unlabelled'])} (Table~\ref{{tab:methods}}).
+Label-negative adjusted signals replicated in {frac(rc['adjusted_label_negative'])} and crude-only signals in
+{frac(rc['crude_only'])}. The background---label-negative ingredients that were neither crude nor adjusted signals---replicated
+in {frac(rc['background'])} (all label-negative ingredients, as literally specified in the protocol:
+{frac(rc['protocol_background_all_label_negative'])}). In this pre-specified comparison unlabelled signals replicated more
+often than the background (odds ratio {r(rc['test_unlabelled_vs_background']['odds_ratio'],2)}, Fisher $p<0.001$) but less
+often than labelled signals.
+
+The power-calibrated comparison (post hoc) placed this contrast on a common scale (Figure~\ref{{fig:repl}}). Labelled signals
 (n={cal['adjusted_labelled']['n']} ingredients) replicated about as often as their shrunken FAERS estimates predicted
-({oe(cal['adjusted_labelled'])}), whereas unlabelled signals (n={cal['adjusted_unlabelled']['n']}) replicated less than half
-as often ({oe(cal['adjusted_unlabelled'])}); the ratio of the two was {r(HL['oe_ratio_unlabelled_vs_labelled']['ratio'],2)}
+({oe(cal['adjusted_labelled'])}). Unlabelled signals (n={cal['adjusted_unlabelled']['n']}) replicated less than half as often
+({oe(cal['adjusted_unlabelled'])}); the ratio of the two was {r(HL['oe_ratio_unlabelled_vs_labelled']['ratio'],2)}
 (95\% CI {r(HL['oe_ratio_unlabelled_vs_labelled']['ci'][0],2)}--{r(HL['oe_ratio_unlabelled_vs_labelled']['ci'][1],2)}). The
 label-negative signals, a subset of the unlabelled group, behaved alike ({oe(cal['adjusted_label_negative'])}). Results were the
 same with unshrunken estimates, with the pre-specified label definition, and for tinnitus ({oe(cal_t['adjusted_labelled'])} for
@@ -192,10 +195,10 @@ consistent with biases that persist within one database; for tinnitus adjusted s
 ({frac(tp_t['early_adjusted'])} vs {frac(tp_t['early_crude_only'])}).
 
 \subsection{{Post-hoc analyses}}
-With the extended indication filter, Canada Vigilance restricted to unsolicited reports and both estimates adjusted
-(Table~\ref{{tab:posthoc}}), labelled hearing-loss signals replicated in {frac(px['labelled'])}, unlabelled signals in
-{frac(px['unlabelled'])} and the background in {frac(px['background'])} (Fisher $p={r(px['test_unlabelled_vs_background']['p'],2)}$);
-calibrated on adjusted Canadian counts, O/E was {r(px['calibrated_labelled']['obs_over_exp'],2)} (95\% CI
+The post-hoc framework combined the extended indication filter, Canada Vigilance restricted to unsolicited reports and
+adjusted estimates in both databases (Table~\ref{{tab:posthoc}}). In it, labelled hearing-loss signals replicated in
+{frac(px['labelled'])}, unlabelled signals in {frac(px['unlabelled'])} and the background in {frac(px['background'])}
+(Fisher $p={r(px['test_unlabelled_vs_background']['p'],2)}$). Calibrated on adjusted Canadian counts, O/E was {r(px['calibrated_labelled']['obs_over_exp'],2)} (95\% CI
 {r(px['calibrated_labelled']['ci'][0],2)}--{r(px['calibrated_labelled']['ci'][1],2)}) for labelled and
 {r(px['calibrated_unlabelled']['obs_over_exp'],2)} ({r(px['calibrated_unlabelled']['ci'][0],2)}--{r(px['calibrated_unlabelled']['ci'][1],2)})
 for unlabelled signals (ratio {r(px['oe_ratio_unlabelled_vs_labelled']['ratio'],2)}, 95\% CI
@@ -260,6 +263,8 @@ signals replicated less than half as often, a contrast that held within strata o
 Canadian estimate (attenuated, not absent) was close to that of signals for drugs whose labels are silent on hearing. Third,
 replication is not a clean validator on its own: solicited patient-support-programme reports and report clusters produced
 ``replications'' for drugs with no known association, and co-medication bias can replicate when crude estimates are compared.
+For regulators and signal-management teams, the practical consequence is that replication in a second database does not
+strengthen a signal unless reporting artefacts are explicitly addressed.
 After adjusted replication, a review of report provenance and an active-comparator check, {nE} of {n_rob} robust unlabelled
 signals remained ({len(pre_E)} to {K['e2']} under alternative post-hoc choices and assessors). For tinnitus the same pattern held,
 but labelled signals also replicated less fully once both databases were adjusted, so the evidence there is weaker.
@@ -320,8 +325,8 @@ FAERS report-source codes that would identify solicited reports directly were no
 \paragraph{{Conclusions.}} In FAERS, most drug--hearing-loss signals that are not already on a label do not survive adjusted
 replication in Canada Vigilance and a review of report provenance; disproportionality analysis remains a
 hypothesis-generating tool. Replication in a second spontaneous-reporting database is informative only when both estimates are
-adjusted and solicited reports and report clusters are handled explicitly. The few remaining candidates, led by pregabalin,
-merit study with exposure-based designs.
+adjusted and solicited reports and report clusters are handled explicitly. The few remaining candidates, with pregabalin the
+strongest, are hypotheses that merit study with exposure-based designs, not established adverse effects.
 """
 
 abstract = rf"""\begin{{abstract}}
@@ -337,15 +342,16 @@ naming established ototoxic drugs and lawyer reports. Methods were compared on a
 receiver operating characteristic curve, AUC) and by replication in Canada Vigilance; robust unlabelled signals underwent
 case-by-case review.
 
-\noindent\textbf{{Results:}} Adjustment changed the hearing-loss signal list ({fl['crude_not_adjusted']} of
-{fl['crude_signals']} crude signals lost) but not agreement with labels (AUC, crude vs adjusted lower bound:
-{r(ref['auc']['crude_logROR025'],3)} vs {r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more than background but less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
+\noindent\textbf{{Results:}} Adjustment substantially changed the hearing-loss signal list
+({fl['crude_not_adjusted']} of {fl['crude_signals']} crude signals lost, {fl['adjusted_not_crude']} gained) but not agreement
+with labels (AUC, crude vs adjusted lower bound: {r(ref['auc']['crude_logROR025'],3)} vs
+{r(ref['auc']['adjusted_logMH025'],3)}). Unlabelled signals replicated in Canada more than background but less than labelled ones; power-calibrated (post hoc), labelled signals replicated as predicted (observed/expected
 {r(cal['adjusted_labelled']['obs_over_exp'],2)}, 95\% CI {r(cal['adjusted_labelled']['ci'][0],2)}--{r(cal['adjusted_labelled']['ci'][1],2)})
 and unlabelled ones did not ({r(cal['adjusted_unlabelled']['obs_over_exp'],2)}, {r(cal['adjusted_unlabelled']['ci'][0],2)}--{r(cal['adjusted_unlabelled']['ci'][1],2)}),
 also within strata of consumer reporting. Solicited reports, report clusters and shared
 co-medication produced spurious replications. Of {n_rob} robust unlabelled signals (post hoc), {n_rob - nE} had artefactual or known
 explanations; {nE} remained ({len(pre_E)}--{K['e2']} under
-alternative choices), led by pregabalin.
+alternative choices).
 
 \noindent\textbf{{Conclusions:}} Most unlabelled FAERS hearing-loss signals do not survive adjusted replication and provenance
 review. Findings are hypothesis-generating; cross-database replication needs adjusted estimates and explicit
@@ -359,7 +365,7 @@ are flagged but not their agreement with drug labels.
 as often, also among drugs with similar consumer reporting; solicited reports and shared co-medication produced spurious
 replications.
 \item After adjusted replication and case-by-case review of report provenance, {nE} of {n_rob} robust unlabelled signals
-remained, led by pregabalin; they are hypotheses for exposure-based studies.
+remained; they are hypotheses for exposure-based studies, not established adverse effects.
 \end{{itemize}}"""
 
 # ---------------------------------------------------------------- tables
@@ -435,6 +441,15 @@ for name, txt in {"results.tex": results, "discussion.tex": discussion, "abstrac
                   "table_posthoc.tex": posthoc_table(), "table_prior.tex": prior_table(),
                   "table_candidates.tex": cand_table()}.items():
     (OUT / name).write_text(txt)
+json.dump({"faers_reports": FB["final_reports"], "canada_reports": CB["final_reports"],
+           "crude_signals": fl["crude_signals"], "adjusted_signals": fl["adjusted_signals"],
+           "auc_crude": float(r(ref["auc"]["crude_logROR025"], 3)), "auc_adjusted": float(r(ref["auc"]["adjusted_logMH025"], 3)),
+           "repl_labelled": frac(rc["adjusted_labelled"]).replace("\\%", "%"),
+           "repl_unlabelled": frac(rc["adjusted_unlabelled"]).replace("\\%", "%"),
+           "oe_labelled": float(r(cal["adjusted_labelled"]["obs_over_exp"], 2)),
+           "oe_unlabelled": float(r(cal["adjusted_unlabelled"]["obs_over_exp"], 2)),
+           "robust_unlabelled": n_rob, "remaining": nE, "remaining_min": len(pre_E), "remaining_max": K["e2"]},
+          open(OUT / "workflow.json", "w"), indent=1, default=int)
 K["disagreements"].to_csv(RES / "case_review_disagreements.csv", index=False)
 print("kappa:", K["agree_pre"], K["agree"], K["n"], round(K["kappa"], 3), "E2:", K["e2"])
 print("E:", list(E_list.drug))
